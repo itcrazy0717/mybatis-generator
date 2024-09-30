@@ -27,8 +27,8 @@ import static javax.swing.UIManager.getString;
 import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 
 /**
- * @author: dengxin.chen
- * @version: $ BatchInsertPlugin.java,v0.1 2024-09-30 21:15 dengxin.chen Exp $
+ * @author: itcrazy0717
+ * @version: $ BatchInsertPlugin.java,v0.1 2024-09-30 21:15 itcrazy0717 Exp $
  * @description:批量插入插件
  */
 public class BatchInsertPlugin extends PluginAdapter {

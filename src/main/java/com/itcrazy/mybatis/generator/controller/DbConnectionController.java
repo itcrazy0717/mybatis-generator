@@ -17,8 +17,8 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 
 /**
- * @author: dengxin.chen
- * @version: $ DbConnectionController.java,v0.1 2024-09-30 17:15 dengxin.chen Exp $
+ * @author: itcrazy0717
+ * @version: $ DbConnectionController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
 public class DbConnectionController extends BaseFXController {

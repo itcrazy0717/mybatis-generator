@@ -17,8 +17,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * @author: dengxin.chen
- * @version: $ MainUI.java,v0.1 2024-09-30 17:15 dengxin.chen Exp $
+ * @author: itcrazy0717
+ * @version: $ MainUI.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
 public class MainUI extends Application {

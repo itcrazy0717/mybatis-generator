@@ -7,8 +7,8 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.control.Alert;
 
 /**
- * @author: dengxin.chen
- * @version: $ UIProgressCallback.java,v0.1 2024-09-30 17:15 dengxin.chen Exp $
+ * @author: itcrazy0717
+ * @version: $ UIProgressCallback.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
 public class UIProgressCallback extends Alert implements ProgressCallback {

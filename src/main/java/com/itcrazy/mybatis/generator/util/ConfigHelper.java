@@ -20,8 +20,8 @@ import com.itcrazy.mybatis.generator.model.DbType;
 import com.itcrazy.mybatis.generator.model.GeneratorConfig;
 
 /**
- * @author: dengxin.chen
- * @version: $ ConfigHelper.java,v0.1 2024-09-30 17:15 dengxin.chen Exp $
+ * @author: itcrazy0717
+ * @version: $ ConfigHelper.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
 public class ConfigHelper {

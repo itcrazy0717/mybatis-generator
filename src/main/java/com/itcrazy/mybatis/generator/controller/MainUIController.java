@@ -48,8 +48,8 @@ import javafx.stage.DirectoryChooser;
 import javafx.util.Callback;
 
 /**
- * @author: dengxin.chen
- * @version: $ MainUIController.java,v0.1 2024-09-30 17:15 dengxin.chen Exp $
+ * @author: itcrazy0717
+ * @version: $ MainUIController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
 public class MainUIController extends BaseFXController {

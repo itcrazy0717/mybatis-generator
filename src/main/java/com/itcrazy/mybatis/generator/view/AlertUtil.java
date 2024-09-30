@@ -3,8 +3,8 @@ package com.itcrazy.mybatis.generator.view;
 import javafx.scene.control.Alert;
 
 /**
- * @author: dengxin.chen
- * @version: $ AlertUtil.java,v0.1 2024-09-30 17:15 dengxin.chen Exp $
+ * @author: itcrazy0717
+ * @version: $ AlertUtil.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
 public class AlertUtil {

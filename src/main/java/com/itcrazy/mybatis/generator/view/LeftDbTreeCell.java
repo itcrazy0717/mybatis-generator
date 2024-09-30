@@ -12,8 +12,8 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.layout.HBox;
 
 /**
- * @author: dengxin.chen
- * @version: $ LeftDbTreeCell.java,v0.1 2024-09-30 17:15 dengxin.chen Exp $
+ * @author: itcrazy0717
+ * @version: $ LeftDbTreeCell.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
 public class LeftDbTreeCell extends TreeCell<DatabaseConfig> {

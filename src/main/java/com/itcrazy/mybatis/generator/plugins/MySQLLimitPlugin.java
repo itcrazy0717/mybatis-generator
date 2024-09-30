@@ -20,8 +20,8 @@ import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
 /**
- * @author: dengxin.chen
- * @version: $ MySQLLimitPlugin.java,v0.1 2024-09-30 17:15 dengxin.chen Exp $
+ * @author: itcrazy0717
+ * @version: $ MySQLLimitPlugin.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
 public class MySQLLimitPlugin extends PluginAdapter {

@@ -10,8 +10,8 @@ import org.mybatis.generator.api.dom.java.Method;
 import com.itcrazy.mybatis.generator.util.CommentUtil;
 
 /**
- * @author: dengxin.chen
- * @version: $ AddMethodCommentPlugin.java,v0.1 2024-09-30 21:04 dengxin.chen Exp $
+ * @author: itcrazy0717
+ * @version: $ AddMethodCommentPlugin.java,v0.1 2024-09-30 21:04 itcrazy0717 Exp $
  * @description:增加方法注释插件
  */
 public class AddMethodCommentPlugin extends PluginAdapter {

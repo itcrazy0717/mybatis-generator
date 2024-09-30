@@ -21,8 +21,8 @@ import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 import static org.mybatis.generator.internal.util.messages.Messages.getString;
 
 /**
- * @author: dengxin.chen
- * @version: $ ReplaceExampleContentPlugin.java,v0.1 2024-09-30 20:02 dengxin.chen Exp $
+ * @author: itcrazy0717
+ * @version: $ ReplaceExampleContentPlugin.java,v0.1 2024-09-30 20:02 itcrazy0717 Exp $
  * @description:替换example内容，主要将example替换成param
  */
 public class ReplaceExampleContentPlugin extends PluginAdapter {
@@ -330,7 +330,7 @@ public class ReplaceExampleContentPlugin extends PluginAdapter {
 
     /**
      * 递归替换XML里的example和Example
-     * by dengxin.chen
+     * by itcrazy0717
      *
      * @param element
      * @param paramName
@@ -382,7 +382,7 @@ public class ReplaceExampleContentPlugin extends PluginAdapter {
 
     /**
      * 替换example
-     * by dengxin.chen
+     * by itcrazy0717
      *
      * @param method
      * @param introspectedTable
@@ -465,7 +465,7 @@ public class ReplaceExampleContentPlugin extends PluginAdapter {
 
     /**
      * 将首字母小写
-     * by dengxin.chen
+     * by itcrazy0717
      *
      * @param inputString
      * @return
@@ -484,7 +484,7 @@ public class ReplaceExampleContentPlugin extends PluginAdapter {
 
     /**
      * 提取类名
-     * by dengxin.chen
+     * by itcrazy0717
      *
      * @param classType
      * @return

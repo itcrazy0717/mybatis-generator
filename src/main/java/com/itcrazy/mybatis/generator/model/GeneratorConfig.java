@@ -1,8 +1,8 @@
 package com.itcrazy.mybatis.generator.model;
 
 /**
- * @author: dengxin.chen
- * @version: $ GeneratorConfig.java,v0.1 2024-09-30 17:15 dengxin.chen Exp $
+ * @author: itcrazy0717
+ * @version: $ GeneratorConfig.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
 public class GeneratorConfig {

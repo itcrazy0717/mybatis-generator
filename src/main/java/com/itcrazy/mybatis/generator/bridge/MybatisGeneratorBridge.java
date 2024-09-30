@@ -37,8 +37,8 @@ import com.itcrazy.mybatis.generator.util.DbUtil;
 
 
 /**
- * @author: dengxin.chen
- * @version: $ MybatisGeneratorBridge.java,v0.1 2024-09-30 17:15 dengxin.chen Exp $
+ * @author: itcrazy0717
+ * @version: $ MybatisGeneratorBridge.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
 public class MybatisGeneratorBridge {

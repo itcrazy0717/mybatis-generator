@@ -7,15 +7,15 @@ import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
 
 /**
- * @author: dengxin.chen
- * @version: $ CommentUtil.java,v0.1 2024-09-30 21:07 dengxin.chen Exp $
+ * @author: itcrazy0717
+ * @version: $ CommentUtil.java,v0.1 2024-09-30 21:07 itcrazy0717 Exp $
  * @description:注解工具
  */
 public class CommentUtil {
 
     /**
      * 增加方法注解
-     * by dengxin.chen
+     * by itcrazy0717
      *
      * @param method
      * @param comment
