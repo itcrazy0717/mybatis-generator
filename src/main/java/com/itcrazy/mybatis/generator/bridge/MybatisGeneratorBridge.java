@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.itcrazy.mybatis.generator.model.DatabaseConfig;
 import com.itcrazy.mybatis.generator.model.DbType;
 import com.itcrazy.mybatis.generator.model.GeneratorConfig;
-import com.itcrazy.mybatis.generator.plugins.DbFieldCommentGenerator;
+import com.itcrazy.mybatis.generator.plugins.CustomCommentGenerator;
 import com.itcrazy.mybatis.generator.util.ConfigHelper;
 import com.itcrazy.mybatis.generator.util.DbUtil;
 
@@ -128,7 +128,7 @@ public class MybatisGeneratorBridge {
         context.setJavaClientGeneratorConfiguration(daoConfig);
         // Comment
         CommentGeneratorConfiguration commentConfig = new CommentGeneratorConfiguration();
-        commentConfig.setConfigurationType(DbFieldCommentGenerator.class.getName());
+        commentConfig.setConfigurationType(CustomCommentGenerator.class.getName());
         if (generatorConfig.isComment()) {
             commentConfig.addProperty("columnRemarks", "true");
         }
@@ -169,11 +169,16 @@ public class MybatisGeneratorBridge {
         replaeceExampleContentPlugin.addProperty("replaceString", "Param");
         replaeceExampleContentPlugin.addProperty("simpleMethod", "True");
         context.addPluginConfiguration(replaeceExampleContentPlugin);
-        // 增加方法注释插件
+        // 方法注释插件
         PluginConfiguration addMethodComentPlugin = new PluginConfiguration();
         addMethodComentPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.AddMethodCommentPlugin");
         addMethodComentPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.AddMethodCommentPlugin");
         context.addPluginConfiguration(addMethodComentPlugin);
+        // 批量插入插件
+        PluginConfiguration batchInsertPlugin = new PluginConfiguration();
+        batchInsertPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.BatchInsertPlugin");
+        batchInsertPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.BatchInsertPlugin");
+        context.addPluginConfiguration(batchInsertPlugin);
 
         context.setTargetRuntime("MyBatis3");
 
