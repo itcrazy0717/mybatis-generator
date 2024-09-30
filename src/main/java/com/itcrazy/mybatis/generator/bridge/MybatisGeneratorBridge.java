@@ -141,34 +141,39 @@ public class MybatisGeneratorBridge {
         }
         context.setCommentGeneratorConfiguration(commentConfig);
 
-        //实体添加序列化
-        PluginConfiguration serializablePluginConfiguration = new PluginConfiguration();
-        serializablePluginConfiguration.addProperty("type", "org.mybatis.generator.plugins.SerializablePlugin");
-        serializablePluginConfiguration.setConfigurationType("org.mybatis.generator.plugins.SerializablePlugin");
-        context.addPluginConfiguration(serializablePluginConfiguration);
-        // toString, hashCode, equals插件
-        if (generatorConfig.isNeedToStringHashcodeEquals()) {
-            PluginConfiguration toStringPlugin = new PluginConfiguration();
-            toStringPlugin.addProperty("type", "org.mybatis.generator.plugins.ToStringPlugin");
-            toStringPlugin.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
-            context.addPluginConfiguration(toStringPlugin);
-        }
-        // limit/offset插件
-        if (generatorConfig.isOffsetLimit()) {
-            if (DbType.MySQL.name().equals(selectedDatabaseConfig.getDbType())
-                || DbType.PostgreSQL.name().equals(selectedDatabaseConfig.getDbType())) {
-                PluginConfiguration pluginConfiguration = new PluginConfiguration();
-                pluginConfiguration.addProperty("type", "com.itcrazy.mybatis.generator.plugins.MySQLLimitPlugin");
-                pluginConfiguration.setConfigurationType("com.itcrazy.mybatis.generator.plugins.MySQLLimitPlugin");
-                context.addPluginConfiguration(pluginConfiguration);
-            }
+        // 序列化插件
+        PluginConfiguration serializablePlugin = new PluginConfiguration();
+        serializablePlugin.addProperty("type", "org.mybatis.generator.plugins.SerializablePlugin");
+        serializablePlugin.setConfigurationType("org.mybatis.generator.plugins.SerializablePlugin");
+        context.addPluginConfiguration(serializablePlugin);
+
+        // toString插件
+        PluginConfiguration toStringPlugin = new PluginConfiguration();
+        toStringPlugin.addProperty("type", "org.mybatis.generator.plugins.ToStringPlugin");
+        toStringPlugin.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
+        context.addPluginConfiguration(toStringPlugin);
+
+        // 分页插件
+        if (DbType.MySQL.name().equals(selectedDatabaseConfig.getDbType()) || DbType.PostgreSQL.name().equals(selectedDatabaseConfig.getDbType())) {
+            PluginConfiguration pluginConfiguration = new PluginConfiguration();
+            pluginConfiguration.addProperty("", "com.itcrazy.mybatis.generator.plugins.MySQLLimitPlugin");
+            pluginConfiguration.setConfigurationType("com.itcrazy.mybatis.generator.plugins.MySQLLimitPlugin");
+            context.addPluginConfiguration(pluginConfiguration);
         }
 
-        // 其他插件配置
+        // 覆写xml文件插件
         PluginConfiguration overWiriteXmlPlugin = new PluginConfiguration();
         overWiriteXmlPlugin.addProperty("type", "org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin");
         overWiriteXmlPlugin.setConfigurationType("org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin");
         context.addPluginConfiguration(overWiriteXmlPlugin);
+        // 替换example内容插件
+        PluginConfiguration replaeceExampleContentPlugin = new PluginConfiguration();
+        replaeceExampleContentPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.ReplaceExampleContentPlugin");
+        replaeceExampleContentPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.ReplaceExampleContentPlugin");
+        replaeceExampleContentPlugin.addProperty("searchString", "Example");
+        replaeceExampleContentPlugin.addProperty("replaceString", "Param");
+        replaeceExampleContentPlugin.addProperty("simpleMethod", "True");
+        context.addPluginConfiguration(replaeceExampleContentPlugin);
 
         context.setTargetRuntime("MyBatis3");
 

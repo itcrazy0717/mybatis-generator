@@ -38,8 +38,6 @@ public class GeneratorConfig {
 
 	private boolean comment;
 
-	private boolean needToStringHashcodeEquals;
-
 	private boolean annotation;
 
 	private boolean useActualColumnNames;
@@ -149,14 +147,6 @@ public class GeneratorConfig {
 	public void setComment(boolean comment) {
 		this.comment = comment;
 	}
-
-    public boolean isNeedToStringHashcodeEquals() {
-        return needToStringHashcodeEquals;
-    }
-
-    public void setNeedToStringHashcodeEquals(boolean needToStringHashcodeEquals) {
-        this.needToStringHashcodeEquals = needToStringHashcodeEquals;
-    }
 
     public boolean isAnnotation() {
 		return annotation;
