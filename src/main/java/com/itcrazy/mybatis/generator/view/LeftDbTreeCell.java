@@ -2,7 +2,6 @@ package com.itcrazy.mybatis.generator.view;
 
 import java.lang.ref.WeakReference;
 
-
 import com.itcrazy.mybatis.generator.model.DatabaseConfig;
 
 import javafx.beans.InvalidationListener;

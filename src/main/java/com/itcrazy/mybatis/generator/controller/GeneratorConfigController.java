@@ -7,7 +7,6 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import com.itcrazy.mybatis.generator.model.GeneratorConfig;
 import com.itcrazy.mybatis.generator.util.ConfigHelper;
 import com.itcrazy.mybatis.generator.view.AlertUtil;

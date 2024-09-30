@@ -8,7 +8,6 @@ package com.itcrazy.mybatis.generator.util;
 public class MyStringUtils {
 
     /**
-     *
      * convert string from slash style to camel style, such as a_b_c will convert to A_B_C
      *
      * @param str
@@ -35,7 +34,6 @@ public class MyStringUtils {
     }
 
     /**
-     *
      * convert string from slash style to camel style, such as a_b_c will convert to A_B_C
      *
      * @param str

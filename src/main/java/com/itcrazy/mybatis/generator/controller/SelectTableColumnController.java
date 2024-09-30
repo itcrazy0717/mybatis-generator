@@ -8,7 +8,6 @@ import java.util.ResourceBundle;
 import org.mybatis.generator.config.ColumnOverride;
 import org.mybatis.generator.config.IgnoredColumn;
 
-
 import com.itcrazy.mybatis.generator.model.UITableColumnVO;
 
 import javafx.collections.ObservableList;

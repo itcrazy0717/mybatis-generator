@@ -18,6 +18,7 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
+
 /**
  * @author: dengxin.chen
  * @version: $ MySQLLimitPlugin.java,v0.1 2024-09-30 17:15 dengxin.chen Exp $
