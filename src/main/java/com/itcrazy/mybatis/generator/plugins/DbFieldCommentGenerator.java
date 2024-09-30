@@ -36,17 +36,16 @@ import static org.mybatis.generator.internal.util.StringUtility.isTrue;
 
 /**
  * @author: dengxin.chen
- * @version: $ DbRemarksCommentGenerator.java,v0.1 2024-09-30 17:15 dengxin.chen Exp $
- * @description:
+ * @version: $ DbFieldCommentGenerator.java,v0.1 2024-09-30 17:15 dengxin.chen Exp $
+ * @description:数据库字段注解插件
  */
-public class DbRemarksCommentGenerator implements CommentGenerator {
-
+public class DbFieldCommentGenerator implements CommentGenerator {
 
     private Properties properties;
     private boolean columnRemarks;
     private boolean isAnnotations;
 
-    public DbRemarksCommentGenerator() {
+    public DbFieldCommentGenerator() {
         super();
         properties = new Properties();
     }
@@ -103,32 +102,32 @@ public class DbRemarksCommentGenerator implements CommentGenerator {
     public void addConfigurationProperties(Properties properties) {
         this.properties.putAll(properties);
         columnRemarks = isTrue(properties
-                .getProperty("columnRemarks"));
+                                       .getProperty("columnRemarks"));
         isAnnotations = isTrue(properties
-                .getProperty("annotations"));
+                                       .getProperty("annotations"));
     }
 
     public void addClassComment(InnerClass innerClass,
-            IntrospectedTable introspectedTable) {
+                                IntrospectedTable introspectedTable) {
     }
 
     public void addModelClassComment(TopLevelClass topLevelClass,
-                                IntrospectedTable introspectedTable) {
+                                     IntrospectedTable introspectedTable) {
         topLevelClass.addJavaDocLine("/**");
         topLevelClass.addJavaDocLine(" * @author ");
         topLevelClass.addJavaDocLine(" */");
-        if(isAnnotations) {
+        if (isAnnotations) {
             topLevelClass.addAnnotation("@Table(name=\"" + introspectedTable.getFullyQualifiedTableNameAtRuntime() + "\")");
         }
     }
 
     public void addEnumComment(InnerEnum innerEnum,
-            IntrospectedTable introspectedTable) {
+                               IntrospectedTable introspectedTable) {
     }
 
     public void addFieldComment(Field field,
-            IntrospectedTable introspectedTable,
-            IntrospectedColumn introspectedColumn) {
+                                IntrospectedTable introspectedTable,
+                                IntrospectedColumn introspectedColumn) {
         if (StringUtility.stringHasValue(introspectedColumn.getRemarks())) {
             field.addJavaDocLine("/**");
             StringBuilder sb = new StringBuilder();
@@ -148,7 +147,7 @@ public class DbRemarksCommentGenerator implements CommentGenerator {
                     break;
                 }
             }
-            if (!introspectedColumn.isNullable() && !isId){
+            if (!introspectedColumn.isNullable() && !isId) {
                 field.addAnnotation("@NotEmpty");
             }
             if (introspectedColumn.isIdentity()) {
@@ -167,21 +166,21 @@ public class DbRemarksCommentGenerator implements CommentGenerator {
     }
 
     public void addGeneralMethodComment(Method method,
-            IntrospectedTable introspectedTable) {
+                                        IntrospectedTable introspectedTable) {
     }
 
     public void addGetterComment(Method method,
-            IntrospectedTable introspectedTable,
-            IntrospectedColumn introspectedColumn) {
+                                 IntrospectedTable introspectedTable,
+                                 IntrospectedColumn introspectedColumn) {
     }
 
     public void addSetterComment(Method method,
-            IntrospectedTable introspectedTable,
-            IntrospectedColumn introspectedColumn) {
+                                 IntrospectedTable introspectedTable,
+                                 IntrospectedColumn introspectedColumn) {
     }
 
     public void addClassComment(InnerClass innerClass,
-            IntrospectedTable introspectedTable, boolean markAsDoNotDelete) {
+                                IntrospectedTable introspectedTable, boolean markAsDoNotDelete) {
         innerClass.addJavaDocLine("/**"); //$NON-NLS-1$
         innerClass.addJavaDocLine(" */"); //$NON-NLS-1$
     }

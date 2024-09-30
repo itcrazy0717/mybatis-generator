@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.itcrazy.mybatis.generator.model.DatabaseConfig;
 import com.itcrazy.mybatis.generator.model.DbType;
 import com.itcrazy.mybatis.generator.model.GeneratorConfig;
-import com.itcrazy.mybatis.generator.plugins.DbRemarksCommentGenerator;
+import com.itcrazy.mybatis.generator.plugins.DbFieldCommentGenerator;
 import com.itcrazy.mybatis.generator.util.ConfigHelper;
 import com.itcrazy.mybatis.generator.util.DbUtil;
 
@@ -82,7 +82,7 @@ public class MybatisGeneratorBridge {
             tableConfig.setDelimitIdentifiers(true);
         }
 
-        //添加GeneratedKey主键生成
+        // 添加GeneratedKey主键生成
         if (StringUtils.isNoneEmpty(generatorConfig.getGenerateKeys())) {
             tableConfig.setGeneratedKey(new GeneratedKey(generatorConfig.getGenerateKeys(), selectedDatabaseConfig.getDbType(), true, null));
         }
@@ -92,14 +92,10 @@ public class MybatisGeneratorBridge {
         }
         // add ignore columns
         if (ignoredColumns != null) {
-            ignoredColumns.stream().forEach(ignoredColumn -> {
-                tableConfig.addIgnoredColumn(ignoredColumn);
-            });
+            ignoredColumns.forEach(tableConfig::addIgnoredColumn);
         }
         if (columnOverrides != null) {
-            columnOverrides.stream().forEach(columnOverride -> {
-                tableConfig.addColumnOverride(columnOverride);
-            });
+            columnOverrides.forEach(tableConfig::addColumnOverride);
         }
         if (generatorConfig.isUseActualColumnNames()) {
             tableConfig.addProperty("useActualColumnNames", "true");
@@ -132,7 +128,7 @@ public class MybatisGeneratorBridge {
         context.setJavaClientGeneratorConfiguration(daoConfig);
         // Comment
         CommentGeneratorConfiguration commentConfig = new CommentGeneratorConfiguration();
-        commentConfig.setConfigurationType(DbRemarksCommentGenerator.class.getName());
+        commentConfig.setConfigurationType(DbFieldCommentGenerator.class.getName());
         if (generatorConfig.isComment()) {
             commentConfig.addProperty("columnRemarks", "true");
         }
@@ -160,7 +156,6 @@ public class MybatisGeneratorBridge {
             pluginConfiguration.setConfigurationType("com.itcrazy.mybatis.generator.plugins.MySQLLimitPlugin");
             context.addPluginConfiguration(pluginConfiguration);
         }
-
         // 覆写xml文件插件
         PluginConfiguration overWiriteXmlPlugin = new PluginConfiguration();
         overWiriteXmlPlugin.addProperty("type", "org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin");
@@ -174,13 +169,18 @@ public class MybatisGeneratorBridge {
         replaeceExampleContentPlugin.addProperty("replaceString", "Param");
         replaeceExampleContentPlugin.addProperty("simpleMethod", "True");
         context.addPluginConfiguration(replaeceExampleContentPlugin);
+        // 增加方法注释插件
+        PluginConfiguration addMethodComentPlugin = new PluginConfiguration();
+        addMethodComentPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.AddMethodCommentPlugin");
+        addMethodComentPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.AddMethodCommentPlugin");
+        context.addPluginConfiguration(addMethodComentPlugin);
 
         context.setTargetRuntime("MyBatis3");
 
         List<String> warnings = new ArrayList<>();
         Set<String> fullyqualifiedTables = new HashSet<>();
         Set<String> contexts = new HashSet<>();
-        ShellCallback shellCallback = new DefaultShellCallback(true); // override=true
+        ShellCallback shellCallback = new DefaultShellCallback(true);
         MyBatisGenerator myBatisGenerator = new MyBatisGenerator(configuration, shellCallback, warnings);
         myBatisGenerator.generate(progressCallback, contexts, fullyqualifiedTables);
     }
