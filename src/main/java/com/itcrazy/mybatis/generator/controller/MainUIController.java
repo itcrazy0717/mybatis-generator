@@ -89,7 +89,7 @@ public class MainUIController extends BaseFXController {
     @FXML
     private CheckBox commentCheckBox;
     @FXML
-    private CheckBox needToStringHashcodeEquals;
+    private CheckBox needToStringMethod;
     @FXML
     private CheckBox annotationCheckBox;
     @FXML
@@ -318,7 +318,7 @@ public class MainUIController extends BaseFXController {
         generatorConfig.setDomainObjectName(domainObjectNameField.getText());
         generatorConfig.setOffsetLimit(offsetLimitCheckBox.isSelected());
         generatorConfig.setComment(commentCheckBox.isSelected());
-        generatorConfig.setNeedToStringHashcodeEquals(needToStringHashcodeEquals.isSelected());
+        generatorConfig.setNeedToStringHashcodeEquals(needToStringMethod.isSelected());
         generatorConfig.setAnnotation(annotationCheckBox.isSelected());
         generatorConfig.setUseActualColumnNames(useActualColumnNamesCheckbox.isSelected());
         return generatorConfig;
