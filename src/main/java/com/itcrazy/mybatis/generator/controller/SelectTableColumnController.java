@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.mybatis.generator.config.ColumnOverride;
 import org.mybatis.generator.config.IgnoredColumn;
 
@@ -72,10 +73,10 @@ public class SelectTableColumnController extends BaseFXController {
     @FXML
     public void ok() {
         ObservableList<UITableColumnVO> items = columnListView.getItems();
-        if (items != null && items.size() > 0) {
+        if (CollectionUtils.isNotEmpty(items)) {
             List<IgnoredColumn> ignoredColumns = new ArrayList<>();
             List<ColumnOverride> columnOverrides = new ArrayList<>();
-            items.stream().forEach(item -> {
+            items.forEach(item -> {
                 if (!item.getChecked()) {
                     IgnoredColumn ignoredColumn = new IgnoredColumn(item.getColumnName());
                     ignoredColumns.add(ignoredColumn);
@@ -113,6 +114,4 @@ public class SelectTableColumnController extends BaseFXController {
     public void setTableName(String tableName) {
         this.tableName = tableName;
     }
-
-
 }

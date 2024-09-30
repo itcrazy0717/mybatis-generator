@@ -18,6 +18,7 @@ import org.mybatis.generator.config.IgnoredColumn;
 import org.mybatis.generator.config.JDBCConnectionConfiguration;
 import org.mybatis.generator.config.JavaClientGeneratorConfiguration;
 import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
+import org.mybatis.generator.config.JavaTypeResolverConfiguration;
 import org.mybatis.generator.config.ModelType;
 import org.mybatis.generator.config.PluginConfiguration;
 import org.mybatis.generator.config.SqlMapGeneratorConfiguration;
@@ -30,6 +31,7 @@ import com.itcrazy.mybatis.generator.model.DatabaseConfig;
 import com.itcrazy.mybatis.generator.model.DbType;
 import com.itcrazy.mybatis.generator.model.GeneratorConfig;
 import com.itcrazy.mybatis.generator.plugins.CustomCommentGenerator;
+import com.itcrazy.mybatis.generator.typeresolver.TinyIntTypeResolver;
 import com.itcrazy.mybatis.generator.util.ConfigHelper;
 import com.itcrazy.mybatis.generator.util.DbUtil;
 
@@ -137,6 +139,10 @@ public class MybatisGeneratorBridge {
         }
         context.setCommentGeneratorConfiguration(commentConfig);
 
+        // 默认设置TINYINT->Boolean类型
+        JavaTypeResolverConfiguration typeResolverConfiguration = new JavaTypeResolverConfiguration();
+        typeResolverConfiguration.setConfigurationType(TinyIntTypeResolver.class.getName());
+        context.setJavaTypeResolverConfiguration(typeResolverConfiguration);
         // 序列化插件
         PluginConfiguration serializablePlugin = new PluginConfiguration();
         serializablePlugin.addProperty("type", "org.mybatis.generator.plugins.SerializablePlugin");
