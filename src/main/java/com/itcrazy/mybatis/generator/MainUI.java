@@ -1,6 +1,7 @@
 package com.itcrazy.mybatis.generator;
 
 import java.net.URL;
+import java.util.Objects;
 
 import javax.swing.*;
 
@@ -14,6 +15,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
@@ -31,6 +33,8 @@ public class MainUI extends Application {
         URL url = Thread.currentThread().getContextClassLoader().getResource("fxml/MainUI.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(url);
         Parent root = fxmlLoader.load();
+        // 调整窗口ico
+        primaryStage.getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/ico.png"))));
         primaryStage.setResizable(true);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();

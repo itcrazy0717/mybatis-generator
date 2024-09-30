@@ -56,7 +56,7 @@ public class MainUIController extends BaseFXController {
 
     private static final Logger _LOG = LoggerFactory.getLogger(MainUIController.class);
     private static final String FOLDER_NO_EXIST = "部分目录不存在，是否创建";
-    // tool bar buttons
+
     @FXML
     private Label connectionLabel;
     @FXML
