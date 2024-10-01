@@ -84,6 +84,7 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
         }
         // 匹配Param对象
         Matcher matcher = paramPattern.matcher(compilationUnit.getType().getShortName());
+        // 为Param对象增加注释
         if ((compilationUnit instanceof TopLevelClass) && matcher.find()) {
             TopLevelClass paramClass = (TopLevelClass) compilationUnit;
             paramClass.addJavaDocLine("/**");
