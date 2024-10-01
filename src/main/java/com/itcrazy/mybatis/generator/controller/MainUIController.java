@@ -5,6 +5,7 @@ import java.net.URL;
 import java.sql.SQLRecoverableException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -42,6 +43,7 @@ import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.TextFieldTreeCell;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
@@ -54,7 +56,8 @@ import javafx.util.Callback;
  */
 public class MainUIController extends BaseFXController {
 
-    private static final Logger _LOG = LoggerFactory.getLogger(MainUIController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainUIController.class);
+
     private static final String FOLDER_NO_EXIST = "部分目录不存在，是否创建";
 
     @FXML
@@ -114,15 +117,19 @@ public class MainUIController extends BaseFXController {
         connectionLabel.setOnMouseClicked(event -> {
             DbConnectionController controller = (DbConnectionController) loadFXMLPage("新建数据库连接", FXMLPage.NEW_CONNECTION, false);
             controller.setMainUIController(this);
+            // 为窗口增加ico图标
+            controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/computer.png"))));
             controller.showDialogStage();
         });
-        ImageView configImage = new ImageView("icons/config-list.png");
+        ImageView configImage = new ImageView("icons/config_list.png");
         configImage.setFitHeight(40);
         configImage.setFitWidth(40);
         configsLabel.setGraphic(configImage);
         configsLabel.setOnMouseClicked(event -> {
             GeneratorConfigController controller = (GeneratorConfigController) loadFXMLPage("配置", FXMLPage.GENERATOR_CONFIG, false);
             controller.setMainUIController(this);
+            // 为窗口增加ico图标
+            controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/config_list.png"))));
             controller.showDialogStage();
         });
 
@@ -181,10 +188,10 @@ public class MainUIController extends BaseFXController {
                                 }
                             }
                         } catch (SQLRecoverableException e) {
-                            _LOG.error(e.getMessage(), e);
+                            LOGGER.error(e.getMessage(), e);
                             AlertUtil.showErrorAlert("连接超时");
                         } catch (Exception e) {
-                            _LOG.error(e.getMessage(), e);
+                            LOGGER.error(e.getMessage(), e);
                             AlertUtil.showErrorAlert(e.getMessage());
                         }
                     } else if (level == 2) { // left DB tree level3
@@ -204,7 +211,7 @@ public class MainUIController extends BaseFXController {
     }
 
     void loadLeftDBTree() {
-        TreeItem rootTreeItem = leftDBTree.getRoot();
+        TreeItem<String> rootTreeItem = leftDBTree.getRoot();
         rootTreeItem.getChildren().clear();
         try {
             List<DatabaseConfig> dbConfigs = ConfigHelper.loadDatabaseConfig();
@@ -219,7 +226,7 @@ public class MainUIController extends BaseFXController {
                 rootTreeItem.getChildren().add(treeItem);
             }
         } catch (Exception e) {
-            _LOG.error("connect db failed, reason: {}", e);
+            LOGGER.error("connect db failed, reason: {}", e);
             AlertUtil.showErrorAlert(e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
         }
     }
@@ -235,7 +242,7 @@ public class MainUIController extends BaseFXController {
 
     @FXML
     public void generateCode() {
-        if (tableName == null) {
+        if (StringUtils.isBlank(tableName)) {
             AlertUtil.showWarnAlert("请先在左侧选择数据库表");
             return;
         }
@@ -260,20 +267,20 @@ public class MainUIController extends BaseFXController {
         try {
             bridge.generate();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("generate code failed, reason: {}", e);
             AlertUtil.showErrorAlert(e.getMessage());
         }
     }
 
     private String validateConfig() {
         String projectFolder = projectFolderField.getText();
-        if (StringUtils.isEmpty(projectFolder)) {
+        if (StringUtils.isBlank(projectFolder)) {
             return "项目目录不能为空";
         }
-        if (StringUtils.isEmpty(domainObjectNameField.getText())) {
+        if (StringUtils.isBlank(domainObjectNameField.getText())) {
             return "类名不能为空";
         }
-        if (StringUtils.isAnyEmpty(modelTargetPackage.getText(), mapperTargetPackage.getText(), daoTargetPackage.getText())) {
+        if (StringUtils.isAnyBlank(modelTargetPackage.getText(), mapperTargetPackage.getText(), daoTargetPackage.getText())) {
             return "包名不能为空";
         }
 
@@ -292,7 +299,7 @@ public class MainUIController extends BaseFXController {
                 AlertUtil.showErrorAlert("名称不能为空");
                 return;
             }
-            _LOG.info("user choose name: {}", name);
+            LOGGER.info("user choose name: {}", name);
             try {
                 GeneratorConfig generatorConfig = getGeneratorConfigFromUI();
                 generatorConfig.setName(name);
@@ -341,6 +348,8 @@ public class MainUIController extends BaseFXController {
             return;
         }
         SelectTableColumnController controller = (SelectTableColumnController) loadFXMLPage("定制列", FXMLPage.SELECT_TABLE_COLUMN, true);
+        // 为定制项窗口增加ico图标
+        controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/table.png"))));
         controller.setMainUIController(this);
         try {
             // If select same schema and another table, update table data
@@ -351,7 +360,7 @@ public class MainUIController extends BaseFXController {
             }
             controller.showDialogStage();
         } catch (Exception e) {
-            _LOG.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             AlertUtil.showErrorAlert(e.getMessage());
         }
     }
