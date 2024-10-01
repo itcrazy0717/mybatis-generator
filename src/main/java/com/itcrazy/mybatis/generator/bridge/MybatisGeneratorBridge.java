@@ -43,7 +43,7 @@ import com.itcrazy.mybatis.generator.util.DbUtil;
  */
 public class MybatisGeneratorBridge {
 
-    private static final Logger _LOG = LoggerFactory.getLogger(MybatisGeneratorBridge.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MybatisGeneratorBridge.class);
 
     private GeneratorConfig generatorConfig;
 
@@ -72,7 +72,7 @@ public class MybatisGeneratorBridge {
         configuration.addContext(context);
         context.addProperty("javaFileEncoding", "UTF-8");
         String connectorLibPath = ConfigHelper.findConnectorLibPath(selectedDatabaseConfig.getDbType());
-        _LOG.info("connectorLibPath: {}", connectorLibPath);
+        LOGGER.info("connectorLibPath: {}", connectorLibPath);
         configuration.addClasspathEntry(connectorLibPath);
         // Table configuration
         TableConfiguration tableConfig = new TableConfiguration(context);
@@ -158,8 +158,8 @@ public class MybatisGeneratorBridge {
         // 分页插件
         if (DbType.MySQL.name().equals(selectedDatabaseConfig.getDbType()) || DbType.PostgreSQL.name().equals(selectedDatabaseConfig.getDbType())) {
             PluginConfiguration pluginConfiguration = new PluginConfiguration();
-            pluginConfiguration.addProperty("", "com.itcrazy.mybatis.generator.plugins.MySQLLimitPlugin");
-            pluginConfiguration.setConfigurationType("com.itcrazy.mybatis.generator.plugins.MySQLLimitPlugin");
+            pluginConfiguration.addProperty("", "com.itcrazy.mybatis.generator.plugins.PagePlugin");
+            pluginConfiguration.setConfigurationType("com.itcrazy.mybatis.generator.plugins.PagePlugin");
             context.addPluginConfiguration(pluginConfiguration);
         }
         // 覆写xml文件插件

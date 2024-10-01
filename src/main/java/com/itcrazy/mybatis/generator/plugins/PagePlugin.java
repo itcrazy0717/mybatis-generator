@@ -1,9 +1,5 @@
 package com.itcrazy.mybatis.generator.plugins;
 
-/**
- * Created by zouzhigang on 2016/6/14.
- */
-
 import java.util.List;
 
 import org.mybatis.generator.api.IntrospectedTable;
@@ -21,10 +17,10 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 
 /**
  * @author: itcrazy0717
- * @version: $ MySQLLimitPlugin.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
- * @description:
+ * @version: $ PagePlugin.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
+ * @description:MySQL分页插件
  */
-public class MySQLLimitPlugin extends PluginAdapter {
+public class PagePlugin extends PluginAdapter {
 
     @Override
     public boolean validate(List<String> list) {
