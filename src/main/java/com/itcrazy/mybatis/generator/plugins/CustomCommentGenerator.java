@@ -223,6 +223,7 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
     public void addClassComment(InnerClass innerClass,
                                 IntrospectedTable introspectedTable, boolean markAsDoNotDelete) {
         innerClass.addJavaDocLine("/**"); //$NON-NLS-1$
+        innerClass.addJavaDocLine(" * @mbg.generated"); //$NON-NLS-1$
         innerClass.addJavaDocLine(" */"); //$NON-NLS-1$
     }
 }

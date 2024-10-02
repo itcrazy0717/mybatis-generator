@@ -38,7 +38,7 @@ public class PagePlugin extends PluginAdapter {
         Field page = new Field();
         page.setName("page");
         page.setVisibility(JavaVisibility.PROTECTED);
-        page.setType(FullyQualifiedJavaType.getBooleanPrimitiveInstance().getPrimitiveTypeWrapper());
+        page.setType(new FullyQualifiedJavaType("boolean"));
         topLevelClass.addField(page);
 
         // pageIndex字段
