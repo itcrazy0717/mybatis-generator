@@ -176,6 +176,8 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
         if (StringUtility.stringHasValue(introspectedColumn.getRemarks())) {
             field.addJavaDocLine("/**");
             field.addJavaDocLine(" * " + introspectedColumn.getRemarks());
+            field.addJavaDocLine(" *");
+            field.addJavaDocLine(" * @mbg.generated");
             field.addJavaDocLine(" */");
         }
         if (isAnnotations) {
@@ -204,6 +206,9 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
     }
 
     public void addFieldComment(Field field, IntrospectedTable introspectedTable) {
+        field.addJavaDocLine("/**");
+        field.addJavaDocLine(" * @mbg.generated");
+        field.addJavaDocLine(" */");
     }
 
     public void addGeneralMethodComment(Method method,

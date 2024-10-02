@@ -36,6 +36,9 @@ public class PagePlugin extends PluginAdapter {
         PrimitiveTypeWrapper intTypeWrapper = FullyQualifiedJavaType.getIntInstance().getPrimitiveTypeWrapper();
         // page字段
         Field page = new Field();
+        page.addJavaDocLine("/**");
+        page.addJavaDocLine(" * @mbg.generated");
+        page.addJavaDocLine(" */");
         page.setName("page");
         page.setVisibility(JavaVisibility.PROTECTED);
         page.setType(new FullyQualifiedJavaType("boolean"));
@@ -43,6 +46,9 @@ public class PagePlugin extends PluginAdapter {
 
         // pageIndex字段
         Field pageIndex = new Field();
+        pageIndex.addJavaDocLine("/**");
+        pageIndex.addJavaDocLine(" * @mbg.generated");
+        pageIndex.addJavaDocLine(" */");
         pageIndex.setName("pageIndex");
         pageIndex.setVisibility(JavaVisibility.PROTECTED);
         pageIndex.setType(intTypeWrapper);
@@ -50,6 +56,9 @@ public class PagePlugin extends PluginAdapter {
 
         // pageSize字段
         Field pageSize = new Field();
+        pageSize.addJavaDocLine("/**");
+        pageSize.addJavaDocLine(" * @mbg.generated");
+        pageSize.addJavaDocLine(" */");
         pageSize.setName("pageSize");
         pageSize.setVisibility(JavaVisibility.PROTECTED);
         pageSize.setType(intTypeWrapper);
@@ -57,6 +66,12 @@ public class PagePlugin extends PluginAdapter {
 
         Method setPagination = new Method();
         setPagination.setVisibility(JavaVisibility.PUBLIC);
+        setPagination.addJavaDocLine("/**");
+        setPagination.addJavaDocLine(" * @param pageStart");
+        setPagination.addJavaDocLine(" * @param pageSize");
+        setPagination.addJavaDocLine(" *");
+        setPagination.addJavaDocLine(" * @mbg.generated");
+        setPagination.addJavaDocLine(" */");
         setPagination.setName("setPagination");
         setPagination.addParameter(0, new Parameter(intTypeWrapper, "pageStart"));
         setPagination.addParameter(1, new Parameter(intTypeWrapper, "pageSize"));
