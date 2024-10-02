@@ -28,78 +28,56 @@ public class PagePlugin extends PluginAdapter {
     }
 
     /**
-     * 为每个Example类添加limit和offset属性已经set、get方法
+     * 生成setPagination方法
+     * by itcrazy0717
      */
     @Override
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+        PrimitiveTypeWrapper intTypeWrapper = FullyQualifiedJavaType.getIntInstance().getPrimitiveTypeWrapper();
+        // page字段
+        Field page = new Field();
+        page.setName("page");
+        page.setVisibility(JavaVisibility.PROTECTED);
+        page.setType(FullyQualifiedJavaType.getBooleanPrimitiveInstance().getPrimitiveTypeWrapper());
+        topLevelClass.addField(page);
 
-        PrimitiveTypeWrapper integerWrapper = FullyQualifiedJavaType.getIntInstance().getPrimitiveTypeWrapper();
+        // pageIndex字段
+        Field pageIndex = new Field();
+        pageIndex.setName("pageIndex");
+        pageIndex.setVisibility(JavaVisibility.PROTECTED);
+        pageIndex.setType(intTypeWrapper);
+        topLevelClass.addField(pageIndex);
 
-        Field limit = new Field();
-        limit.setName("limit");
-        limit.setVisibility(JavaVisibility.PRIVATE);
-        limit.setType(integerWrapper);
-        topLevelClass.addField(limit);
+        // pageSize字段
+        Field pageSize = new Field();
+        pageSize.setName("pageSize");
+        pageSize.setVisibility(JavaVisibility.PROTECTED);
+        pageSize.setType(intTypeWrapper);
+        topLevelClass.addField(pageSize);
 
-        Method setLimit = new Method();
-        setLimit.setVisibility(JavaVisibility.PUBLIC);
-        setLimit.setName("setLimit");
-        setLimit.addParameter(new Parameter(integerWrapper, "limit"));
-        setLimit.addBodyLine("this.limit = limit;");
-        topLevelClass.addMethod(setLimit);
-
-        Method getLimit = new Method();
-        getLimit.setVisibility(JavaVisibility.PUBLIC);
-        getLimit.setReturnType(integerWrapper);
-        getLimit.setName("getLimit");
-        getLimit.addBodyLine("return limit;");
-        topLevelClass.addMethod(getLimit);
-
-        Field offset = new Field();
-        offset.setName("offset");
-        offset.setVisibility(JavaVisibility.PRIVATE);
-        offset.setType(integerWrapper);
-        topLevelClass.addField(offset);
-
-        Method setOffset = new Method();
-        setOffset.setVisibility(JavaVisibility.PUBLIC);
-        setOffset.setName("setOffset");
-        setOffset.addParameter(new Parameter(integerWrapper, "offset"));
-        setOffset.addBodyLine("this.offset = offset;");
-        topLevelClass.addMethod(setOffset);
-
-        Method getOffset = new Method();
-        getOffset.setVisibility(JavaVisibility.PUBLIC);
-        getOffset.setReturnType(integerWrapper);
-        getOffset.setName("getOffset");
-        getOffset.addBodyLine("return offset;");
-        topLevelClass.addMethod(getOffset);
-
+        Method setPagination = new Method();
+        setPagination.setVisibility(JavaVisibility.PUBLIC);
+        setPagination.setName("setPagination");
+        setPagination.addParameter(0, new Parameter(intTypeWrapper, "pageStart"));
+        setPagination.addParameter(1, new Parameter(intTypeWrapper, "pageSize"));
+        setPagination.addBodyLine("this.page = true;");
+        setPagination.addBodyLine("this.pageSize = pageSize < 1 ? 10 : pageSize;");
+        setPagination.addBodyLine("this.pageIndex = pageStart < 1 ? 0 : (pageStart - 1) * this.pageSize;");
+        topLevelClass.addMethod(setPagination);
         return true;
     }
 
     /**
-     * 为Mapper.xml的selectByExample添加limit
+     * 生成对应分页方法
+     * by itcrazy0717
      */
     @Override
     public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element,
                                                                      IntrospectedTable introspectedTable) {
-
-        XmlElement ifLimitNotNullElement = new XmlElement("if");
-        ifLimitNotNullElement.addAttribute(new Attribute("test", "limit != null"));
-
-        XmlElement ifOffsetNotNullElement = new XmlElement("if");
-        ifOffsetNotNullElement.addAttribute(new Attribute("test", "offset != null"));
-        ifOffsetNotNullElement.addElement(new TextElement("limit ${offset}, ${limit}"));
-        ifLimitNotNullElement.addElement(ifOffsetNotNullElement);
-
-        XmlElement ifOffsetNullElement = new XmlElement("if");
-        ifOffsetNullElement.addAttribute(new Attribute("test", "offset == null"));
-        ifOffsetNullElement.addElement(new TextElement("limit ${limit}"));
-        ifLimitNotNullElement.addElement(ifOffsetNullElement);
-
-        element.addElement(ifLimitNotNullElement);
-
+        XmlElement ifPageXmlElement = new XmlElement("if");
+        ifPageXmlElement.addAttribute(new Attribute("test", "page"));
+        ifPageXmlElement.addElement(new TextElement("limit #{pageIndex}, #{pageSize}"));
+        element.addElement(ifPageXmlElement);
         return true;
     }
 }
