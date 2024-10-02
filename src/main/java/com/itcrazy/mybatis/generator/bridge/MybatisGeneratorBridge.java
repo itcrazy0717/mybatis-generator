@@ -146,11 +146,13 @@ public class MybatisGeneratorBridge {
         JavaTypeResolverConfiguration typeResolverConfiguration = new JavaTypeResolverConfiguration();
         typeResolverConfiguration.setConfigurationType(TinyIntTypeResolver.class.getName());
         context.setJavaTypeResolverConfiguration(typeResolverConfiguration);
-        // 序列化插件
-        PluginConfiguration serializablePlugin = new PluginConfiguration();
-        serializablePlugin.addProperty("type", "org.mybatis.generator.plugins.SerializablePlugin");
-        serializablePlugin.setConfigurationType("org.mybatis.generator.plugins.SerializablePlugin");
-        context.addPluginConfiguration(serializablePlugin);
+        /**
+         // 序列化插件
+         PluginConfiguration serializablePlugin = new PluginConfiguration();
+         serializablePlugin.addProperty("type", "org.mybatis.generator.plugins.SerializablePlugin");
+         serializablePlugin.setConfigurationType("org.mybatis.generator.plugins.SerializablePlugin");
+         context.addPluginConfiguration(serializablePlugin);
+         */
 
         // toString插件
         PluginConfiguration toStringPlugin = new PluginConfiguration();
