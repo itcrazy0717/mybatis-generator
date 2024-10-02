@@ -111,6 +111,9 @@ public class MybatisGeneratorBridge {
         JavaModelGeneratorConfiguration modelConfig = new JavaModelGeneratorConfiguration();
         modelConfig.setTargetPackage(generatorConfig.getModelPackage());
         modelConfig.setTargetProject(generatorConfig.getProjectFolder() + "/" + generatorConfig.getModelPackageTargetFolder());
+        String modelPackage = modelConfig.getTargetPackage();
+        // 设置param对象包路径，单独命名为xxx.parm,便于管理
+        String paramTargetPackage = modelPackage.substring(0, modelPackage.lastIndexOf(".")) + ".param";
         // Mapper文件路径配置
         SqlMapGeneratorConfiguration mapperConfig = new SqlMapGeneratorConfiguration();
         mapperConfig.setTargetPackage(generatorConfig.getMappingXMLPackage());
@@ -174,6 +177,7 @@ public class MybatisGeneratorBridge {
         replaeceExampleContentPlugin.addProperty("searchString", "Example");
         replaeceExampleContentPlugin.addProperty("replaceString", "Param");
         replaeceExampleContentPlugin.addProperty("simpleMethod", "True");
+        replaeceExampleContentPlugin.addProperty("paramTargetPackage", paramTargetPackage);
         context.addPluginConfiguration(replaeceExampleContentPlugin);
         // 方法注释插件
         PluginConfiguration addMethodComentPlugin = new PluginConfiguration();

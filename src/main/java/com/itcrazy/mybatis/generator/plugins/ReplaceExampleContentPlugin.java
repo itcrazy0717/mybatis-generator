@@ -41,8 +41,7 @@ public class ReplaceExampleContentPlugin extends PluginAdapter {
         replaceString = properties.getProperty("replaceString"); //$NON-NLS-1$
         simpleMethod = Boolean.valueOf(properties.getProperty("simpleMethod")); //$NON-NLS-1$
 
-        boolean valid = stringHasValue(searchString)
-                        && stringHasValue(replaceString);
+        boolean valid = stringHasValue(searchString) && stringHasValue(replaceString);
 
         if (valid) {
             pattern = Pattern.compile(searchString);
@@ -64,97 +63,90 @@ public class ReplaceExampleContentPlugin extends PluginAdapter {
 
     @Override
     public void initialized(IntrospectedTable introspectedTable) {
-        String oldType = introspectedTable.getExampleType();
-        Matcher matcher = pattern.matcher(oldType);
-        oldType = matcher.replaceAll(replaceString);
-        // 将DOParam修改替换成Param
+        String exampleType = introspectedTable.getExampleType();
+        Matcher matcher = pattern.matcher(exampleType);
+        exampleType = matcher.replaceAll(replaceString);
+        // 将DOParam替换成Param
         Pattern paramPattern = Pattern.compile("DOParam");
-        Matcher paramMatcher = paramPattern.matcher(oldType);
-        oldType = paramMatcher.replaceAll("Param");
-        introspectedTable.setExampleType(oldType);
+        Matcher paramMatcher = paramPattern.matcher(exampleType);
+        exampleType = paramMatcher.replaceAll("Param");
+        // 调整param对象路径
+        String paramTargetPackage = properties.getProperty("paramTargetPackage");
+        if (StringUtils.isNotBlank(paramTargetPackage)) {
+            String paramClassName = exampleType.substring(exampleType.lastIndexOf(".") + 1);
+            introspectedTable.setExampleType(paramTargetPackage + "." + paramClassName);
+        } else {
+            introspectedTable.setExampleType(exampleType);
+        }
     }
 
     @Override
-    public boolean clientCountByExampleMethodGenerated(Method method, Interface interfaze,
-                                                       IntrospectedTable introspectedTable) {
+    public boolean clientCountByExampleMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean clientCountByExampleMethodGenerated(Method method, TopLevelClass topLevelClass,
-                                                       IntrospectedTable introspectedTable) {
+    public boolean clientCountByExampleMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean clientDeleteByExampleMethodGenerated(Method method, Interface interfaze,
-                                                        IntrospectedTable introspectedTable) {
+    public boolean clientDeleteByExampleMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean clientDeleteByExampleMethodGenerated(Method method, TopLevelClass topLevelClass,
-                                                        IntrospectedTable introspectedTable) {
+    public boolean clientDeleteByExampleMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean clientSelectByExampleWithBLOBsMethodGenerated(Method method, Interface interfaze,
-                                                                 IntrospectedTable introspectedTable) {
+    public boolean clientSelectByExampleWithBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean clientSelectByExampleWithBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass,
-                                                                 IntrospectedTable introspectedTable) {
+    public boolean clientSelectByExampleWithBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean clientSelectByExampleWithoutBLOBsMethodGenerated(Method method, Interface interfaze,
-                                                                    IntrospectedTable introspectedTable) {
+    public boolean clientSelectByExampleWithoutBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean clientSelectByExampleWithoutBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass,
-                                                                    IntrospectedTable introspectedTable) {
+    public boolean clientSelectByExampleWithoutBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean clientUpdateByExampleSelectiveMethodGenerated(Method method, Interface interfaze,
-                                                                 IntrospectedTable introspectedTable) {
+    public boolean clientUpdateByExampleSelectiveMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean clientUpdateByExampleSelectiveMethodGenerated(Method method, TopLevelClass topLevelClass,
-                                                                 IntrospectedTable introspectedTable) {
+    public boolean clientUpdateByExampleSelectiveMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean clientUpdateByExampleWithBLOBsMethodGenerated(Method method, Interface interfaze,
-                                                                 IntrospectedTable introspectedTable) {
+    public boolean clientUpdateByExampleWithBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean clientUpdateByExampleWithBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass,
-                                                                 IntrospectedTable introspectedTable) {
+    public boolean clientUpdateByExampleWithBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean clientUpdateByExampleWithoutBLOBsMethodGenerated(Method method, Interface interfaze,
-                                                                    IntrospectedTable introspectedTable) {
+    public boolean clientUpdateByExampleWithoutBLOBsMethodGenerated(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean clientUpdateByExampleWithoutBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass,
-                                                                    IntrospectedTable introspectedTable) {
+    public boolean clientUpdateByExampleWithoutBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
@@ -181,80 +173,67 @@ public class ReplaceExampleContentPlugin extends PluginAdapter {
     }
 
     @Override
-    public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element,
-                                                                     IntrospectedTable introspectedTable) {
+    public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
         return renameXmlExample(element, introspectedTable, false);
     }
 
     @Override
-    public boolean sqlMapSelectByExampleWithBLOBsElementGenerated(XmlElement element,
-                                                                  IntrospectedTable introspectedTable) {
+    public boolean sqlMapSelectByExampleWithBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
         return renameXmlExample(element, introspectedTable, false);
     }
 
     @Override
-    public boolean sqlMapUpdateByExampleSelectiveElementGenerated(XmlElement element,
-                                                                  IntrospectedTable introspectedTable) {
+    public boolean sqlMapUpdateByExampleSelectiveElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
         return renameXmlExample(element, introspectedTable, false);
     }
 
     @Override
-    public boolean sqlMapUpdateByExampleWithBLOBsElementGenerated(XmlElement element,
-                                                                  IntrospectedTable introspectedTable) {
+    public boolean sqlMapUpdateByExampleWithBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
         return renameXmlExample(element, introspectedTable, false);
     }
 
     @Override
-    public boolean sqlMapUpdateByExampleWithoutBLOBsElementGenerated(XmlElement element,
-                                                                     IntrospectedTable introspectedTable) {
+    public boolean sqlMapUpdateByExampleWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
         return renameXmlExample(element, introspectedTable, false);
     }
 
     @Override
-    public boolean providerCountByExampleMethodGenerated(Method method, TopLevelClass topLevelClass,
-                                                         IntrospectedTable introspectedTable) {
+    public boolean providerCountByExampleMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean providerDeleteByExampleMethodGenerated(Method method, TopLevelClass topLevelClass,
-                                                          IntrospectedTable introspectedTable) {
+    public boolean providerDeleteByExampleMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean providerSelectByExampleWithBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass,
-                                                                   IntrospectedTable introspectedTable) {
+    public boolean providerSelectByExampleWithBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean providerSelectByExampleWithoutBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass,
-                                                                      IntrospectedTable introspectedTable) {
+    public boolean providerSelectByExampleWithoutBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean providerUpdateByExampleSelectiveMethodGenerated(Method method, TopLevelClass topLevelClass,
-                                                                   IntrospectedTable introspectedTable) {
+    public boolean providerUpdateByExampleSelectiveMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean providerUpdateByExampleWithBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass,
-                                                                   IntrospectedTable introspectedTable) {
+    public boolean providerUpdateByExampleWithBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean providerUpdateByExampleWithoutBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass,
-                                                                      IntrospectedTable introspectedTable) {
+    public boolean providerUpdateByExampleWithoutBLOBsMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         return replaceExample(method, introspectedTable);
     }
 
     @Override
-    public boolean providerApplyWhereMethodGenerated(Method method, TopLevelClass topLevelClass,
-                                                     IntrospectedTable introspectedTable) {
+    public boolean providerApplyWhereMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         replaceExample(method, introspectedTable);
 
         return renameModelExample(topLevelClass, introspectedTable);
@@ -438,8 +417,7 @@ public class ReplaceExampleContentPlugin extends PluginAdapter {
         for (String line : bodyLines) {
             String newLine = line.replaceAll("example", lowerCaseclassBaseName);
             if (methodName.contains("WithoutBLOBs")) {
-                newLine = newLine.replaceAll(methodName.replaceAll("WithoutBLOBs", ""),
-                                             newMethodName.replaceAll("WithoutBLOBs", ""));
+                newLine = newLine.replaceAll(methodName.replaceAll("WithoutBLOBs", ""), newMethodName.replaceAll("WithoutBLOBs", ""));
             } else {
                 newLine = newLine.replaceAll(methodName, newMethodName);
             }
