@@ -107,15 +107,15 @@ public class MybatisGeneratorBridge {
         jdbcConfig.setConnectionURL(DbUtil.getConnectionUrlWithSchema(selectedDatabaseConfig));
         jdbcConfig.setUserId(selectedDatabaseConfig.getUsername());
         jdbcConfig.setPassword(selectedDatabaseConfig.getPassword());
-        // java model
+        // 实体类路径配置
         JavaModelGeneratorConfiguration modelConfig = new JavaModelGeneratorConfiguration();
         modelConfig.setTargetPackage(generatorConfig.getModelPackage());
         modelConfig.setTargetProject(generatorConfig.getProjectFolder() + "/" + generatorConfig.getModelPackageTargetFolder());
-        // Mapper configuration
+        // Mapper文件路径配置
         SqlMapGeneratorConfiguration mapperConfig = new SqlMapGeneratorConfiguration();
         mapperConfig.setTargetPackage(generatorConfig.getMappingXMLPackage());
         mapperConfig.setTargetProject(generatorConfig.getProjectFolder() + "/" + generatorConfig.getMappingXMLTargetFolder());
-        // DAO
+        // DAO接口文件路径配置
         JavaClientGeneratorConfiguration daoConfig = new JavaClientGeneratorConfiguration();
         daoConfig.setConfigurationType("XMLMAPPER");
         daoConfig.setTargetPackage(generatorConfig.getDaoPackage());

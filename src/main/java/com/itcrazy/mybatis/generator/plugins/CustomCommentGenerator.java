@@ -218,11 +218,17 @@ public class CustomCommentGenerator extends DefaultCommentGenerator {
     public void addGetterComment(Method method,
                                  IntrospectedTable introspectedTable,
                                  IntrospectedColumn introspectedColumn) {
+        method.addJavaDocLine("/**");
+        method.addJavaDocLine(" * @mbg.generated");
+        method.addJavaDocLine(" */");
     }
 
     public void addSetterComment(Method method,
                                  IntrospectedTable introspectedTable,
                                  IntrospectedColumn introspectedColumn) {
+        method.addJavaDocLine("/**");
+        method.addJavaDocLine(" * @mbg.generated");
+        method.addJavaDocLine(" */");
     }
 
     public void addClassComment(InnerClass innerClass,

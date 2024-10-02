@@ -104,8 +104,8 @@ public class BatchInsertPlugin extends PluginAdapter {
             String columnName = introspectedColumn.getActualColumnName();
             //不是自增字段的才会出现在批量插入中
             if (!columnName.equalsIgnoreCase(incrementField)) {
-                dbcolumnsName.append(columnName + ",");
-                javaPropertyAndDbType.append("#{item." + introspectedColumn.getJavaProperty() + ",jdbcType=" + introspectedColumn.getJdbcTypeName());
+                dbcolumnsName.append(columnName).append(",");
+                javaPropertyAndDbType.append("#{item.").append(introspectedColumn.getJavaProperty()).append(",jdbcType=").append(introspectedColumn.getJdbcTypeName());
                 if (stringHasValue(introspectedColumn.getTypeHandler())) {
                     javaPropertyAndDbType.append(",typeHandler="); //$NON-NLS-1$
                     javaPropertyAndDbType.append(introspectedColumn.getTypeHandler());
