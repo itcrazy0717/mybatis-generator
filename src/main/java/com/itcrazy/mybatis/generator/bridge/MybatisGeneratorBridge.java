@@ -79,7 +79,7 @@ public class MybatisGeneratorBridge {
         tableConfig.setTableName(generatorConfig.getTableName());
         tableConfig.setDomainObjectName(generatorConfig.getDomainObjectName());
 
-        // 针对 postgresql 单独配置
+        // 针对postgresql单独配置
         if (DbType.valueOf(selectedDatabaseConfig.getDbType()).getDriverClass() == "org.postgresql.Driver") {
             tableConfig.setDelimitIdentifiers(true);
         }
@@ -159,7 +159,6 @@ public class MybatisGeneratorBridge {
         toStringPlugin.addProperty("type", "org.mybatis.generator.plugins.ToStringPlugin");
         toStringPlugin.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
         context.addPluginConfiguration(toStringPlugin);
-
         // 分页插件
         if (DbType.MySQL.name().equals(selectedDatabaseConfig.getDbType()) || DbType.PostgreSQL.name().equals(selectedDatabaseConfig.getDbType())) {
             PluginConfiguration pluginConfiguration = new PluginConfiguration();
@@ -191,6 +190,11 @@ public class MybatisGeneratorBridge {
         batchInsertPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.BatchInsertPlugin");
         batchInsertPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.BatchInsertPlugin");
         context.addPluginConfiguration(batchInsertPlugin);
+        // 排序插件
+        PluginConfiguration sortPlugin = new PluginConfiguration();
+        sortPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.SortPlugin");
+        sortPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.SortPlugin");
+        context.addPluginConfiguration(sortPlugin);
 
         context.setTargetRuntime("MyBatis3");
 

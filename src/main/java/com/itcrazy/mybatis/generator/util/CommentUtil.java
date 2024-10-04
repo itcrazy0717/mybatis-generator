@@ -3,6 +3,8 @@ package com.itcrazy.mybatis.generator.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
 
@@ -23,7 +25,7 @@ public class CommentUtil {
     public static void addMethodComment(Method method, String comment) {
         List<String> javaDocLines = method.getJavaDocLines();
         List<String> newJavaDocLines = new ArrayList<>();
-        if (null != javaDocLines && !javaDocLines.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(javaDocLines)) {
             for (String javaDocLine : javaDocLines) {
                 newJavaDocLines.add(javaDocLine);
                 if ("/**".equals(javaDocLine)) {
@@ -32,9 +34,11 @@ public class CommentUtil {
             }
         } else {
             newJavaDocLines.add("/**");
-            newJavaDocLines.add(comment);
+            if (StringUtils.isNotBlank(comment)) {
+                newJavaDocLines.add(comment);
+            }
             List<Parameter> parameters = method.getParameters();
-            if (null != parameters && !parameters.isEmpty()) {
+            if (CollectionUtils.isNotEmpty(parameters)) {
                 for (Parameter parameter : parameters) {
                     newJavaDocLines.add(" * @param " + parameter.getName());
                 }
