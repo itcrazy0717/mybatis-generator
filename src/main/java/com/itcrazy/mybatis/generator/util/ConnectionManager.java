@@ -14,7 +14,6 @@ public class ConnectionManager {
 
     public static Connection getConnection() throws Exception {
         Class.forName("org.sqlite.JDBC");
-        Connection conn = DriverManager.getConnection(DB_URL);
-        return conn;
+        return DriverManager.getConnection(DB_URL);
     }
 }

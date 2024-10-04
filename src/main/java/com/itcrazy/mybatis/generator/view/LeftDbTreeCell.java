@@ -21,9 +21,7 @@ public class LeftDbTreeCell extends TreeCell<DatabaseConfig> {
 
     private WeakReference<TreeItem<DatabaseConfig>> treeItemRef;
 
-    private InvalidationListener treeItemGraphicListener = observable -> {
-        updateDisplay(getItem(), isEmpty());
-    };
+    private InvalidationListener treeItemGraphicListener = observable -> updateDisplay(getItem(), isEmpty());
 
     private InvalidationListener treeItemListener = new InvalidationListener() {
         @Override
@@ -36,7 +34,7 @@ public class LeftDbTreeCell extends TreeCell<DatabaseConfig> {
             TreeItem<DatabaseConfig> newTreeItem = getTreeItem();
             if (newTreeItem != null) {
                 newTreeItem.graphicProperty().addListener(weakTreeItemGraphicListener);
-                treeItemRef = new WeakReference<TreeItem<DatabaseConfig>>(newTreeItem);
+                treeItemRef = new WeakReference<>(newTreeItem);
             }
         }
     };

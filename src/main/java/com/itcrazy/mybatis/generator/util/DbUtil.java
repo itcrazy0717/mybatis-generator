@@ -28,7 +28,7 @@ import com.itcrazy.mybatis.generator.model.UITableColumnVO;
  */
 public class DbUtil {
 
-    private static final Logger _LOG = LoggerFactory.getLogger(DbUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DbUtil.class);
     private static final int DB_CONNECTION_TIMEOUTS_SECONDS = 1;
 
     private static Map<DbType, Driver> drivers;
@@ -42,10 +42,10 @@ public class DbUtil {
             try {
                 Class clazz = Class.forName(dbType.getDriverClass(), true, classloader);
                 Driver driver = (Driver) clazz.newInstance();
-                _LOG.info("load driver class: {}", driver);
+                LOGGER.info("load driver class: {}", driver);
                 drivers.put(dbType, driver);
             } catch (Exception e) {
-                _LOG.error("load driver error");
+                LOGGER.error("load driver error");
             }
         }
     }
@@ -59,15 +59,14 @@ public class DbUtil {
 
         DriverManager.setLoginTimeout(DB_CONNECTION_TIMEOUTS_SECONDS);
         Connection connection = drivers.get(DbType.valueOf(config.getDbType())).connect(url, props);
-        _LOG.info("getConnection, connection url: {}", connection);
+        LOGGER.info("getConnection, connection url: {}", connection);
         return connection;
     }
 
     public static List<String> getTableNames(DatabaseConfig config) throws Exception {
         String url = getConnectionUrlWithSchema(config);
-        _LOG.info("getTableNames, connection url: {}", url);
-        Connection connection = getConnection(config);
-        try {
+        LOGGER.info("getTableNames, connection url: {}", url);
+        try (Connection connection = getConnection(config)) {
             List<String> tables = new ArrayList<>();
             DatabaseMetaData md = connection.getMetaData();
             ResultSet rs;
@@ -87,14 +86,12 @@ public class DbUtil {
                 tables.add(rs.getString(3));
             }
             return tables;
-        } finally {
-            connection.close();
         }
     }
 
     public static List<UITableColumnVO> getTableColumns(DatabaseConfig dbConfig, String tableName) throws Exception {
         String url = getConnectionUrlWithSchema(dbConfig);
-        _LOG.info("getTableColumns, connection url: {}", url);
+        LOGGER.info("getTableColumns, connection url: {}", url);
         Connection conn = getConnection(dbConfig);
         try {
             DatabaseMetaData md = conn.getMetaData();
@@ -116,7 +113,7 @@ public class DbUtil {
     public static String getConnectionUrlWithSchema(DatabaseConfig dbConfig) throws ClassNotFoundException {
         DbType dbType = DbType.valueOf(dbConfig.getDbType());
         String connectionUrl = String.format(dbType.getConnectionUrlPattern(), dbConfig.getHost(), dbConfig.getPort(), dbConfig.getSchema(), dbConfig.getEncoding());
-        _LOG.info("getConnectionUrlWithSchema, connection url: {}", connectionUrl);
+        LOGGER.info("getConnectionUrlWithSchema, connection url: {}", connectionUrl);
         return connectionUrl;
     }
 
