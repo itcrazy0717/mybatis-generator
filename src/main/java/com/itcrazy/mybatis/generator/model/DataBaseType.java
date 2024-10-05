@@ -5,18 +5,33 @@ package com.itcrazy.mybatis.generator.model;
  * @version: $ DbType.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public enum DbType {
+public enum DataBaseType {
 
+    /**
+     * MySQL数据库库
+     */
     MySQL("com.mysql.cj.jdbc.Driver", "jdbc:mysql://%s:%s/%s?useUnicode=true&useSSL=false&characterEncoding=%s", "mysql-connector-java-8.0.11.jar"),
+
+    /**
+     * Oracle数据库
+     */
     Oracle("oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@%s:%s:%s", "ojdbc14.jar"),
+
+    /**
+     * PostgreSQL数据库
+     */
     PostgreSQL("org.postgresql.Driver", "jdbc:postgresql://%s:%s/%s", "postgresql-9.4.1209.jar"),
-    SQL_Server("com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://%s:%s;databaseName=%s", "sqljdbc4-4.0.jar");
+
+    /**
+     * SQLServer数据库
+     */
+    SQLServer("com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://%s:%s;databaseName=%s", "sqljdbc4-4.0.jar");
 
     private final String driverClass;
     private final String connectionUrlPattern;
     private final String connectorJarFile;
 
-    DbType(String driverClass, String connectionUrlPattern, String connectorJarFile) {
+    DataBaseType(String driverClass, String connectionUrlPattern, String connectorJarFile) {
         this.driverClass = driverClass;
         this.connectionUrlPattern = connectionUrlPattern;
         this.connectorJarFile = connectorJarFile;

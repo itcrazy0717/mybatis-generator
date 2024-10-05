@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +24,7 @@ import com.itcrazy.mybatis.generator.model.DatabaseConfig;
 import com.itcrazy.mybatis.generator.model.GeneratorConfig;
 import com.itcrazy.mybatis.generator.model.UITableColumnVO;
 import com.itcrazy.mybatis.generator.util.ConfigHelper;
-import com.itcrazy.mybatis.generator.util.DbUtil;
+import com.itcrazy.mybatis.generator.util.DataBaseUtil;
 import com.itcrazy.mybatis.generator.util.MyStringUtils;
 import com.itcrazy.mybatis.generator.view.AlertUtil;
 import com.itcrazy.mybatis.generator.view.UIProgressCallback;
@@ -173,11 +174,11 @@ public class MainUIController extends BaseFXController {
                         System.out.println("index: " + leftDBTree.getSelectionModel().getSelectedIndex());
                         DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
                         try {
-                            List<String> tables = DbUtil.getTableNames(selectedConfig);
-                            if (tables != null && tables.size() > 0) {
+                            List<String> tableNameList = DataBaseUtil.getTableNameList(selectedConfig);
+                            if (CollectionUtils.isNotEmpty(tableNameList)) {
                                 ObservableList<TreeItem<String>> children = cell.getTreeItem().getChildren();
                                 children.clear();
-                                for (String tableName : tables) {
+                                for (String tableName : tableNameList) {
                                     TreeItem<String> newTreeItem = new TreeItem<>();
                                     ImageView imageView = new ImageView("icons/table.png");
                                     imageView.setFitHeight(16);
@@ -189,7 +190,7 @@ public class MainUIController extends BaseFXController {
                             }
                         } catch (SQLRecoverableException e) {
                             LOGGER.error(e.getMessage(), e);
-                            AlertUtil.showErrorAlert("连接超时");
+                            AlertUtil.showErrorAlert("数据库连接超时");
                         } catch (Exception e) {
                             LOGGER.error(e.getMessage(), e);
                             AlertUtil.showErrorAlert(e.getMessage());
@@ -354,7 +355,7 @@ public class MainUIController extends BaseFXController {
         try {
             // If select same schema and another table, update table data
             if (!tableName.equals(controller.getTableName())) {
-                List<UITableColumnVO> tableColumns = DbUtil.getTableColumns(selectedDatabaseConfig, tableName);
+                List<UITableColumnVO> tableColumns = DataBaseUtil.getTableColumns(selectedDatabaseConfig, tableName);
                 controller.setColumnList(FXCollections.observableList(tableColumns));
                 controller.setTableName(tableName);
             }

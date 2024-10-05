@@ -28,12 +28,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.itcrazy.mybatis.generator.model.DatabaseConfig;
-import com.itcrazy.mybatis.generator.model.DbType;
+import com.itcrazy.mybatis.generator.model.DataBaseType;
 import com.itcrazy.mybatis.generator.model.GeneratorConfig;
 import com.itcrazy.mybatis.generator.plugins.CustomCommentGenerator;
 import com.itcrazy.mybatis.generator.typeresolver.TinyIntTypeResolver;
 import com.itcrazy.mybatis.generator.util.ConfigHelper;
-import com.itcrazy.mybatis.generator.util.DbUtil;
+import com.itcrazy.mybatis.generator.util.DataBaseUtil;
 
 
 /**
@@ -71,7 +71,7 @@ public class MybatisGeneratorBridge {
         Context context = new Context(ModelType.CONDITIONAL);
         configuration.addContext(context);
         context.addProperty("javaFileEncoding", "UTF-8");
-        String connectorLibPath = ConfigHelper.findConnectorLibPath(selectedDatabaseConfig.getDbType());
+        String connectorLibPath = ConfigHelper.findConnectorLibPath(selectedDatabaseConfig.getDataBaseType());
         LOGGER.info("connectorLibPath: {}", connectorLibPath);
         configuration.addClasspathEntry(connectorLibPath);
         // Table configuration
@@ -80,13 +80,13 @@ public class MybatisGeneratorBridge {
         tableConfig.setDomainObjectName(generatorConfig.getDomainObjectName());
 
         // 针对postgresql单独配置
-        if (DbType.valueOf(selectedDatabaseConfig.getDbType()).getDriverClass() == "org.postgresql.Driver") {
+        if (DataBaseType.valueOf(selectedDatabaseConfig.getDataBaseType()).getDriverClass() == "org.postgresql.Driver") {
             tableConfig.setDelimitIdentifiers(true);
         }
 
         // 添加GeneratedKey主键生成
         if (StringUtils.isNoneEmpty(generatorConfig.getGenerateKeys())) {
-            tableConfig.setGeneratedKey(new GeneratedKey(generatorConfig.getGenerateKeys(), selectedDatabaseConfig.getDbType(), true, null));
+            tableConfig.setGeneratedKey(new GeneratedKey(generatorConfig.getGenerateKeys(), selectedDatabaseConfig.getDataBaseType(), true, null));
         }
 
         if (generatorConfig.getMapperName() != null) {
@@ -103,9 +103,9 @@ public class MybatisGeneratorBridge {
             tableConfig.addProperty("useActualColumnNames", "true");
         }
         JDBCConnectionConfiguration jdbcConfig = new JDBCConnectionConfiguration();
-        jdbcConfig.setDriverClass(DbType.valueOf(selectedDatabaseConfig.getDbType()).getDriverClass());
-        jdbcConfig.setConnectionURL(DbUtil.getConnectionUrlWithSchema(selectedDatabaseConfig));
-        jdbcConfig.setUserId(selectedDatabaseConfig.getUsername());
+        jdbcConfig.setDriverClass(DataBaseType.valueOf(selectedDatabaseConfig.getDataBaseType()).getDriverClass());
+        jdbcConfig.setConnectionURL(DataBaseUtil.getConnectionUrlWithSchema(selectedDatabaseConfig));
+        jdbcConfig.setUserId(selectedDatabaseConfig.getUserName());
         jdbcConfig.setPassword(selectedDatabaseConfig.getPassword());
         // 实体类路径配置
         JavaModelGeneratorConfiguration modelConfig = new JavaModelGeneratorConfiguration();
@@ -160,7 +160,7 @@ public class MybatisGeneratorBridge {
         toStringPlugin.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
         context.addPluginConfiguration(toStringPlugin);
         // 分页插件
-        if (DbType.MySQL.name().equals(selectedDatabaseConfig.getDbType()) || DbType.PostgreSQL.name().equals(selectedDatabaseConfig.getDbType())) {
+        if (DataBaseType.MySQL.name().equals(selectedDatabaseConfig.getDataBaseType()) || DataBaseType.PostgreSQL.name().equals(selectedDatabaseConfig.getDataBaseType())) {
             PluginConfiguration pluginConfiguration = new PluginConfiguration();
             pluginConfiguration.addProperty("", "com.itcrazy.mybatis.generator.plugins.PagePlugin");
             pluginConfiguration.setConfigurationType("com.itcrazy.mybatis.generator.plugins.PagePlugin");

@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.itcrazy.mybatis.generator.model.DatabaseConfig;
 import com.itcrazy.mybatis.generator.util.ConfigHelper;
-import com.itcrazy.mybatis.generator.util.DbUtil;
+import com.itcrazy.mybatis.generator.util.DataBaseUtil;
 import com.itcrazy.mybatis.generator.view.AlertUtil;
 
 import javafx.fxml.FXML;
@@ -73,7 +73,7 @@ public class DbConnectionController extends BaseFXController {
             return;
         }
         try {
-            DbUtil.getConnection(config);
+            DataBaseUtil.getConnection(config);
             AlertUtil.showInfoAlert("连接成功");
         } catch (Exception e) {
             _LOG.error(e.getMessage(), e);
@@ -102,12 +102,12 @@ public class DbConnectionController extends BaseFXController {
         String schema = schemaField.getText();
         DatabaseConfig config = new DatabaseConfig();
         config.setName(name);
-        config.setDbType(dbType);
-        config.setHost(host);
+        config.setDataBaseType(dbType);
+        config.setHostUrl(host);
         config.setPort(port);
-        config.setUsername(userName);
+        config.setUserName(userName);
         config.setPassword(password);
-        config.setSchema(schema);
+        config.setSchemaName(schema);
         config.setEncoding(encoding);
         if (StringUtils.isAnyEmpty(name, host, port, userName, encoding, dbType, schema)) {
             AlertUtil.showWarnAlert("密码以外其他字段必填");
@@ -120,13 +120,13 @@ public class DbConnectionController extends BaseFXController {
         isUpdate = true;
         primayKey = config.getId(); // save id for update config
         nameField.setText(config.getName());
-        hostField.setText(config.getHost());
+        hostField.setText(config.getHostUrl());
         portField.setText(config.getPort());
-        userNameField.setText(config.getUsername());
+        userNameField.setText(config.getUserName());
         passwordField.setText(config.getPassword());
         encodingChoice.setValue(config.getEncoding());
-        dbTypeChoice.setValue(config.getDbType());
-        schemaField.setText(config.getSchema());
+        dbTypeChoice.setValue(config.getDataBaseType());
+        schemaField.setText(config.getSchemaName());
     }
 
 }

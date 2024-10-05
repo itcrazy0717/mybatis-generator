@@ -9,14 +9,16 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
+import com.itcrazy.mybatis.generator.model.DataBaseType;
 import com.itcrazy.mybatis.generator.model.DatabaseConfig;
-import com.itcrazy.mybatis.generator.model.DbType;
 import com.itcrazy.mybatis.generator.model.GeneratorConfig;
 
 /**
@@ -26,7 +28,7 @@ import com.itcrazy.mybatis.generator.model.GeneratorConfig;
  */
 public class ConfigHelper {
 
-    private static final Logger _LOG = LoggerFactory.getLogger(ConfigHelper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigHelper.class);
     private static final String BASE_DIR = "config";
     private static final String CONFIG_FILE = "/sqlite3.db";
 
@@ -155,7 +157,7 @@ public class ConfigHelper {
             conn = ConnectionManager.getConnection();
             stat = conn.createStatement();
             String sql = String.format("SELECT * FROM generator_config where name='%s'", name);
-            _LOG.info("sql: {}", sql);
+            LOGGER.info("sql: {}", sql);
             rs = stat.executeQuery(sql);
             GeneratorConfig generatorConfig = null;
             if (rs.next()) {
@@ -178,7 +180,7 @@ public class ConfigHelper {
             conn = ConnectionManager.getConnection();
             stat = conn.createStatement();
             String sql = String.format("SELECT * FROM generator_config");
-            _LOG.info("sql: {}", sql);
+            LOGGER.info("sql: {}", sql);
             rs = stat.executeQuery(sql);
             List<GeneratorConfig> configs = new ArrayList<>();
             while (rs.next()) {
@@ -200,7 +202,7 @@ public class ConfigHelper {
             conn = ConnectionManager.getConnection();
             stat = conn.createStatement();
             String sql = String.format("DELETE FROM generator_config where name='%s'", name);
-            _LOG.info("sql: {}", sql);
+            LOGGER.info("sql: {}", sql);
             return stat.executeUpdate(sql);
         } finally {
             if (stat != null) stat.close();
@@ -209,9 +211,9 @@ public class ConfigHelper {
     }
 
     public static String findConnectorLibPath(String dbType) {
-        DbType type = DbType.valueOf(dbType);
+        DataBaseType type = DataBaseType.valueOf(dbType);
         URL resource = Thread.currentThread().getContextClassLoader().getResource("logback.xml");
-        _LOG.info("jar resource: {}", resource);
+        LOGGER.info("jar resource: {}", resource);
         if (resource != null) {
             try {
                 File file = new File(resource.toURI().getRawPath() + "/../lib/" + type.getConnectorJarFile());
@@ -229,15 +231,15 @@ public class ConfigHelper {
         URL url = Thread.currentThread().getContextClassLoader().getResource("logback.xml");
         try {
             File file;
-            if (url.getPath().contains(".jar")) {
+            if (Objects.requireNonNull(url).getPath().contains(".jar")) {
                 file = new File("lib/");
             } else {
                 file = new File("src/main/resources/lib");
             }
             System.out.println(file.getCanonicalPath());
             File[] jarFiles = file.listFiles();
-            System.out.println("jarFiles:" + jarFiles);
-            if (jarFiles != null && jarFiles.length > 0) {
+            System.out.println("jarFiles:" + Arrays.toString(jarFiles));
+            if (Objects.nonNull(jarFiles)) {
                 for (File jarFile : jarFiles) {
                     if (jarFile.isFile() && jarFile.getAbsolutePath().endsWith(".jar")) {
                         jarFilePathList.add(jarFile.getAbsolutePath());
