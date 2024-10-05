@@ -74,7 +74,7 @@ public class PagePlugin extends PluginAdapter {
         setPagination.addBodyLine("this.pageSize = pageSize < 1 ? 10 : pageSize;");
         setPagination.addBodyLine("this.pageIndex = pageStart < 1 ? 0 : (pageStart - 1) * this.pageSize;");
         // 增加注释
-        CommentUtil.addMethodComment(setPagination, "");
+        CommentUtil.addMethodComment(setPagination, " * 分页设置");
         topLevelClass.addMethod(setPagination);
         return true;
     }

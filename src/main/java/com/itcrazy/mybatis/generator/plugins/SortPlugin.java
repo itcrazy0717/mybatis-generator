@@ -32,10 +32,13 @@ public class SortPlugin extends PluginAdapter {
 
     @Override
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        topLevelClass.addInnerEnum(generateOrderConditionEnum(introspectedTable));
+        // 增加排序条件枚举
+        topLevelClass.addInnerEnum(generateSortOrderConditionEnum(introspectedTable));
+        // 增加排序类型枚举
         topLevelClass.addInnerEnum(generateSortTypeEnum(introspectedTable));
         // 移除setOrderByClause方法
         topLevelClass.getMethods().removeIf(e -> StringUtils.equals("setOrderByClause", e.getName()));
+        // 增加排序追加方法
         topLevelClass.addMethod(generateAppendOrderByClauseMethod(introspectedTable));
         return true;
     }
@@ -89,13 +92,14 @@ public class SortPlugin extends PluginAdapter {
         value.setName("value");
         result.addField(value);
 
-        Method sortType = new Method();
-        sortType.setVisibility(JavaVisibility.DEFAULT);
-        sortType.setName("SortType");
-        sortType.setConstructor(true);
-        sortType.addParameter(new Parameter(FullyQualifiedJavaType.getStringInstance(), "value"));
-        sortType.addBodyLine("this.value = value;");
-        result.addMethod(sortType);
+        // 构造函数
+        Method sortTypeConstructor = new Method();
+        sortTypeConstructor.setVisibility(JavaVisibility.DEFAULT);
+        sortTypeConstructor.setName("SortType");
+        sortTypeConstructor.setConstructor(true);
+        sortTypeConstructor.addParameter(new Parameter(FullyQualifiedJavaType.getStringInstance(), "value"));
+        sortTypeConstructor.addBodyLine("this.value = value;");
+        result.addMethod(sortTypeConstructor);
 
         Method getValue = new Method();
         getValue.setVisibility(JavaVisibility.PUBLIC);
@@ -116,7 +120,7 @@ public class SortPlugin extends PluginAdapter {
         getByName.addBodyLine("return sortType;");
         getByName.addBodyLine("}");
         getByName.addBodyLine("}");
-        getByName.addBodyLine("throw new RuntimeException(\"SortType of \" + name + \" enum not exist\");");
+        getByName.addBodyLine("throw new RuntimeException(\"This SortTypeEnum of \" + name + \" does not exist\");");
         result.addMethod(getByName);
 
         Method toString = new Method();
@@ -136,7 +140,7 @@ public class SortPlugin extends PluginAdapter {
      * @param introspectedTable
      * @return
      */
-    private InnerEnum generateOrderConditionEnum(IntrospectedTable introspectedTable) {
+    private InnerEnum generateSortOrderConditionEnum(IntrospectedTable introspectedTable) {
         FullyQualifiedJavaType orderConditionInstance = new FullyQualifiedJavaType("OrderCondition");
         InnerEnum result = new InnerEnum(orderConditionInstance);
         result.addJavaDocLine("/**");
@@ -145,21 +149,22 @@ public class SortPlugin extends PluginAdapter {
         result.setVisibility(JavaVisibility.PUBLIC);
         result.setStatic(true);
         context.getCommentGenerator().addEnumComment(result, introspectedTable);
-        for (IntrospectedColumn introspectedColumn : introspectedTable.getNonBLOBColumns()) {
+        for (IntrospectedColumn column : introspectedTable.getNonBLOBColumns()) {
             StringBuilder sb = new StringBuilder();
-
             sb.append("/**");
             OutputUtilities.newLine(sb);
             OutputUtilities.javaIndent(sb, 2);
 
-            sb.append(" *").append(introspectedColumn.getRemarks());
+            sb.append(" *").append(column.getRemarks());
             OutputUtilities.newLine(sb);
             OutputUtilities.javaIndent(sb, 2);
 
             sb.append(" */");
             OutputUtilities.newLine(sb);
             OutputUtilities.javaIndent(sb, 2);
-            sb.append(introspectedColumn.getJavaProperty().toUpperCase()).append("(").append("\"").append(Ibatis2FormattingUtilities.getAliasedActualColumnName(introspectedColumn)).append("\"").append(")");
+            // 获取真实列名称
+            String actualColumnName = Ibatis2FormattingUtilities.getAliasedActualColumnName(column);
+            sb.append(actualColumnName.toUpperCase()).append("(").append("\"").append(actualColumnName).append("\"").append(")");
             result.addEnumConstant(sb.toString());
         }
 
@@ -169,13 +174,14 @@ public class SortPlugin extends PluginAdapter {
         columnNamefield.setName("columnName");
         result.addField(columnNamefield);
 
-        Method orderCondition = new Method();
-        orderCondition.setVisibility(JavaVisibility.DEFAULT);
-        orderCondition.setName("OrderCondition");
-        orderCondition.setConstructor(true);
-        orderCondition.addParameter(new Parameter(FullyQualifiedJavaType.getStringInstance(), "columnName"));
-        orderCondition.addBodyLine("this.columnName = columnName;");
-        result.addMethod(orderCondition);
+        // 构造函数
+        Method orderConditionConstructor = new Method();
+        orderConditionConstructor.setVisibility(JavaVisibility.DEFAULT);
+        orderConditionConstructor.setName("OrderCondition");
+        orderConditionConstructor.setConstructor(true);
+        orderConditionConstructor.addParameter(new Parameter(FullyQualifiedJavaType.getStringInstance(), "columnName"));
+        orderConditionConstructor.addBodyLine("this.columnName = columnName;");
+        result.addMethod(orderConditionConstructor);
 
         Method getColumnName = new Method();
         getColumnName.setVisibility(JavaVisibility.PUBLIC);
@@ -196,7 +202,7 @@ public class SortPlugin extends PluginAdapter {
         getByName.addBodyLine("return orderCondition;");
         getByName.addBodyLine("}");
         getByName.addBodyLine("}");
-        getByName.addBodyLine("throw new RuntimeException(\"OrderCondition of \" + name + \" enum not exist\");");
+        getByName.addBodyLine("throw new RuntimeException(\"The OrderConditionEnum of \" + name + \" does not exist\");");
         result.addMethod(getByName);
 
         Method toString = new Method();
@@ -232,7 +238,7 @@ public class SortPlugin extends PluginAdapter {
         appendOrderByClause.addBodyLine("}");
         appendOrderByClause.addBodyLine("return this;");
         // 增加注释
-        CommentUtil.addMethodComment(appendOrderByClause, "");
+        CommentUtil.addMethodComment(appendOrderByClause, " * 增加排序条件");
         return appendOrderByClause;
     }
 
