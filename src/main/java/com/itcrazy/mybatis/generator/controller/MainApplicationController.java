@@ -23,9 +23,9 @@ import com.itcrazy.mybatis.generator.bridge.MybatisGeneratorBridge;
 import com.itcrazy.mybatis.generator.dto.DatabaseConfig;
 import com.itcrazy.mybatis.generator.dto.MybatisCodeGenerateConfig;
 import com.itcrazy.mybatis.generator.dto.TableColumn;
-import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateConfigUtil;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
 import com.itcrazy.mybatis.generator.util.MyStringUtils;
+import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateConfigUtil;
 import com.itcrazy.mybatis.generator.view.AlertUtil;
 import com.itcrazy.mybatis.generator.view.UIProgressCallback;
 
@@ -80,8 +80,6 @@ public class MainApplicationController extends BaseFXController {
     private TextField mappingTargetProject;
     @FXML
     private TextField daoTargetProject;
-    @FXML
-    private TextField mapperName;
     @FXML
     private TextField projectFolderField;
     @FXML
@@ -188,8 +186,6 @@ public class MainApplicationController extends BaseFXController {
                         this.tableName = tableName;
                         tableNameField.setText(tableName);
                         domainObjectNameField.setText(MyStringUtils.dbStringToCamelStyle(tableName) + "DO");
-                        // mapper DAO文件命名
-                        mapperName.setText(MyStringUtils.dbStringToCamelStyle(tableName) + "DAO");
                     }
                 }
             });

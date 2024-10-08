@@ -204,8 +204,8 @@
                                                 <Insets left="5.0"/>
                                             </GridPane.margin>
                                         </TextField>
-                                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0"
-                                              spacing="10.0" GridPane.columnIndex="1" GridPane.columnSpan="3"
+                                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0"
+                                              spacing="40.0" GridPane.columnIndex="1" GridPane.columnSpan="3"
                                               GridPane.rowIndex="6">
                                             <children>
                                                 <Button mnemonicParsing="false" onAction="#generateCode"
@@ -218,8 +218,8 @@
                                                 <Button mnemonicParsing="false" onAction="#saveGeneratorConfig"
                                                         text="保存配置">
                                                     <styleClass>
-                                                        <String fx:value="btn"/>
                                                         <String fx:value="btn-success"/>
+                                                        <String fx:value="btn"/>
                                                     </styleClass>
                                                 </Button>
                                             </children>
