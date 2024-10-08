@@ -17,9 +17,9 @@ import org.mybatis.generator.internal.util.ClassloaderUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.itcrazy.mybatis.generator.model.DataBaseType;
-import com.itcrazy.mybatis.generator.model.DatabaseConfig;
-import com.itcrazy.mybatis.generator.model.UITableColumnVO;
+import com.itcrazy.mybatis.generator.dto.DataBaseType;
+import com.itcrazy.mybatis.generator.dto.DatabaseConfig;
+import com.itcrazy.mybatis.generator.dto.TableColumn;
 
 
 /**
@@ -30,6 +30,11 @@ import com.itcrazy.mybatis.generator.model.UITableColumnVO;
 public class DataBaseUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataBaseUtil.class);
+
+	/**
+	 * sqllite db 地址
+	 */
+	private static final String SQL_LITE_URL = "jdbc:sqlite:./config/sqlite3.db";
 
     /**
      * 数据库连接超时时间
@@ -43,7 +48,7 @@ public class DataBaseUtil {
 
     static {
         DATABASE_DRIVER_MAP = new HashMap<>();
-        List<String> driverJars = ConfigHelper.getAllJDBCDriverJarPaths();
+        List<String> driverJars = MybatisCodeGenerateConfigUtil.getAllJDBCDriverJarPaths();
         ClassLoader classloader = ClassloaderUtility.getCustomClassloader(driverJars);
         DataBaseType[] dbTypes = DataBaseType.values();
         for (DataBaseType dbType : dbTypes) {
@@ -112,20 +117,20 @@ public class DataBaseUtil {
         }
     }
 
-    public static List<UITableColumnVO> getTableColumns(DatabaseConfig dbConfig, String tableName) throws Exception {
+    public static List<TableColumn> getTableColumns(DatabaseConfig dbConfig, String tableName) throws Exception {
         String url = getConnectionUrlWithSchema(dbConfig);
         LOGGER.info("getTableColumns, connection url: {}", url);
         Connection conn = getConnection(dbConfig);
         try {
             DatabaseMetaData md = conn.getMetaData();
             ResultSet rs = md.getColumns(null, null, tableName, null);
-            List<UITableColumnVO> columns = new ArrayList<>();
+            List<TableColumn> columns = new ArrayList<>();
             while (rs.next()) {
-                UITableColumnVO columnVO = new UITableColumnVO();
+                TableColumn tableColumn = new TableColumn();
                 String columnName = rs.getString("COLUMN_NAME");
-                columnVO.setColumnName(columnName);
-                columnVO.setJdbcType(rs.getString("TYPE_NAME"));
-                columns.add(columnVO);
+                tableColumn.setColumnName(columnName);
+                tableColumn.setJdbcType(rs.getString("TYPE_NAME"));
+                columns.add(tableColumn);
             }
             return columns;
         } finally {
@@ -139,5 +144,17 @@ public class DataBaseUtil {
         LOGGER.info("get_connection_url_with_schema, connection url: {}", connectionUrl);
         return connectionUrl;
     }
+
+	/**
+	 * 获取 sql lite 连接
+	 * by itcrazy0717
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	public static Connection getSqlLiteConnection() throws Exception {
+		Class.forName("org.sqlite.JDBC");
+		return DriverManager.getConnection(SQL_LITE_URL);
+	}
 
 }

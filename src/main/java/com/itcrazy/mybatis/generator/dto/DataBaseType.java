@@ -1,4 +1,4 @@
-package com.itcrazy.mybatis.generator.model;
+package com.itcrazy.mybatis.generator.dto;
 
 /**
  * @author: itcrazy0717

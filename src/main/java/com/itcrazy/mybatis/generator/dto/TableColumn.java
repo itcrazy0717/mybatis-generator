@@ -1,4 +1,4 @@
-package com.itcrazy.mybatis.generator.model;
+package com.itcrazy.mybatis.generator.dto;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -7,12 +7,12 @@ import javafx.beans.property.StringProperty;
 
 /**
  * @author: itcrazy0717
- * @version: $ UITableColumnVO.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
- * @description:
+ * @version: $ TableColumn.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
+ * @description:表列对象
  */
-public class UITableColumnVO {
+public class TableColumn {
 
-    private BooleanProperty checked = new SimpleBooleanProperty(true); // Default set to true
+    private BooleanProperty checked = new SimpleBooleanProperty(true);
 
     private StringProperty columnName = new SimpleStringProperty();
 

@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.ProgressCallback;
 import org.mybatis.generator.api.ShellCallback;
@@ -13,7 +12,6 @@ import org.mybatis.generator.config.ColumnOverride;
 import org.mybatis.generator.config.CommentGeneratorConfiguration;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.Context;
-import org.mybatis.generator.config.GeneratedKey;
 import org.mybatis.generator.config.IgnoredColumn;
 import org.mybatis.generator.config.JDBCConnectionConfiguration;
 import org.mybatis.generator.config.JavaClientGeneratorConfiguration;
@@ -27,13 +25,13 @@ import org.mybatis.generator.internal.DefaultShellCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.itcrazy.mybatis.generator.model.DatabaseConfig;
-import com.itcrazy.mybatis.generator.model.DataBaseType;
-import com.itcrazy.mybatis.generator.model.GeneratorConfig;
+import com.itcrazy.mybatis.generator.dto.DataBaseType;
+import com.itcrazy.mybatis.generator.dto.DatabaseConfig;
+import com.itcrazy.mybatis.generator.dto.MybatisCodeGenerateConfig;
 import com.itcrazy.mybatis.generator.plugins.CustomCommentGenerator;
 import com.itcrazy.mybatis.generator.typeresolver.TinyIntTypeResolver;
-import com.itcrazy.mybatis.generator.util.ConfigHelper;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
+import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateConfigUtil;
 
 
 /**
@@ -45,7 +43,7 @@ public class MybatisGeneratorBridge {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MybatisGeneratorBridge.class);
 
-    private GeneratorConfig generatorConfig;
+    private MybatisCodeGenerateConfig generatorConfig;
 
     private DatabaseConfig selectedDatabaseConfig;
 
@@ -58,20 +56,12 @@ public class MybatisGeneratorBridge {
     public MybatisGeneratorBridge() {
     }
 
-    public void setGeneratorConfig(GeneratorConfig generatorConfig) {
-        this.generatorConfig = generatorConfig;
-    }
-
-    public void setDatabaseConfig(DatabaseConfig databaseConfig) {
-        this.selectedDatabaseConfig = databaseConfig;
-    }
-
     public void generate() throws Exception {
         Configuration configuration = new Configuration();
         Context context = new Context(ModelType.CONDITIONAL);
         configuration.addContext(context);
         context.addProperty("javaFileEncoding", "UTF-8");
-        String connectorLibPath = ConfigHelper.findConnectorLibPath(selectedDatabaseConfig.getDataBaseType());
+        String connectorLibPath = MybatisCodeGenerateConfigUtil.findConnectorLibPath(selectedDatabaseConfig.getDataBaseType());
         LOGGER.info("connectorLibPath: {}", connectorLibPath);
         configuration.addClasspathEntry(connectorLibPath);
         // Table configuration
@@ -84,10 +74,12 @@ public class MybatisGeneratorBridge {
             tableConfig.setDelimitIdentifiers(true);
         }
 
-        // 添加GeneratedKey主键生成
+       /*
+       // 添加GeneratedKey主键生成
         if (StringUtils.isNoneEmpty(generatorConfig.getGenerateKeys())) {
             tableConfig.setGeneratedKey(new GeneratedKey(generatorConfig.getGenerateKeys(), selectedDatabaseConfig.getDataBaseType(), true, null));
         }
+        */
 
         if (generatorConfig.getMapperName() != null) {
             tableConfig.setMapperName(generatorConfig.getMapperName());
@@ -98,9 +90,6 @@ public class MybatisGeneratorBridge {
         }
         if (columnOverrides != null) {
             columnOverrides.forEach(tableConfig::addColumnOverride);
-        }
-        if (generatorConfig.isUseActualColumnNames()) {
-            tableConfig.addProperty("useActualColumnNames", "true");
         }
         JDBCConnectionConfiguration jdbcConfig = new JDBCConnectionConfiguration();
         jdbcConfig.setDriverClass(DataBaseType.valueOf(selectedDatabaseConfig.getDataBaseType()).getDriverClass());
@@ -116,8 +105,8 @@ public class MybatisGeneratorBridge {
         String paramTargetPackage = modelPackage.substring(0, modelPackage.lastIndexOf(".")) + ".param";
         // Mapper文件路径配置
         SqlMapGeneratorConfiguration mapperConfig = new SqlMapGeneratorConfiguration();
-        mapperConfig.setTargetPackage(generatorConfig.getMappingXMLPackage());
-        mapperConfig.setTargetProject(generatorConfig.getProjectFolder() + "/" + generatorConfig.getMappingXMLTargetFolder());
+        mapperConfig.setTargetPackage(generatorConfig.getMapperXMLPackage());
+        mapperConfig.setTargetProject(generatorConfig.getProjectFolder() + "/" + generatorConfig.getMapperXMLTargetFolder());
         // DAO接口文件路径配置
         JavaClientGeneratorConfiguration daoConfig = new JavaClientGeneratorConfiguration();
         daoConfig.setConfigurationType("XMLMAPPER");
@@ -131,72 +120,17 @@ public class MybatisGeneratorBridge {
         context.setJavaModelGeneratorConfiguration(modelConfig);
         context.setSqlMapGeneratorConfiguration(mapperConfig);
         context.setJavaClientGeneratorConfiguration(daoConfig);
-        // Comment
+        // 注释
         CommentGeneratorConfiguration commentConfig = new CommentGeneratorConfiguration();
-        commentConfig.setConfigurationType(CustomCommentGenerator.class.getName());
-        if (generatorConfig.isComment()) {
-            commentConfig.addProperty("columnRemarks", "true");
-        }
-        if (generatorConfig.isAnnotation()) {
-            commentConfig.addProperty("annotations", "true");
-        }
-        context.setCommentGeneratorConfiguration(commentConfig);
+	    commentConfig.setConfigurationType(CustomCommentGenerator.class.getName());
+	    commentConfig.addProperty("columnRemarks", "true");
+	    // commentConfig.addProperty("annotations", "true");
 
-        // 默认设置TINYINT->Boolean类型
-        JavaTypeResolverConfiguration typeResolverConfiguration = new JavaTypeResolverConfiguration();
-        typeResolverConfiguration.setConfigurationType(TinyIntTypeResolver.class.getName());
-        context.setJavaTypeResolverConfiguration(typeResolverConfiguration);
-        /**
-         // 序列化插件
-         PluginConfiguration serializablePlugin = new PluginConfiguration();
-         serializablePlugin.addProperty("type", "org.mybatis.generator.plugins.SerializablePlugin");
-         serializablePlugin.setConfigurationType("org.mybatis.generator.plugins.SerializablePlugin");
-         context.addPluginConfiguration(serializablePlugin);
-         */
+	    context.setCommentGeneratorConfiguration(commentConfig);
 
-        // toString插件
-        PluginConfiguration toStringPlugin = new PluginConfiguration();
-        toStringPlugin.addProperty("type", "org.mybatis.generator.plugins.ToStringPlugin");
-        toStringPlugin.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
-        context.addPluginConfiguration(toStringPlugin);
-        // 分页插件
-        if (DataBaseType.MySQL.name().equals(selectedDatabaseConfig.getDataBaseType()) || DataBaseType.PostgreSQL.name().equals(selectedDatabaseConfig.getDataBaseType())) {
-            PluginConfiguration pluginConfiguration = new PluginConfiguration();
-            pluginConfiguration.addProperty("", "com.itcrazy.mybatis.generator.plugins.PagePlugin");
-            pluginConfiguration.setConfigurationType("com.itcrazy.mybatis.generator.plugins.PagePlugin");
-            context.addPluginConfiguration(pluginConfiguration);
-        }
-        // 覆写xml文件插件
-        PluginConfiguration overWiriteXmlPlugin = new PluginConfiguration();
-        overWiriteXmlPlugin.addProperty("type", "org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin");
-        overWiriteXmlPlugin.setConfigurationType("org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin");
-        context.addPluginConfiguration(overWiriteXmlPlugin);
-        // 替换example内容插件
-        PluginConfiguration replaeceExampleContentPlugin = new PluginConfiguration();
-        replaeceExampleContentPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.ReplaceExampleContentPlugin");
-        replaeceExampleContentPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.ReplaceExampleContentPlugin");
-        replaeceExampleContentPlugin.addProperty("searchString", "Example");
-        replaeceExampleContentPlugin.addProperty("replaceString", "Param");
-        replaeceExampleContentPlugin.addProperty("simpleMethod", "True");
-        replaeceExampleContentPlugin.addProperty("paramTargetPackage", paramTargetPackage);
-        context.addPluginConfiguration(replaeceExampleContentPlugin);
-        // 方法注释插件
-        PluginConfiguration addMethodComentPlugin = new PluginConfiguration();
-        addMethodComentPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.AddMethodCommentPlugin");
-        addMethodComentPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.AddMethodCommentPlugin");
-        context.addPluginConfiguration(addMethodComentPlugin);
-        // 批量插入插件
-        PluginConfiguration batchInsertPlugin = new PluginConfiguration();
-        batchInsertPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.BatchInsertPlugin");
-        batchInsertPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.BatchInsertPlugin");
-        context.addPluginConfiguration(batchInsertPlugin);
-        // 排序插件
-        PluginConfiguration sortPlugin = new PluginConfiguration();
-        sortPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.SortPlugin");
-        sortPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.SortPlugin");
-        context.addPluginConfiguration(sortPlugin);
+	    addCustomPlugin(context, paramTargetPackage);
 
-        context.setTargetRuntime("MyBatis3");
+	    context.setTargetRuntime("MyBatis3");
 
         List<String> warnings = new ArrayList<>();
         Set<String> fullyqualifiedTables = new HashSet<>();
@@ -206,7 +140,78 @@ public class MybatisGeneratorBridge {
         myBatisGenerator.generate(progressCallback, contexts, fullyqualifiedTables);
     }
 
-    public void setProgressCallback(ProgressCallback progressCallback) {
+	/**
+	 * 增加自定义插件
+	 * by itcrazy0717
+	 *
+	 * @param context
+	 * @param paramTargetPackage
+	 */
+	private void addCustomPlugin(Context context, String paramTargetPackage) {
+		// 默认设置TINYINT->Boolean类型
+		JavaTypeResolverConfiguration typeResolverConfiguration = new JavaTypeResolverConfiguration();
+		typeResolverConfiguration.setConfigurationType(TinyIntTypeResolver.class.getName());
+		context.setJavaTypeResolverConfiguration(typeResolverConfiguration);
+		/**
+		 // 序列化插件
+		 PluginConfiguration serializablePlugin = new PluginConfiguration();
+		 serializablePlugin.addProperty("type", "org.mybatis.generator.plugins.SerializablePlugin");
+		 serializablePlugin.setConfigurationType("org.mybatis.generator.plugins.SerializablePlugin");
+		 context.addPluginConfiguration(serializablePlugin);
+		 */
+
+		// toString插件
+		PluginConfiguration toStringPlugin = new PluginConfiguration();
+		toStringPlugin.addProperty("type", "org.mybatis.generator.plugins.ToStringPlugin");
+		toStringPlugin.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
+		context.addPluginConfiguration(toStringPlugin);
+		// 分页插件
+		if (DataBaseType.MySQL.name().equals(selectedDatabaseConfig.getDataBaseType()) || DataBaseType.PostgreSQL.name().equals(selectedDatabaseConfig.getDataBaseType())) {
+			PluginConfiguration pluginConfiguration = new PluginConfiguration();
+			pluginConfiguration.addProperty("", "com.itcrazy.mybatis.generator.plugins.PagePlugin");
+			pluginConfiguration.setConfigurationType("com.itcrazy.mybatis.generator.plugins.PagePlugin");
+			context.addPluginConfiguration(pluginConfiguration);
+		}
+		// 覆写xml文件插件
+		PluginConfiguration overWiriteXmlPlugin = new PluginConfiguration();
+		overWiriteXmlPlugin.addProperty("type", "org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin");
+		overWiriteXmlPlugin.setConfigurationType("org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin");
+		context.addPluginConfiguration(overWiriteXmlPlugin);
+		// 替换example内容插件
+		PluginConfiguration replaeceExampleContentPlugin = new PluginConfiguration();
+		replaeceExampleContentPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.ReplaceExampleContentPlugin");
+		replaeceExampleContentPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.ReplaceExampleContentPlugin");
+		replaeceExampleContentPlugin.addProperty("searchString", "Example");
+		replaeceExampleContentPlugin.addProperty("replaceString", "Param");
+		replaeceExampleContentPlugin.addProperty("simpleMethod", "True");
+		replaeceExampleContentPlugin.addProperty("paramTargetPackage", paramTargetPackage);
+		context.addPluginConfiguration(replaeceExampleContentPlugin);
+		// 方法注释插件
+		PluginConfiguration addMethodComentPlugin = new PluginConfiguration();
+		addMethodComentPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.AddMethodCommentPlugin");
+		addMethodComentPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.AddMethodCommentPlugin");
+		context.addPluginConfiguration(addMethodComentPlugin);
+		// 批量插入插件
+		PluginConfiguration batchInsertPlugin = new PluginConfiguration();
+		batchInsertPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.BatchInsertPlugin");
+		batchInsertPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.BatchInsertPlugin");
+		context.addPluginConfiguration(batchInsertPlugin);
+		// 排序插件
+		PluginConfiguration sortPlugin = new PluginConfiguration();
+		sortPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.SortPlugin");
+		sortPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.SortPlugin");
+		context.addPluginConfiguration(sortPlugin);
+	}
+
+	public void setGeneratorConfig(MybatisCodeGenerateConfig generatorConfig) {
+		this.generatorConfig = generatorConfig;
+	}
+
+	public void setDatabaseConfig(DatabaseConfig databaseConfig) {
+		this.selectedDatabaseConfig = databaseConfig;
+	}
+
+	public void setProgressCallback(ProgressCallback progressCallback) {
         this.progressCallback = progressCallback;
     }
 

@@ -24,15 +24,16 @@ import javafx.stage.Stage;
  * @description:
  */
 public abstract class BaseFXController implements Initializable {
-    private static final Logger _LOG = LoggerFactory.getLogger(BaseFXController.class);
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(BaseFXController.class);
 
     private Stage primaryStage;
     private Stage dialogStage;
 
-    private static Map<FXMLPage, SoftReference<? extends BaseFXController>> cacheNodeMap = new HashMap<>();
+    private static final Map<FXMLPage, SoftReference<? extends BaseFXController>> CACHE_NODE_MAP = new HashMap<>();
 
     public BaseFXController loadFXMLPage(String title, FXMLPage fxmlPage, boolean cache) {
-        SoftReference<? extends BaseFXController> parentNodeRef = cacheNodeMap.get(fxmlPage);
+        SoftReference<? extends BaseFXController> parentNodeRef = CACHE_NODE_MAP.get(fxmlPage);
         if (cache && parentNodeRef != null) {
             return parentNodeRef.get();
         }
@@ -53,11 +54,11 @@ public abstract class BaseFXController implements Initializable {
             controller.setDialogStage(dialogStage);
             // put into cache map
             SoftReference<BaseFXController> softReference = new SoftReference<>(controller);
-            cacheNodeMap.put(fxmlPage, softReference);
+            CACHE_NODE_MAP.put(fxmlPage, softReference);
 
             return controller;
         } catch (IOException e) {
-            _LOG.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             AlertUtil.showErrorAlert(e.getMessage());
         }
         return null;

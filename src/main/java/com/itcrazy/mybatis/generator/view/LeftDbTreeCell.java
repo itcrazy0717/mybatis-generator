@@ -2,7 +2,7 @@ package com.itcrazy.mybatis.generator.view;
 
 import java.lang.ref.WeakReference;
 
-import com.itcrazy.mybatis.generator.model.DatabaseConfig;
+import com.itcrazy.mybatis.generator.dto.DatabaseConfig;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -24,6 +24,7 @@ public class LeftDbTreeCell extends TreeCell<DatabaseConfig> {
     private InvalidationListener treeItemGraphicListener = observable -> updateDisplay(getItem(), isEmpty());
 
     private InvalidationListener treeItemListener = new InvalidationListener() {
+
         @Override
         public void invalidated(Observable observable) {
             TreeItem<DatabaseConfig> oldTreeItem = treeItemRef == null ? null : treeItemRef.get();

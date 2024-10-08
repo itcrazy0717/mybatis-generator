@@ -7,8 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.itcrazy.mybatis.generator.model.DatabaseConfig;
-import com.itcrazy.mybatis.generator.util.ConfigHelper;
+import com.itcrazy.mybatis.generator.dto.DatabaseConfig;
+import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateConfigUtil;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
 import com.itcrazy.mybatis.generator.view.AlertUtil;
 
@@ -18,12 +18,12 @@ import javafx.scene.control.TextField;
 
 /**
  * @author: itcrazy0717
- * @version: $ DbConnectionController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
+ * @version: $ DataBaseConnectionController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public class DbConnectionController extends BaseFXController {
+public class DataBaseConnectionController extends BaseFXController {
 
-    private static final Logger _LOG = LoggerFactory.getLogger(DbConnectionController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataBaseConnectionController.class);
 
     @FXML
     private TextField nameField;
@@ -41,7 +41,7 @@ public class DbConnectionController extends BaseFXController {
     private ChoiceBox<String> encodingChoice;
     @FXML
     private ChoiceBox<String> dbTypeChoice;
-    private MainUIController mainUIController;
+    private MainApplicationController mainUIController;
     private boolean isUpdate = false;
     private Integer primayKey;
 
@@ -57,11 +57,11 @@ public class DbConnectionController extends BaseFXController {
             return;
         }
         try {
-            ConfigHelper.saveDatabaseConfig(this.isUpdate, primayKey, config);
+            MybatisCodeGenerateConfigUtil.saveDatabaseConfig(this.isUpdate, primayKey, config);
             getDialogStage().close();
             mainUIController.loadLeftDBTree();
         } catch (Exception e) {
-            _LOG.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             AlertUtil.showErrorAlert(e.getMessage());
         }
     }
@@ -76,7 +76,7 @@ public class DbConnectionController extends BaseFXController {
             DataBaseUtil.getConnection(config);
             AlertUtil.showInfoAlert("连接成功");
         } catch (Exception e) {
-            _LOG.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             AlertUtil.showWarnAlert("连接失败");
         }
 
@@ -87,7 +87,7 @@ public class DbConnectionController extends BaseFXController {
         getDialogStage().close();
     }
 
-    void setMainUIController(MainUIController controller) {
+    void setMainUIController(MainApplicationController controller) {
         this.mainUIController = controller;
     }
 
@@ -118,7 +118,7 @@ public class DbConnectionController extends BaseFXController {
 
     public void setConfig(DatabaseConfig config) {
         isUpdate = true;
-        primayKey = config.getId(); // save id for update config
+        primayKey = config.getId();
         nameField.setText(config.getName());
         hostField.setText(config.getHostUrl());
         portField.setText(config.getPort());

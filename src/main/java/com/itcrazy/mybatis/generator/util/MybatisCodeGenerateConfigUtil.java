@@ -17,20 +17,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
-import com.itcrazy.mybatis.generator.model.DataBaseType;
-import com.itcrazy.mybatis.generator.model.DatabaseConfig;
-import com.itcrazy.mybatis.generator.model.GeneratorConfig;
+import com.itcrazy.mybatis.generator.dto.DataBaseType;
+import com.itcrazy.mybatis.generator.dto.DatabaseConfig;
+import com.itcrazy.mybatis.generator.dto.MybatisCodeGenerateConfig;
 
 /**
  * @author: itcrazy0717
- * @version: $ ConfigHelper.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
+ * @version: $ MybatisCodeGenerateConfigUtil.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public class ConfigHelper {
+public class MybatisCodeGenerateConfigUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigHelper.class);
-    private static final String BASE_DIR = "config";
-    private static final String CONFIG_FILE = "/sqlite3.db";
+    private static final Logger LOGGER = LoggerFactory.getLogger(MybatisCodeGenerateConfigUtil.class);
+
+	/**
+	 * 配置目录
+	 */
+	private static final String BASE_DIR = "config";
+
+	/**
+	 * 配置文件路径
+	 */
+	private static final String CONFIG_FILE = "/sqlite3.db";
 
     public static void createEmptyFiles() throws Exception {
         File file = new File(BASE_DIR);
@@ -66,7 +74,7 @@ public class ConfigHelper {
         Statement stat = null;
         ResultSet rs = null;
         try {
-            conn = ConnectionManager.getConnection();
+            conn = DataBaseUtil.getSqlLiteConnection();
             stat = conn.createStatement();
             rs = stat.executeQuery("SELECT * FROM dbs");
             List<DatabaseConfig> configs = new ArrayList<>();
@@ -92,7 +100,7 @@ public class ConfigHelper {
         Statement stat = null;
         ResultSet rs = null;
         try {
-            conn = ConnectionManager.getConnection();
+            conn = DataBaseUtil.getSqlLiteConnection();
             stat = conn.createStatement();
             if (!isUpdate) {
                 ResultSet rs1 = stat.executeQuery("SELECT * from dbs where name = '" + configName + "'");
@@ -120,7 +128,7 @@ public class ConfigHelper {
         Statement stat = null;
         ResultSet rs = null;
         try {
-            conn = ConnectionManager.getConnection();
+            conn = DataBaseUtil.getSqlLiteConnection();
             stat = conn.createStatement();
             String sql = String.format("delete from dbs where id=%d", databaseConfig.getId());
             stat.executeUpdate(sql);
@@ -131,12 +139,12 @@ public class ConfigHelper {
         }
     }
 
-    public static void saveGeneratorConfig(GeneratorConfig generatorConfig) throws Exception {
+    public static void saveGeneratorConfig(MybatisCodeGenerateConfig generatorConfig) throws Exception {
         Connection conn = null;
         Statement stat = null;
         ResultSet rs = null;
         try {
-            conn = ConnectionManager.getConnection();
+            conn = DataBaseUtil.getSqlLiteConnection();
             stat = conn.createStatement();
             String jsonStr = JSON.toJSONString(generatorConfig);
             String sql = String.format("INSERT INTO generator_config values('%s', '%s')", generatorConfig.getName(),
@@ -149,20 +157,20 @@ public class ConfigHelper {
         }
     }
 
-    public static GeneratorConfig loadGeneratorConfig(String name) throws Exception {
+    public static MybatisCodeGenerateConfig loadGeneratorConfig(String name) throws Exception {
         Connection conn = null;
         Statement stat = null;
         ResultSet rs = null;
         try {
-            conn = ConnectionManager.getConnection();
+            conn = DataBaseUtil.getSqlLiteConnection();
             stat = conn.createStatement();
             String sql = String.format("SELECT * FROM generator_config where name='%s'", name);
             LOGGER.info("sql: {}", sql);
             rs = stat.executeQuery(sql);
-            GeneratorConfig generatorConfig = null;
+            MybatisCodeGenerateConfig generatorConfig = null;
             if (rs.next()) {
                 String value = rs.getString("value");
-                generatorConfig = JSON.parseObject(value, GeneratorConfig.class);
+                generatorConfig = JSON.parseObject(value, MybatisCodeGenerateConfig.class);
             }
             return generatorConfig;
         } finally {
@@ -172,20 +180,20 @@ public class ConfigHelper {
         }
     }
 
-    public static List<GeneratorConfig> loadGeneratorConfigs() throws Exception {
+    public static List<MybatisCodeGenerateConfig> loadGeneratorConfigs() throws Exception {
         Connection conn = null;
         Statement stat = null;
         ResultSet rs = null;
         try {
-            conn = ConnectionManager.getConnection();
+            conn = DataBaseUtil.getSqlLiteConnection();
             stat = conn.createStatement();
             String sql = String.format("SELECT * FROM generator_config");
             LOGGER.info("sql: {}", sql);
             rs = stat.executeQuery(sql);
-            List<GeneratorConfig> configs = new ArrayList<>();
+            List<MybatisCodeGenerateConfig> configs = new ArrayList<>();
             while (rs.next()) {
                 String value = rs.getString("value");
-                configs.add(JSON.parseObject(value, GeneratorConfig.class));
+                configs.add(JSON.parseObject(value, MybatisCodeGenerateConfig.class));
             }
             return configs;
         } finally {
@@ -199,7 +207,7 @@ public class ConfigHelper {
         Connection conn = null;
         Statement stat = null;
         try {
-            conn = ConnectionManager.getConnection();
+            conn = DataBaseUtil.getSqlLiteConnection();
             stat = conn.createStatement();
             String sql = String.format("DELETE FROM generator_config where name='%s'", name);
             LOGGER.info("sql: {}", sql);
@@ -251,6 +259,5 @@ public class ConfigHelper {
         }
         return jarFilePathList;
     }
-
 
 }

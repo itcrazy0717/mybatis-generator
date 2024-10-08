@@ -20,10 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.itcrazy.mybatis.generator.bridge.MybatisGeneratorBridge;
-import com.itcrazy.mybatis.generator.model.DatabaseConfig;
-import com.itcrazy.mybatis.generator.model.GeneratorConfig;
-import com.itcrazy.mybatis.generator.model.UITableColumnVO;
-import com.itcrazy.mybatis.generator.util.ConfigHelper;
+import com.itcrazy.mybatis.generator.dto.DatabaseConfig;
+import com.itcrazy.mybatis.generator.dto.MybatisCodeGenerateConfig;
+import com.itcrazy.mybatis.generator.dto.TableColumn;
+import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateConfigUtil;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
 import com.itcrazy.mybatis.generator.util.MyStringUtils;
 import com.itcrazy.mybatis.generator.view.AlertUtil;
@@ -34,7 +34,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -52,12 +51,12 @@ import javafx.util.Callback;
 
 /**
  * @author: itcrazy0717
- * @version: $ MainUIController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
+ * @version: $ MainApplicationController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public class MainUIController extends BaseFXController {
+public class MainApplicationController extends BaseFXController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MainUIController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainApplicationController.class);
 
     private static final String FOLDER_NO_EXIST = "部分目录不存在，是否创建";
 
@@ -76,8 +75,6 @@ public class MainUIController extends BaseFXController {
     @FXML
     private TextField domainObjectNameField;
     @FXML
-    private TextField generateKeysField;    //添加输入框
-    @FXML
     private TextField modelTargetProject;
     @FXML
     private TextField mappingTargetProject;
@@ -87,16 +84,6 @@ public class MainUIController extends BaseFXController {
     private TextField mapperName;
     @FXML
     private TextField projectFolderField;
-    @FXML
-    private CheckBox offsetLimitCheckBox;
-    @FXML
-    private CheckBox commentCheckBox;
-    @FXML
-    private CheckBox needToStringMethod;
-    @FXML
-    private CheckBox annotationCheckBox;
-    @FXML
-    private CheckBox useActualColumnNamesCheckbox;
     @FXML
     private TreeView<String> leftDBTree;
     // Current selected databaseConfig
@@ -116,7 +103,7 @@ public class MainUIController extends BaseFXController {
         dbImage.setFitWidth(40);
         connectionLabel.setGraphic(dbImage);
         connectionLabel.setOnMouseClicked(event -> {
-            DbConnectionController controller = (DbConnectionController) loadFXMLPage("新建数据库连接", FXMLPage.NEW_CONNECTION, false);
+            DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("新建数据库连接", FXMLPage.NEW_DATA_BASE_CONNECTION, false);
             controller.setMainUIController(this);
             // 为窗口增加ico图标
             controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/computer.png"))));
@@ -127,7 +114,7 @@ public class MainUIController extends BaseFXController {
         configImage.setFitWidth(40);
         configsLabel.setGraphic(configImage);
         configsLabel.setOnMouseClicked(event -> {
-            GeneratorConfigController controller = (GeneratorConfigController) loadFXMLPage("配置", FXMLPage.GENERATOR_CONFIG, false);
+            GenerateConfigController controller = (GenerateConfigController) loadFXMLPage("配置", FXMLPage.GENERATE_CONFIG, false);
             controller.setMainUIController(this);
             // 为窗口增加ico图标
             controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/config_list.png"))));
@@ -150,7 +137,7 @@ public class MainUIController extends BaseFXController {
                     MenuItem item2 = new MenuItem("编辑连接");
                     item2.setOnAction(event1 -> {
                         DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
-                        DbConnectionController controller = (DbConnectionController) loadFXMLPage("编辑数据库连接", FXMLPage.NEW_CONNECTION, false);
+                        DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("编辑数据库连接", FXMLPage.NEW_DATA_BASE_CONNECTION, false);
                         controller.setMainUIController(this);
                         controller.setConfig(selectedConfig);
                         controller.showDialogStage();
@@ -159,7 +146,7 @@ public class MainUIController extends BaseFXController {
                     item3.setOnAction(event1 -> {
                         DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
                         try {
-                            ConfigHelper.deleteDatabaseConfig(selectedConfig);
+                            MybatisCodeGenerateConfigUtil.deleteDatabaseConfig(selectedConfig);
                             this.loadLeftDBTree();
                         } catch (Exception e) {
                             AlertUtil.showErrorAlert("Delete connection failed! Reason: " + e.getMessage());
@@ -215,7 +202,7 @@ public class MainUIController extends BaseFXController {
         TreeItem<String> rootTreeItem = leftDBTree.getRoot();
         rootTreeItem.getChildren().clear();
         try {
-            List<DatabaseConfig> dbConfigs = ConfigHelper.loadDatabaseConfig();
+            List<DatabaseConfig> dbConfigs = MybatisCodeGenerateConfigUtil.loadDatabaseConfig();
             for (DatabaseConfig dbConfig : dbConfigs) {
                 TreeItem<String> treeItem = new TreeItem<>();
                 treeItem.setValue(dbConfig.getName());
@@ -252,7 +239,7 @@ public class MainUIController extends BaseFXController {
             AlertUtil.showErrorAlert(result);
             return;
         }
-        GeneratorConfig generatorConfig = getGeneratorConfigFromUI();
+        MybatisCodeGenerateConfig generatorConfig = getGeneratorConfigFromUI();
         if (!checkDirs(generatorConfig)) {
             return;
         }
@@ -302,44 +289,38 @@ public class MainUIController extends BaseFXController {
             }
             LOGGER.info("user choose name: {}", name);
             try {
-                GeneratorConfig generatorConfig = getGeneratorConfigFromUI();
+                MybatisCodeGenerateConfig generatorConfig = getGeneratorConfigFromUI();
                 generatorConfig.setName(name);
-                ConfigHelper.saveGeneratorConfig(generatorConfig);
+                MybatisCodeGenerateConfigUtil.saveGeneratorConfig(generatorConfig);
             } catch (Exception e) {
                 AlertUtil.showErrorAlert("删除配置失败");
             }
         }
     }
 
-    public GeneratorConfig getGeneratorConfigFromUI() {
-        GeneratorConfig generatorConfig = new GeneratorConfig();
+    public MybatisCodeGenerateConfig getGeneratorConfigFromUI() {
+        MybatisCodeGenerateConfig generatorConfig = new MybatisCodeGenerateConfig();
         generatorConfig.setProjectFolder(projectFolderField.getText());
         generatorConfig.setModelPackage(modelTargetPackage.getText());
-        generatorConfig.setGenerateKeys(generateKeysField.getText());
         generatorConfig.setModelPackageTargetFolder(modelTargetProject.getText());
         generatorConfig.setDaoPackage(daoTargetPackage.getText());
         generatorConfig.setDaoTargetFolder(daoTargetProject.getText());
-        generatorConfig.setMapperName(mapperName.getText());
-        generatorConfig.setMappingXMLPackage(mapperTargetPackage.getText());
-        generatorConfig.setMappingXMLTargetFolder(mappingTargetProject.getText());
+        generatorConfig.setMapperName(MyStringUtils.dbStringToCamelStyle(tableName) + "DAO");
+        generatorConfig.setMapperXMLPackage(mapperTargetPackage.getText());
+        generatorConfig.setMapperXMLTargetFolder(mappingTargetProject.getText());
         generatorConfig.setTableName(tableNameField.getText());
         generatorConfig.setDomainObjectName(domainObjectNameField.getText());
-        generatorConfig.setOffsetLimit(offsetLimitCheckBox.isSelected());
-        generatorConfig.setComment(commentCheckBox.isSelected());
-        generatorConfig.setAnnotation(annotationCheckBox.isSelected());
-        generatorConfig.setUseActualColumnNames(useActualColumnNamesCheckbox.isSelected());
         return generatorConfig;
     }
 
-    public void setGeneratorConfigIntoUI(GeneratorConfig generatorConfig) {
+    public void setGeneratorConfigIntoUI(MybatisCodeGenerateConfig generatorConfig) {
         projectFolderField.setText(generatorConfig.getProjectFolder());
         modelTargetPackage.setText(generatorConfig.getModelPackage());
-        generateKeysField.setText(generatorConfig.getGenerateKeys());
         modelTargetProject.setText(generatorConfig.getModelPackageTargetFolder());
         daoTargetPackage.setText(generatorConfig.getDaoPackage());
         daoTargetProject.setText(generatorConfig.getDaoTargetFolder());
-        mapperTargetPackage.setText(generatorConfig.getMappingXMLPackage());
-        mappingTargetProject.setText(generatorConfig.getMappingXMLTargetFolder());
+        mapperTargetPackage.setText(generatorConfig.getMapperXMLPackage());
+        mappingTargetProject.setText(generatorConfig.getMapperXMLTargetFolder());
     }
 
     @FXML
@@ -355,7 +336,7 @@ public class MainUIController extends BaseFXController {
         try {
             // If select same schema and another table, update table data
             if (!tableName.equals(controller.getTableName())) {
-                List<UITableColumnVO> tableColumns = DataBaseUtil.getTableColumns(selectedDatabaseConfig, tableName);
+                List<TableColumn> tableColumns = DataBaseUtil.getTableColumns(selectedDatabaseConfig, tableName);
                 controller.setColumnList(FXCollections.observableList(tableColumns));
                 controller.setTableName(tableName);
             }
@@ -379,12 +360,12 @@ public class MainUIController extends BaseFXController {
      *
      * @return
      */
-    private boolean checkDirs(GeneratorConfig config) {
+    private boolean checkDirs(MybatisCodeGenerateConfig config) {
         List<String> dirs = new ArrayList<>();
         dirs.add(config.getProjectFolder());
         dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getModelPackageTargetFolder())));
         dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getDaoTargetFolder())));
-        dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getMappingXMLTargetFolder())));
+        dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getMapperXMLTargetFolder())));
         boolean haveNotExistFolder = false;
         for (String dir : dirs) {
             File file = new File(dir);

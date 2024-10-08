@@ -9,11 +9,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.mybatis.generator.config.ColumnOverride;
 import org.mybatis.generator.config.IgnoredColumn;
 
-import com.itcrazy.mybatis.generator.model.UITableColumnVO;
+import com.itcrazy.mybatis.generator.dto.TableColumn;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -27,21 +26,21 @@ import javafx.scene.control.cell.TextFieldTableCell;
 public class SelectTableColumnController extends BaseFXController {
 
     @FXML
-    private TableView<UITableColumnVO> columnListView;
+    private TableView<TableColumn> columnListView;
     @FXML
-    private TableColumn<UITableColumnVO, Boolean> checkedColumn;
+    private javafx.scene.control.TableColumn<TableColumn, Boolean> checkedColumn;
     @FXML
-    private TableColumn<UITableColumnVO, String> columnNameColumn;
+    private javafx.scene.control.TableColumn<TableColumn, String> columnNameColumn;
     @FXML
-    private TableColumn<UITableColumnVO, String> jdbcTypeColumn;
+    private javafx.scene.control.TableColumn<TableColumn, String> jdbcTypeColumn;
     @FXML
-    private TableColumn<UITableColumnVO, String> javaTypeColumn;
+    private javafx.scene.control.TableColumn<TableColumn, String> javaTypeColumn;
     @FXML
-    private TableColumn<UITableColumnVO, String> propertyNameColumn;
+    private javafx.scene.control.TableColumn<TableColumn, String> propertyNameColumn;
     @FXML
-    private TableColumn<UITableColumnVO, String> typeHandlerColumn;
+    private javafx.scene.control.TableColumn<TableColumn, String> typeHandlerColumn;
 
-    private MainUIController mainUIController;
+    private MainApplicationController mainUIController;
 
     private String tableName;
 
@@ -72,7 +71,7 @@ public class SelectTableColumnController extends BaseFXController {
 
     @FXML
     public void ok() {
-        ObservableList<UITableColumnVO> items = columnListView.getItems();
+        ObservableList<TableColumn> items = columnListView.getItems();
         if (CollectionUtils.isNotEmpty(items)) {
             List<IgnoredColumn> ignoredColumns = new ArrayList<>();
             List<ColumnOverride> columnOverrides = new ArrayList<>();
@@ -99,11 +98,11 @@ public class SelectTableColumnController extends BaseFXController {
         getDialogStage().close();
     }
 
-    public void setColumnList(ObservableList<UITableColumnVO> columns) {
+    public void setColumnList(ObservableList<TableColumn> columns) {
         columnListView.setItems(columns);
     }
 
-    public void setMainUIController(MainUIController mainUIController) {
+    public void setMainUIController(MainApplicationController mainUIController) {
         this.mainUIController = mainUIController;
     }
 

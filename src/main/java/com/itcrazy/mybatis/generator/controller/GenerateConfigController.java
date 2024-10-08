@@ -7,8 +7,8 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.itcrazy.mybatis.generator.model.GeneratorConfig;
-import com.itcrazy.mybatis.generator.util.ConfigHelper;
+import com.itcrazy.mybatis.generator.dto.MybatisCodeGenerateConfig;
+import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateConfigUtil;
 import com.itcrazy.mybatis.generator.view.AlertUtil;
 
 import javafx.collections.FXCollections;
@@ -25,20 +25,22 @@ import javafx.scene.layout.HBox;
  * @version: $ GeneratorConfigController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public class GeneratorConfigController extends BaseFXController {
+public class GenerateConfigController extends BaseFXController {
 
-    private static final Logger _LOG = LoggerFactory.getLogger(GeneratorConfigController.class);
+    private static final Logger _LOG = LoggerFactory.getLogger(GenerateConfigController.class);
 
     @FXML
-    private TableView<GeneratorConfig> configTable;
+    private TableView<MybatisCodeGenerateConfig> configTable;
+
     @FXML
     private TableColumn nameColumn;
+
     @FXML
     private TableColumn opsColumn;
 
-    private MainUIController mainUIController;
+    private MainApplicationController mainUIController;
 
-    private GeneratorConfigController controller;
+    private GenerateConfigController controller;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -64,7 +66,7 @@ public class GeneratorConfigController extends BaseFXController {
                         btn1.setOnAction(event -> {
                             try {
                                 // 应用配置
-                                GeneratorConfig generatorConfig = ConfigHelper.loadGeneratorConfig(item.toString());
+                                MybatisCodeGenerateConfig generatorConfig = MybatisCodeGenerateConfigUtil.loadGeneratorConfig(item.toString());
                                 mainUIController.setGeneratorConfigIntoUI(generatorConfig);
                                 controller.closeDialogStage();
                             } catch (Exception e) {
@@ -75,7 +77,7 @@ public class GeneratorConfigController extends BaseFXController {
                             try {
                                 // 删除配置
                                 _LOG.debug("item: {}", item);
-                                ConfigHelper.deleteGeneratorConfig(item.toString());
+                                MybatisCodeGenerateConfigUtil.deleteGeneratorConfig(item.toString());
                                 refreshTableView();
                             } catch (Exception e) {
                                 AlertUtil.showErrorAlert(e.getMessage());
@@ -91,14 +93,14 @@ public class GeneratorConfigController extends BaseFXController {
 
     public void refreshTableView() {
         try {
-            List<GeneratorConfig> configs = ConfigHelper.loadGeneratorConfigs();
+            List<MybatisCodeGenerateConfig> configs = MybatisCodeGenerateConfigUtil.loadGeneratorConfigs();
             configTable.setItems(FXCollections.observableList(configs));
         } catch (Exception e) {
             AlertUtil.showErrorAlert(e.getMessage());
         }
     }
 
-    void setMainUIController(MainUIController mainUIController) {
+    void setMainUIController(MainApplicationController mainUIController) {
         this.mainUIController = mainUIController;
     }
 
