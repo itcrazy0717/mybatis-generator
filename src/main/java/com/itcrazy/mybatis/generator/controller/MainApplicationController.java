@@ -70,6 +70,8 @@ public class MainApplicationController extends BaseFXController {
     private TextField mapperTargetPackage;
     @FXML
     private TextField daoTargetPackage;
+	@FXML
+	private TextField paramTargetPackage;
     @FXML
     private TextField tableNameField;
     @FXML
@@ -92,7 +94,6 @@ public class MainApplicationController extends BaseFXController {
     private List<IgnoredColumn> ignoredColumns;
 
     private List<ColumnOverride> columnOverrides;
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -235,13 +236,13 @@ public class MainApplicationController extends BaseFXController {
             AlertUtil.showErrorAlert(result);
             return;
         }
-        MybatisCodeGenerateConfig generatorConfig = getGeneratorConfigFromUI();
+        MybatisCodeGenerateConfig generatorConfig = getMybatisCodeGenerateConfig();
         if (!checkDirs(generatorConfig)) {
             return;
         }
 
         MybatisGeneratorBridge bridge = new MybatisGeneratorBridge();
-        bridge.setGeneratorConfig(generatorConfig);
+        bridge.setGenerateConfig(generatorConfig);
         bridge.setDatabaseConfig(selectedDatabaseConfig);
         bridge.setIgnoredColumns(ignoredColumns);
         bridge.setColumnOverrides(columnOverrides);
@@ -285,7 +286,7 @@ public class MainApplicationController extends BaseFXController {
             }
             LOGGER.info("user choose name: {}", name);
             try {
-                MybatisCodeGenerateConfig generatorConfig = getGeneratorConfigFromUI();
+                MybatisCodeGenerateConfig generatorConfig = getMybatisCodeGenerateConfig();
                 generatorConfig.setName(name);
                 MybatisCodeGenerateConfigUtil.saveGeneratorConfig(generatorConfig);
             } catch (Exception e) {
@@ -294,19 +295,26 @@ public class MainApplicationController extends BaseFXController {
         }
     }
 
-    public MybatisCodeGenerateConfig getGeneratorConfigFromUI() {
-        MybatisCodeGenerateConfig generatorConfig = new MybatisCodeGenerateConfig();
-        generatorConfig.setProjectFolder(projectFolderField.getText());
-        generatorConfig.setModelPackage(modelTargetPackage.getText());
-        generatorConfig.setModelPackageTargetFolder(modelTargetProject.getText());
-        generatorConfig.setDaoPackage(daoTargetPackage.getText());
-        generatorConfig.setDaoTargetFolder(daoTargetProject.getText());
-        generatorConfig.setMapperName(MyStringUtils.dbStringToCamelStyle(tableName) + "DAO");
-        generatorConfig.setMapperXMLPackage(mapperTargetPackage.getText());
-        generatorConfig.setMapperXMLTargetFolder(mappingTargetProject.getText());
-        generatorConfig.setTableName(tableNameField.getText());
-        generatorConfig.setDomainObjectName(domainObjectNameField.getText());
-        return generatorConfig;
+	/**
+	 * 获取生成mybatis代码配置
+	 * by itcrazy0717
+	 *
+	 * @return
+	 */
+    public MybatisCodeGenerateConfig getMybatisCodeGenerateConfig() {
+        MybatisCodeGenerateConfig config = new MybatisCodeGenerateConfig();
+        config.setProjectFolder(projectFolderField.getText());
+        config.setModelPackage(modelTargetPackage.getText());
+        config.setModelPackageTargetFolder(modelTargetProject.getText());
+        config.setDaoPackage(daoTargetPackage.getText());
+        config.setDaoTargetFolder(daoTargetProject.getText());
+        config.setMapperName(MyStringUtils.dbStringToCamelStyle(tableName) + "DAO");
+        config.setMapperXMLPackage(mapperTargetPackage.getText());
+        config.setMapperXMLTargetFolder(mappingTargetProject.getText());
+        config.setTableName(tableNameField.getText());
+        config.setDomainObjectName(domainObjectNameField.getText());
+		config.setParamModelPackage(paramTargetPackage.getText());
+        return config;
     }
 
     public void setGeneratorConfigIntoUI(MybatisCodeGenerateConfig generatorConfig) {

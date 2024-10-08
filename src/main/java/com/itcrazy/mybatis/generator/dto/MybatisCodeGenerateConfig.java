@@ -66,6 +66,11 @@ public class MybatisCodeGenerateConfig {
     private String tableName;
 
 	/**
+	 * 查询参数包路径
+	 */
+	private String paramModelPackage;
+
+	/**
 	 * 实体对象名称
 	 */
     private String domainObjectName;

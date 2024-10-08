@@ -71,10 +71,10 @@ public class ReplaceExampleContentPlugin extends PluginAdapter {
         Matcher paramMatcher = paramPattern.matcher(exampleType);
         exampleType = paramMatcher.replaceAll("Param");
         // 调整param对象路径
-        String paramTargetPackage = properties.getProperty("paramTargetPackage");
-        if (StringUtils.isNotBlank(paramTargetPackage)) {
+        String paramPackage = properties.getProperty("paramPackage");
+        if (StringUtils.isNotBlank(paramPackage)) {
             String paramClassName = exampleType.substring(exampleType.lastIndexOf(".") + 1);
-            introspectedTable.setExampleType(paramTargetPackage + "." + paramClassName);
+            introspectedTable.setExampleType(paramPackage + "." + paramClassName);
         } else {
             introspectedTable.setExampleType(exampleType);
         }
