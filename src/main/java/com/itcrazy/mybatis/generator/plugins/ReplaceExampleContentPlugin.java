@@ -27,19 +27,31 @@ import static org.mybatis.generator.internal.util.messages.Messages.getString;
  */
 public class ReplaceExampleContentPlugin extends PluginAdapter {
 
-    private String searchString;
-    private String replaceString;
-    private Boolean simpleMethod;
-    private Pattern pattern;
+	/**
+	 * 需要替换的内容
+	 */
+	private String searchString;
 
-    public ReplaceExampleContentPlugin() {
-    }
+	/**
+	 * 替换后的内容
+	 */
+	private String replaceString;
 
-    @Override
+	/**
+	 * 是否使用简单方法
+	 */
+	private Boolean simpleMethod;
+
+	/**
+	 * 替换正则
+	 */
+	private Pattern pattern;
+
+	@Override
     public boolean validate(List<String> warnings) {
-        searchString = properties.getProperty("searchString"); //$NON-NLS-1$
-        replaceString = properties.getProperty("replaceString"); //$NON-NLS-1$
-        simpleMethod = Boolean.valueOf(properties.getProperty("simpleMethod")); //$NON-NLS-1$
+        searchString = properties.getProperty("searchString");
+        replaceString = properties.getProperty("replaceString");
+        simpleMethod = Boolean.valueOf(properties.getProperty("simpleMethod"));
 
         boolean valid = stringHasValue(searchString) && stringHasValue(replaceString);
 
