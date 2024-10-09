@@ -74,7 +74,7 @@ public class MybatisCodeGenerateConfigUtil {
         Statement stat = null;
         ResultSet rs = null;
         try {
-            conn = DataBaseUtil.getSqlLiteConnection();
+            conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
             rs = stat.executeQuery("SELECT * FROM dbs");
             List<DatabaseConfig> configs = new ArrayList<>();
@@ -100,7 +100,7 @@ public class MybatisCodeGenerateConfigUtil {
         Statement stat = null;
         ResultSet rs = null;
         try {
-            conn = DataBaseUtil.getSqlLiteConnection();
+            conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
             if (!isUpdate) {
                 ResultSet rs1 = stat.executeQuery("SELECT * from dbs where name = '" + configName + "'");
@@ -128,7 +128,7 @@ public class MybatisCodeGenerateConfigUtil {
         Statement stat = null;
         ResultSet rs = null;
         try {
-            conn = DataBaseUtil.getSqlLiteConnection();
+            conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
             String sql = String.format("delete from dbs where id=%d", databaseConfig.getId());
             stat.executeUpdate(sql);
@@ -139,21 +139,25 @@ public class MybatisCodeGenerateConfigUtil {
         }
     }
 
-    public static void saveGeneratorConfig(MybatisCodeGenerateConfig generatorConfig) throws Exception {
+	/**
+	 * 保存代码生成配置
+	 * by itcrazy0717
+	 *
+	 * @param codeGenerateConfig
+	 * @throws Exception
+	 */
+    public static void saveCodeGenerateConfig(MybatisCodeGenerateConfig codeGenerateConfig) throws Exception {
         Connection conn = null;
         Statement stat = null;
-        ResultSet rs = null;
         try {
-            conn = DataBaseUtil.getSqlLiteConnection();
+            conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
-            String jsonStr = JSON.toJSONString(generatorConfig);
-            String sql = String.format("INSERT INTO generator_config values('%s', '%s')", generatorConfig.getName(),
-                                       jsonStr);
-            stat.executeUpdate(sql);
+            String configJson = JSON.toJSONString(codeGenerateConfig);
+            String insertSql = String.format("INSERT INTO code_generate_config values('%s', '%s')", codeGenerateConfig.getName(), configJson);
+            stat.executeUpdate(insertSql);
         } finally {
-            if (rs != null) rs.close();
-            if (stat != null) stat.close();
-            if (conn != null) conn.close();
+	        if (Objects.nonNull(stat)) {stat.close();}
+	        if (Objects.nonNull(conn)) {conn.close();}
         }
     }
 
@@ -162,9 +166,9 @@ public class MybatisCodeGenerateConfigUtil {
         Statement stat = null;
         ResultSet rs = null;
         try {
-            conn = DataBaseUtil.getSqlLiteConnection();
+            conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
-            String sql = String.format("SELECT * FROM generator_config where name='%s'", name);
+            String sql = String.format("SELECT * FROM code_generate_config where name='%s'", name);
             LOGGER.info("sql: {}", sql);
             rs = stat.executeQuery(sql);
             MybatisCodeGenerateConfig generatorConfig = null;
@@ -185,9 +189,9 @@ public class MybatisCodeGenerateConfigUtil {
         Statement stat = null;
         ResultSet rs = null;
         try {
-            conn = DataBaseUtil.getSqlLiteConnection();
+            conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
-            String sql = String.format("SELECT * FROM generator_config");
+            String sql = String.format("SELECT * FROM code_generate_config");
             LOGGER.info("sql: {}", sql);
             rs = stat.executeQuery(sql);
             List<MybatisCodeGenerateConfig> configs = new ArrayList<>();
@@ -207,9 +211,9 @@ public class MybatisCodeGenerateConfigUtil {
         Connection conn = null;
         Statement stat = null;
         try {
-            conn = DataBaseUtil.getSqlLiteConnection();
+            conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
-            String sql = String.format("DELETE FROM generator_config where name='%s'", name);
+            String sql = String.format("DELETE FROM code_generate_config where name='%s'", name);
             LOGGER.info("sql: {}", sql);
             return stat.executeUpdate(sql);
         } finally {

@@ -117,8 +117,8 @@ public class MainApplicationController extends BaseFXController {
         configImage.setFitWidth(40);
         configsLabel.setGraphic(configImage);
         configsLabel.setOnMouseClicked(event -> {
-            GenerateConfigController controller = (GenerateConfigController) loadFXMLPage("配置", FXMLPage.GENERATE_CONFIG, false);
-            controller.setMainUIController(this);
+            GenerateCodeConfigController controller = (GenerateCodeConfigController) loadFXMLPage("配置", FXMLPage.GENERATE_CONFIG, false);
+            controller.setMainApplicationController(this);
             // 为窗口增加ico图标
             controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/config_list.png"))));
             controller.showDialogStage();
@@ -276,23 +276,27 @@ public class MainApplicationController extends BaseFXController {
         return null;
     }
 
-    @FXML
-    public void saveGeneratorConfig() {
+	/**
+	 * 保存代码生成配置
+	 * by itcrazy0717
+	 */
+	@FXML
+    public void saveCodeGenerateConfig() {
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle("保存当前配置");
         dialog.setContentText("请输入配置名称");
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
             String name = result.get();
-            if (StringUtils.isEmpty(name)) {
+            if (StringUtils.isBlank(name)) {
                 AlertUtil.showErrorAlert("名称不能为空");
                 return;
             }
             LOGGER.info("user choose name: {}", name);
             try {
-                MybatisCodeGenerateConfig generatorConfig = getMybatisCodeGenerateConfig();
-                generatorConfig.setName(name);
-                MybatisCodeGenerateConfigUtil.saveGeneratorConfig(generatorConfig);
+                MybatisCodeGenerateConfig generateConfig = getMybatisCodeGenerateConfig();
+                generateConfig.setName(name);
+                MybatisCodeGenerateConfigUtil.saveCodeGenerateConfig(generateConfig);
             } catch (Exception e) {
                 AlertUtil.showErrorAlert("删除配置失败");
             }
@@ -320,7 +324,13 @@ public class MainApplicationController extends BaseFXController {
         return config;
     }
 
-    public void setGeneratorConfigIntoUI(MybatisCodeGenerateConfig generatorConfig) {
+	/**
+	 * 组装代码生成配置
+	 * by itcrazy0717
+	 *
+	 * @param generatorConfig
+	 */
+    public void assembleCodeGenerateConfig(MybatisCodeGenerateConfig generatorConfig) {
         projectFolderField.setText(generatorConfig.getProjectFolder());
         modelTargetPackage.setText(generatorConfig.getModelPackage());
         modelAndDaoInterfaceTargetProject.setText(generatorConfig.getModelAndDaoInterfacePackageTargetFolder());

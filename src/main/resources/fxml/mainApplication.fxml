@@ -234,7 +234,7 @@
                                                         <String fx:value="btn"/>
                                                     </styleClass>
                                                 </Button>
-                                                <Button mnemonicParsing="false" onAction="#saveGeneratorConfig"
+                                                <Button mnemonicParsing="false" onAction="#saveCodeGenerateConfig"
                                                         text="保存配置">
                                                     <styleClass>
                                                         <String fx:value="btn-success"/>

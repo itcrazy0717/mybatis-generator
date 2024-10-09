@@ -22,12 +22,12 @@ import javafx.scene.layout.HBox;
 
 /**
  * @author: itcrazy0717
- * @version: $ GeneratorConfigController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
+ * @version: $ GenerateCodeConfigController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public class GenerateConfigController extends BaseFXController {
+public class GenerateCodeConfigController extends BaseFXController {
 
-    private static final Logger _LOG = LoggerFactory.getLogger(GenerateConfigController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GenerateCodeConfigController.class);
 
     @FXML
     private TableView<MybatisCodeGenerateConfig> configTable;
@@ -38,9 +38,9 @@ public class GenerateConfigController extends BaseFXController {
     @FXML
     private TableColumn opsColumn;
 
-    private MainApplicationController mainUIController;
+    private MainApplicationController mainApplicationController;
 
-    private GenerateConfigController controller;
+    private GenerateCodeConfigController controller;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -67,7 +67,7 @@ public class GenerateConfigController extends BaseFXController {
                             try {
                                 // 应用配置
                                 MybatisCodeGenerateConfig generatorConfig = MybatisCodeGenerateConfigUtil.loadGeneratorConfig(item.toString());
-                                mainUIController.setGeneratorConfigIntoUI(generatorConfig);
+                                mainApplicationController.assembleCodeGenerateConfig(generatorConfig);
                                 controller.closeDialogStage();
                             } catch (Exception e) {
                                 AlertUtil.showErrorAlert(e.getMessage());
@@ -76,7 +76,7 @@ public class GenerateConfigController extends BaseFXController {
                         btn2.setOnAction(event -> {
                             try {
                                 // 删除配置
-                                _LOG.debug("item: {}", item);
+                                LOGGER.debug("item: {}", item);
                                 MybatisCodeGenerateConfigUtil.deleteGeneratorConfig(item.toString());
                                 refreshTableView();
                             } catch (Exception e) {
@@ -100,8 +100,8 @@ public class GenerateConfigController extends BaseFXController {
         }
     }
 
-    void setMainUIController(MainApplicationController mainUIController) {
-        this.mainUIController = mainUIController;
+    void setMainApplicationController(MainApplicationController mainApplicationController) {
+        this.mainApplicationController = mainApplicationController;
     }
 
 }

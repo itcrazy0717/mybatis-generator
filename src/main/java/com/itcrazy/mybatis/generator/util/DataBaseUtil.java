@@ -32,9 +32,9 @@ public class DataBaseUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataBaseUtil.class);
 
 	/**
-	 * sqllite db 地址
+	 * sqlite db 地址
 	 */
-	private static final String SQL_LITE_URL = "jdbc:sqlite:./config/sqlite3.db";
+	private static final String SQLITE_URL = "jdbc:sqlite:./config/sqlite3.db";
 
     /**
      * 数据库连接超时时间
@@ -146,15 +146,15 @@ public class DataBaseUtil {
     }
 
 	/**
-	 * 获取 sql lite 连接
+	 * 获取 sqlite 连接
 	 * by itcrazy0717
 	 *
 	 * @return
 	 * @throws Exception
 	 */
-	public static Connection getSqlLiteConnection() throws Exception {
+	public static Connection getSqLiteConnection() throws Exception {
 		Class.forName("org.sqlite.JDBC");
-		return DriverManager.getConnection(SQL_LITE_URL);
+		return DriverManager.getConnection(SQLITE_URL);
 	}
 
 }
