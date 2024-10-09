@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
-import com.itcrazy.mybatis.generator.dto.DataBaseType;
+import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
 import com.itcrazy.mybatis.generator.dto.DatabaseConfig;
 import com.itcrazy.mybatis.generator.dto.MybatisCodeGenerateConfig;
 
@@ -98,7 +98,6 @@ public class MybatisCodeGenerateConfigUtil {
         String configName = dbConfig.getName();
         Connection conn = null;
         Statement stat = null;
-        ResultSet rs = null;
         try {
             conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
@@ -117,7 +116,6 @@ public class MybatisCodeGenerateConfigUtil {
             }
             stat.executeUpdate(sql);
         } finally {
-            if (rs != null) rs.close();
             if (stat != null) stat.close();
             if (conn != null) conn.close();
         }
@@ -126,14 +124,12 @@ public class MybatisCodeGenerateConfigUtil {
     public static void deleteDatabaseConfig(DatabaseConfig databaseConfig) throws Exception {
         Connection conn = null;
         Statement stat = null;
-        ResultSet rs = null;
         try {
             conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
             String sql = String.format("delete from database_connection_config where id=%d", databaseConfig.getId());
             stat.executeUpdate(sql);
         } finally {
-            if (rs != null) rs.close();
             if (stat != null) stat.close();
             if (conn != null) conn.close();
         }
@@ -207,15 +203,22 @@ public class MybatisCodeGenerateConfigUtil {
         }
     }
 
-    public static int deleteGeneratorConfig(String name) throws Exception {
+	/**
+	 * 删除生成代码配置
+	 * by itcrazy0717
+	 *
+	 * @param name
+	 * @throws Exception
+	 */
+	public static void deleteCodeGenerateConfig(String name) throws Exception {
         Connection conn = null;
         Statement stat = null;
         try {
             conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
-            String sql = String.format("DELETE FROM code_generate_config where name='%s'", name);
-            LOGGER.info("sql: {}", sql);
-            return stat.executeUpdate(sql);
+            String deleteSql = String.format("DELETE FROM code_generate_config where name='%s'", name);
+            LOGGER.info("sql: {}", deleteSql);
+            stat.executeUpdate(deleteSql);
         } finally {
             if (stat != null) stat.close();
             if (conn != null) conn.close();
@@ -223,12 +226,12 @@ public class MybatisCodeGenerateConfigUtil {
     }
 
     public static String findConnectorLibPath(String dbType) {
-        DataBaseType type = DataBaseType.valueOf(dbType);
+        DataBaseTypeEnum type = DataBaseTypeEnum.valueOf(dbType);
         URL resource = Thread.currentThread().getContextClassLoader().getResource("logback.xml");
         LOGGER.info("jar resource: {}", resource);
         if (resource != null) {
             try {
-                File file = new File(resource.toURI().getRawPath() + "/../lib/" + type.getConnectorJarFile());
+                File file = new File(resource.toURI().getRawPath() + "/../lib/" + type.getDriverJar());
                 return file.getCanonicalPath();
             } catch (Exception e) {
                 throw new RuntimeException("找不到驱动文件，请联系开发者");

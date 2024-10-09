@@ -17,7 +17,7 @@ import org.mybatis.generator.internal.util.ClassloaderUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.itcrazy.mybatis.generator.dto.DataBaseType;
+import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
 import com.itcrazy.mybatis.generator.dto.DatabaseConfig;
 import com.itcrazy.mybatis.generator.dto.TableColumn;
 
@@ -44,14 +44,14 @@ public class DataBaseUtil {
     /**
      * 数据库驱动集合
      */
-    private final static Map<DataBaseType, Driver> DATABASE_DRIVER_MAP;
+    private final static Map<DataBaseTypeEnum, Driver> DATABASE_DRIVER_MAP;
 
     static {
         DATABASE_DRIVER_MAP = new HashMap<>();
         List<String> driverJars = MybatisCodeGenerateConfigUtil.getAllJDBCDriverJarPaths();
         ClassLoader classloader = ClassloaderUtility.getCustomClassloader(driverJars);
-        DataBaseType[] dbTypes = DataBaseType.values();
-        for (DataBaseType dbType : dbTypes) {
+        DataBaseTypeEnum[] dbTypes = DataBaseTypeEnum.values();
+        for (DataBaseTypeEnum dbType : dbTypes) {
             try {
                 Class<?> clazz = Class.forName(dbType.getDriverClass(), true, classloader);
                 Driver driver = (Driver) clazz.newInstance();
@@ -71,7 +71,7 @@ public class DataBaseUtil {
         props.setProperty("password", config.getPassword());
 
         DriverManager.setLoginTimeout(DB_CONNECTION_TIMEOUTS_SECONDS);
-        Connection connection = DATABASE_DRIVER_MAP.get(DataBaseType.valueOf(config.getDataBaseType())).connect(url, props);
+        Connection connection = DATABASE_DRIVER_MAP.get(DataBaseTypeEnum.valueOf(config.getDataBaseType())).connect(url, props);
         LOGGER.info("getConnection, connection url: {}", connection);
         return connection;
     }
@@ -89,19 +89,19 @@ public class DataBaseUtil {
         LOGGER.info("get_table_name_list, connection url: {}", url);
         try (Connection connection = getConnection(databaseConfig)) {
             // 获取数据库类型
-            DataBaseType dataBaseType = DataBaseType.valueOf(databaseConfig.getDataBaseType());
+            DataBaseTypeEnum dataBaseType = DataBaseTypeEnum.valueOf(databaseConfig.getDataBaseType());
             List<String> tableNameList = new ArrayList<>();
             DatabaseMetaData metaData = connection.getMetaData();
             ResultSet rs;
-            if (Objects.equals(DataBaseType.SQLServer, dataBaseType)) {
+            if (Objects.equals(DataBaseTypeEnum.SQLServer, dataBaseType)) {
                 String sql = "select name from sysobjects  where xtype='u' or xtype='v' ";
                 rs = connection.createStatement().executeQuery(sql);
                 while (rs.next()) {
                     tableNameList.add(rs.getString("name"));
                 }
-            } else if (Objects.equals(DataBaseType.Oracle, dataBaseType)) {
+            } else if (Objects.equals(DataBaseTypeEnum.Oracle, dataBaseType)) {
                 rs = metaData.getTables(null, databaseConfig.getUserName().toUpperCase(), null, new String[]{"TABLE", "VIEW"});
-            } else if (Objects.equals(DataBaseType.PostgreSQL, dataBaseType)) {
+            } else if (Objects.equals(DataBaseTypeEnum.PostgreSQL, dataBaseType)) {
                 // 针对 postgresql 的左侧数据表显示
                 rs = metaData.getTables(null, "%", "%", new String[]{"TABLE", "VIEW"});
             } else {
@@ -139,7 +139,7 @@ public class DataBaseUtil {
     }
 
     public static String getConnectionUrlWithSchema(DatabaseConfig dbConfig) throws ClassNotFoundException {
-        DataBaseType dataBaseType = DataBaseType.valueOf(dbConfig.getDataBaseType());
+        DataBaseTypeEnum dataBaseType = DataBaseTypeEnum.valueOf(dbConfig.getDataBaseType());
         String connectionUrl = String.format(dataBaseType.getConnectionUrlPattern(), dbConfig.getHostUrl(), dbConfig.getPort(), dbConfig.getSchemaName(), dbConfig.getEncoding());
         LOGGER.info("get_connection_url_with_schema, connection url: {}", connectionUrl);
         return connectionUrl;

@@ -77,7 +77,7 @@ public class GenerateCodeConfigController extends BaseFXController {
                             try {
                                 // 删除配置
                                 LOGGER.debug("item: {}", item);
-                                MybatisCodeGenerateConfigUtil.deleteGeneratorConfig(item.toString());
+                                MybatisCodeGenerateConfigUtil.deleteCodeGenerateConfig(item.toString());
                                 refreshTableView();
                             } catch (Exception e) {
                                 AlertUtil.showErrorAlert(e.getMessage());

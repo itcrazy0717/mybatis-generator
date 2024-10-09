@@ -26,7 +26,7 @@ import org.mybatis.generator.internal.DefaultShellCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.itcrazy.mybatis.generator.dto.DataBaseType;
+import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
 import com.itcrazy.mybatis.generator.dto.DatabaseConfig;
 import com.itcrazy.mybatis.generator.dto.MybatisCodeGenerateConfig;
 import com.itcrazy.mybatis.generator.plugins.CustomCommentGenerator;
@@ -71,7 +71,7 @@ public class MybatisGeneratorBridge {
         tableConfig.setDomainObjectName(generateConfig.getDomainObjectName());
 
         // 针对postgresql单独配置
-        if (DataBaseType.valueOf(selectedDatabaseConfig.getDataBaseType()).getDriverClass() == "org.postgresql.Driver") {
+        if (DataBaseTypeEnum.valueOf(selectedDatabaseConfig.getDataBaseType()).getDriverClass() == "org.postgresql.Driver") {
             tableConfig.setDelimitIdentifiers(true);
         }
 
@@ -93,7 +93,7 @@ public class MybatisGeneratorBridge {
             columnOverrides.forEach(tableConfig::addColumnOverride);
         }
         JDBCConnectionConfiguration jdbcConfig = new JDBCConnectionConfiguration();
-        jdbcConfig.setDriverClass(DataBaseType.valueOf(selectedDatabaseConfig.getDataBaseType()).getDriverClass());
+        jdbcConfig.setDriverClass(DataBaseTypeEnum.valueOf(selectedDatabaseConfig.getDataBaseType()).getDriverClass());
         jdbcConfig.setConnectionURL(DataBaseUtil.getConnectionUrlWithSchema(selectedDatabaseConfig));
         jdbcConfig.setUserId(selectedDatabaseConfig.getUserName());
         jdbcConfig.setPassword(selectedDatabaseConfig.getPassword());
@@ -175,7 +175,7 @@ public class MybatisGeneratorBridge {
 		toStringPlugin.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
 		context.addPluginConfiguration(toStringPlugin);
 		// 分页插件
-		if (DataBaseType.MySQL.name().equals(selectedDatabaseConfig.getDataBaseType()) || DataBaseType.PostgreSQL.name().equals(selectedDatabaseConfig.getDataBaseType())) {
+		if (DataBaseTypeEnum.MySQL.name().equals(selectedDatabaseConfig.getDataBaseType()) || DataBaseTypeEnum.PostgreSQL.name().equals(selectedDatabaseConfig.getDataBaseType())) {
 			PluginConfiguration pluginConfiguration = new PluginConfiguration();
 			pluginConfiguration.addProperty("", "com.itcrazy.mybatis.generator.plugins.PagePlugin");
 			pluginConfiguration.setConfigurationType("com.itcrazy.mybatis.generator.plugins.PagePlugin");
