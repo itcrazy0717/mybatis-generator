@@ -77,19 +77,23 @@ public class MainApplicationController extends BaseFXController {
     @FXML
     private TextField domainObjectNameField;
     @FXML
-    private TextField modelTargetProject;
+    private TextField modelAndDaoInterfaceTargetProject;
     @FXML
     private TextField mappingTargetProject;
-    @FXML
-    private TextField daoTargetProject;
     @FXML
     private TextField projectFolderField;
     @FXML
     private TreeView<String> leftDBTree;
-    // Current selected databaseConfig
-    private DatabaseConfig selectedDatabaseConfig;
-    // Current selected tableName
-    private String tableName;
+
+	/**
+	 * 当前选择的数据库
+	 */
+	private DatabaseConfig selectedDatabaseConfig;
+
+	/**
+	 * 当前选择的表名
+	 */
+	private String tableName;
 
     private List<IgnoredColumn> ignoredColumns;
 
@@ -305,9 +309,8 @@ public class MainApplicationController extends BaseFXController {
         MybatisCodeGenerateConfig config = new MybatisCodeGenerateConfig();
         config.setProjectFolder(projectFolderField.getText());
         config.setModelPackage(modelTargetPackage.getText());
-        config.setModelPackageTargetFolder(modelTargetProject.getText());
+        config.setModelAndDaoInterfacePackageTargetFolder(modelAndDaoInterfaceTargetProject.getText());
         config.setDaoPackage(daoTargetPackage.getText());
-        config.setDaoTargetFolder(daoTargetProject.getText());
         config.setMapperName(MyStringUtils.dbStringToCamelStyle(tableName) + "DAO");
         config.setMapperXMLPackage(mapperTargetPackage.getText());
         config.setMapperXMLTargetFolder(mappingTargetProject.getText());
@@ -320,9 +323,8 @@ public class MainApplicationController extends BaseFXController {
     public void setGeneratorConfigIntoUI(MybatisCodeGenerateConfig generatorConfig) {
         projectFolderField.setText(generatorConfig.getProjectFolder());
         modelTargetPackage.setText(generatorConfig.getModelPackage());
-        modelTargetProject.setText(generatorConfig.getModelPackageTargetFolder());
+        modelAndDaoInterfaceTargetProject.setText(generatorConfig.getModelAndDaoInterfacePackageTargetFolder());
         daoTargetPackage.setText(generatorConfig.getDaoPackage());
-        daoTargetProject.setText(generatorConfig.getDaoTargetFolder());
         mapperTargetPackage.setText(generatorConfig.getMapperXMLPackage());
         mappingTargetProject.setText(generatorConfig.getMapperXMLTargetFolder());
     }
@@ -367,8 +369,7 @@ public class MainApplicationController extends BaseFXController {
     private boolean checkDirs(MybatisCodeGenerateConfig config) {
         List<String> dirs = new ArrayList<>();
         dirs.add(config.getProjectFolder());
-        dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getModelPackageTargetFolder())));
-        dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getDaoTargetFolder())));
+        dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getModelAndDaoInterfacePackageTargetFolder())));
         dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getMapperXMLTargetFolder())));
         boolean haveNotExistFolder = false;
         for (String dir : dirs) {

@@ -100,7 +100,18 @@ public class MybatisGeneratorBridge {
         // 实体类路径配置
         JavaModelGeneratorConfiguration modelConfig = new JavaModelGeneratorConfiguration();
         modelConfig.setTargetPackage(generateConfig.getModelPackage());
-        modelConfig.setTargetProject(generateConfig.getProjectFolder() + "/" + generateConfig.getModelPackageTargetFolder());
+        modelConfig.setTargetProject(generateConfig.getProjectFolder() + "/" + generateConfig.getModelAndDaoInterfacePackageTargetFolder());
+
+	    // DAO接口文件路径配置
+	    JavaClientGeneratorConfiguration daoConfig = new JavaClientGeneratorConfiguration();
+	    daoConfig.setConfigurationType("XMLMAPPER");
+	    daoConfig.setTargetPackage(generateConfig.getDaoPackage());
+	    daoConfig.setTargetProject(generateConfig.getProjectFolder() + "/" + generateConfig.getModelAndDaoInterfacePackageTargetFolder());
+
+        // Mapper文件路径配置
+        SqlMapGeneratorConfiguration mapperConfig = new SqlMapGeneratorConfiguration();
+        mapperConfig.setTargetPackage(generateConfig.getMapperXMLPackage());
+        mapperConfig.setTargetProject(generateConfig.getProjectFolder() + "/" + generateConfig.getMapperXMLTargetFolder());
 
 	    // 设置param对象包路径，单独命名为xxx.parm,便于管理
 	    String paramPackage = generateConfig.getParamModelPackage();
@@ -109,15 +120,6 @@ public class MybatisGeneratorBridge {
 		    String modelPackage = modelConfig.getTargetPackage();
 		    paramPackage = modelPackage.substring(0, modelPackage.lastIndexOf(".")) + ".param";
 	    }
-        // Mapper文件路径配置
-        SqlMapGeneratorConfiguration mapperConfig = new SqlMapGeneratorConfiguration();
-        mapperConfig.setTargetPackage(generateConfig.getMapperXMLPackage());
-        mapperConfig.setTargetProject(generateConfig.getProjectFolder() + "/" + generateConfig.getMapperXMLTargetFolder());
-        // DAO接口文件路径配置
-        JavaClientGeneratorConfiguration daoConfig = new JavaClientGeneratorConfiguration();
-        daoConfig.setConfigurationType("XMLMAPPER");
-        daoConfig.setTargetPackage(generateConfig.getDaoPackage());
-        daoConfig.setTargetProject(generateConfig.getProjectFolder() + "/" + generateConfig.getDaoTargetFolder());
 
         context.setId("myid");
         context.addTableConfiguration(tableConfig);

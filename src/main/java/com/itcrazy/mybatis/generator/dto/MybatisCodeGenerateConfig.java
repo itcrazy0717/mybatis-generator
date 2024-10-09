@@ -31,19 +31,14 @@ public class MybatisCodeGenerateConfig {
 	private String modelPackage;
 
 	/**
-	 * 实体类目录
+	 * 实体类与接口对象目录
 	 */
-    private String modelPackageTargetFolder;
+    private String modelAndDaoInterfacePackageTargetFolder;
 
 	/**
 	 * dao对象包路径
 	 */
 	private String daoPackage;
-
-	/**
-	 * dao对象目录
-	 */
-    private String daoTargetFolder;
 
 	/**
 	 * mapper对象名称 DAO对象名称

@@ -79,36 +79,35 @@
                                                            prefWidth="95.0"/>
                                     </columnConstraints>
                                     <rowConstraints>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="44.0" minHeight="10.0" prefHeight="27.0"
-                                                        vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="25.0" minHeight="8.0" prefHeight="25.0"
-                                                        vgrow="SOMETIMES"/>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="72.0" minHeight="10.0" prefHeight="56.0"
-                                                        vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="114.0" minHeight="8.0" prefHeight="58.0"
-                                                        vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="99.0" minHeight="11.0" prefHeight="95.0"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
                                     </rowConstraints>
                                     <children>
                                         <Label text="表名"/>
                                         <TextField fx:id="tableNameField" disable="true" editable="false"
-                                                   prefHeight="27.0" prefWidth="80.0" promptText="test"
-                                                   GridPane.columnIndex="1">
+                                                   prefHeight="27.0" prefWidth="40.0" promptText="test" maxWidth="200.0"
+                                                   GridPane.columnIndex="1" GridPane.rowSpan="1">
                                             <GridPane.margin>
                                                 <Insets left="5.0" right="5.0"/>
                                             </GridPane.margin>
+                                            <HBox.margin>
+                                                <Insets right="5.0"/>
+                                            </HBox.margin>
                                         </TextField>
 
-                                        <Label text="实体类名(XXXDO)" GridPane.rowIndex="1"/>
+                                        <Label text="实体类名(xxxDO)" GridPane.rowIndex="1"/>
                                         <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.columnSpan="3"
                                               GridPane.rowIndex="1" GridPane.valignment="CENTER">
                                             <children>
-                                                <TextField fx:id="domainObjectNameField" prefHeight="27.0"
-                                                           prefWidth="154.0" promptText="TestDO"
+                                                <TextField fx:id="domainObjectNameField" prefHeight="29.0"
+                                                           prefWidth="200.0" promptText="TestDO"
                                                            GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                     <GridPane.margin>
                                                         <Insets left="5.0" right="5.0"/>
@@ -150,10 +149,10 @@
                                             </children>
                                         </HBox>
 
-                                        <Label text="实体包全名" GridPane.rowIndex="3"/>
-                                        <TextField fx:id="modelTargetPackage" prefHeight="27.0" prefWidth="152.0"
-                                                   promptText="com.example.dataobject" GridPane.columnIndex="1"
-                                                   GridPane.rowIndex="3">
+                                        <Label text="实体与接口对象存放目录" GridPane.rowIndex="3"/>
+                                        <TextField fx:id="modelAndDaoInterfaceTargetProject" prefHeight="27.0" prefWidth="152.0"
+                                                   promptText="src/main/java" text="src/main/java"
+                                                   GridPane.columnIndex="1" GridPane.rowIndex="3">
                                             <HBox.margin>
                                                 <Insets right="5.0"/>
                                             </HBox.margin>
@@ -161,18 +160,10 @@
                                                 <Insets left="5.0" right="5.0"/>
                                             </GridPane.margin>
                                         </TextField>
-                                        <Label text="存放目录" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
-                                        <TextField fx:id="modelTargetProject" prefHeight="27.0" prefWidth="152.0"
-                                                   promptText="src/main/java" text="src/main/java"
-                                                   GridPane.columnIndex="3" GridPane.rowIndex="3">
-                                            <GridPane.margin>
-                                                <Insets left="5.0"/>
-                                            </GridPane.margin>
-                                        </TextField>
 
-                                        <Label text="DAO接口包全名" GridPane.rowIndex="4"/>
-                                        <TextField fx:id="daoTargetPackage" prefHeight="27.0" prefWidth="152.0"
-                                                   promptText="com.example.dao" GridPane.columnIndex="1"
+                                        <Label text="实体包全名" GridPane.rowIndex="4"/>
+                                        <TextField fx:id="modelTargetPackage" prefHeight="27.0" prefWidth="152.0"
+                                                   promptText="com.example.dataobject" GridPane.columnIndex="1"
                                                    GridPane.rowIndex="4">
                                             <HBox.margin>
                                                 <Insets right="5.0"/>
@@ -181,18 +172,10 @@
                                                 <Insets left="5.0" right="5.0"/>
                                             </GridPane.margin>
                                         </TextField>
-                                        <Label text="存放目录" GridPane.columnIndex="2" GridPane.rowIndex="4"/>
-                                        <TextField fx:id="daoTargetProject" prefHeight="27.0" prefWidth="152.0"
-                                                   promptText="src/main/java" text="src/main/java"
-                                                   GridPane.columnIndex="3" GridPane.rowIndex="4">
-                                            <GridPane.margin>
-                                                <Insets left="5.0"/>
-                                            </GridPane.margin>
-                                        </TextField>
 
-                                        <Label text="查询参数包全名(Param)" GridPane.rowIndex="5"/>
-                                        <TextField fx:id="paramTargetPackage" prefHeight="27.0" prefWidth="152.0"
-                                                   promptText="com.example.param(非必填),默认与实体类主路径一致" GridPane.columnIndex="1"
+                                        <Label text="DAO接口包全名" GridPane.rowIndex="5"/>
+                                        <TextField fx:id="daoTargetPackage" prefHeight="27.0" prefWidth="152.0"
+                                                   promptText="com.example.dao" GridPane.columnIndex="1"
                                                    GridPane.rowIndex="5">
                                             <HBox.margin>
                                                 <Insets right="5.0"/>
@@ -202,9 +185,10 @@
                                             </GridPane.margin>
                                         </TextField>
 
-                                        <Label text="XML文件包全名" GridPane.rowIndex="6"/>
-                                        <TextField fx:id="mapperTargetPackage" prefHeight="27.0" prefWidth="152.0"
-                                                   promptText="mybatis.mappers.auto" text="mybatis.mappers.auto" GridPane.columnIndex="1"
+                                        <Label text="查询参数包全名(Param)" GridPane.rowIndex="6"/>
+                                        <TextField fx:id="paramTargetPackage" prefHeight="27.0" prefWidth="152.0"
+                                                   promptText="com.example.param(非必填)，默认为实体类主路径.param"
+                                                   GridPane.columnIndex="1"
                                                    GridPane.rowIndex="6">
                                             <HBox.margin>
                                                 <Insets right="5.0"/>
@@ -213,17 +197,35 @@
                                                 <Insets left="5.0" right="5.0"/>
                                             </GridPane.margin>
                                         </TextField>
-                                        <Label text="存放目录" GridPane.columnIndex="2" GridPane.rowIndex="6"/>
+
+                                        <Label text="XML文件存放目录" GridPane.rowIndex="7"/>
                                         <TextField fx:id="mappingTargetProject" prefHeight="27.0" prefWidth="152.0"
                                                    promptText="src/main/resources" text="src/main/resources"
-                                                   GridPane.columnIndex="3" GridPane.rowIndex="6">
+                                                   GridPane.columnIndex="1" GridPane.rowIndex="7">
+                                            <HBox.margin>
+                                                <Insets right="5.0"/>
+                                            </HBox.margin>
                                             <GridPane.margin>
-                                                <Insets left="5.0"/>
+                                                <Insets left="5.0" right="5.0"/>
                                             </GridPane.margin>
                                         </TextField>
-                                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0"
+
+                                        <Label text="XML文件包全名" GridPane.rowIndex="8"/>
+                                        <TextField fx:id="mapperTargetPackage" prefHeight="27.0" prefWidth="152.0"
+                                                   promptText="mybatis.mappers.auto" text="mybatis.mappers.auto"
+                                                   GridPane.columnIndex="1"
+                                                   GridPane.rowIndex="8">
+                                            <HBox.margin>
+                                                <Insets right="5.0"/>
+                                            </HBox.margin>
+                                            <GridPane.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </GridPane.margin>
+                                        </TextField>
+
+                                        <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0"
                                               spacing="40.0" GridPane.columnIndex="1" GridPane.columnSpan="3"
-                                              GridPane.rowIndex="7">
+                                              GridPane.rowIndex="9">
                                             <children>
                                                 <Button mnemonicParsing="false" onAction="#generateCode"
                                                         text="生成代码">
