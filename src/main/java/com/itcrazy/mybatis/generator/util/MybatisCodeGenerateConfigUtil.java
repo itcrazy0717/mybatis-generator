@@ -76,7 +76,7 @@ public class MybatisCodeGenerateConfigUtil {
         try {
             conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
-            rs = stat.executeQuery("SELECT * FROM dbs");
+            rs = stat.executeQuery("SELECT * FROM database_connection_config");
             List<DatabaseConfig> configs = new ArrayList<>();
             while (rs.next()) {
                 int id = rs.getInt("id");
@@ -103,7 +103,7 @@ public class MybatisCodeGenerateConfigUtil {
             conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
             if (!isUpdate) {
-                ResultSet rs1 = stat.executeQuery("SELECT * from dbs where name = '" + configName + "'");
+                ResultSet rs1 = stat.executeQuery("SELECT * from database_connection_config where name = '" + configName + "'");
                 if (rs1.next()) {
                     throw new RuntimeException("配置已经存在, 请使用其它名字");
                 }
@@ -111,9 +111,9 @@ public class MybatisCodeGenerateConfigUtil {
             String jsonStr = JSON.toJSONString(dbConfig);
             String sql;
             if (isUpdate) {
-                sql = String.format("UPDATE dbs SET name = '%s', value = '%s' where id = %d", configName, jsonStr, primaryKey);
+                sql = String.format("UPDATE database_connection_config SET name = '%s', value = '%s' where id = %d", configName, jsonStr, primaryKey);
             } else {
-                sql = String.format("INSERT INTO dbs (name, value) values('%s', '%s')", configName, jsonStr);
+                sql = String.format("INSERT INTO database_connection_config (name, value) values('%s', '%s')", configName, jsonStr);
             }
             stat.executeUpdate(sql);
         } finally {
@@ -130,7 +130,7 @@ public class MybatisCodeGenerateConfigUtil {
         try {
             conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
-            String sql = String.format("delete from dbs where id=%d", databaseConfig.getId());
+            String sql = String.format("delete from database_connection_config where id=%d", databaseConfig.getId());
             stat.executeUpdate(sql);
         } finally {
             if (rs != null) rs.close();
