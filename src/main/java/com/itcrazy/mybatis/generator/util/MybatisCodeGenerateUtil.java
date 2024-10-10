@@ -1,10 +1,11 @@
-package com.itcrazy.mybatis.generator.bridge;
+package com.itcrazy.mybatis.generator.util;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.ProgressCallback;
@@ -27,12 +28,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
-import com.itcrazy.mybatis.generator.dto.DatabaseConfig;
-import com.itcrazy.mybatis.generator.dto.MybatisCodeGenerateConfig;
+import com.itcrazy.mybatis.generator.model.DatabaseConfig;
+import com.itcrazy.mybatis.generator.model.MybatisCodeGenerateConfig;
 import com.itcrazy.mybatis.generator.plugins.CustomCommentGenerator;
 import com.itcrazy.mybatis.generator.typeresolver.TinyIntTypeResolver;
-import com.itcrazy.mybatis.generator.util.DataBaseUtil;
-import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateConfigUtil;
 
 
 /**
@@ -40,29 +39,47 @@ import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateConfigUtil;
  * @version: $ MybatisGeneratorBridge.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public class MybatisGeneratorBridge {
+public class MybatisCodeGenerateUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MybatisGeneratorBridge.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MybatisCodeGenerateUtil.class);
 
-    private MybatisCodeGenerateConfig generateConfig;
+	/**
+	 * 代码生成配置
+	 */
+	private static MybatisCodeGenerateConfig generateConfig;
 
-    private DatabaseConfig selectedDatabaseConfig;
+	/**
+	 * 数据库配置
+	 */
+	private static DatabaseConfig selectedDatabaseConfig;
 
-    private ProgressCallback progressCallback;
+	/**
+	 * 回调处理
+	 */
+    private static ProgressCallback progressCallback;
 
-    private List<IgnoredColumn> ignoredColumns;
+	/**
+	 * 忽略的列
+	 */
+    private static List<IgnoredColumn> ignoredColumns;
 
-    private List<ColumnOverride> columnOverrides;
+	/**
+	 * 覆盖的列
+	 */
+    private static List<ColumnOverride> columnOverrides;
 
-    public MybatisGeneratorBridge() {
-    }
-
-    public void generate() throws Exception {
+	/**
+	 * 生成代码
+	 * by itcrazy0717
+	 *
+	 * @throws Exception
+	 */
+	public static void generate() throws Exception {
         Configuration configuration = new Configuration();
         Context context = new Context(ModelType.CONDITIONAL);
         configuration.addContext(context);
         context.addProperty("javaFileEncoding", "UTF-8");
-        String connectorLibPath = MybatisCodeGenerateConfigUtil.findConnectorLibPath(selectedDatabaseConfig.getDataBaseType());
+        String connectorLibPath = LocalSqliteUtil.findConnectorLibPath(selectedDatabaseConfig.getDataBaseType());
         LOGGER.info("connectorLibPath: {}", connectorLibPath);
         configuration.addClasspathEntry(connectorLibPath);
         // Table configuration
@@ -70,10 +87,10 @@ public class MybatisGeneratorBridge {
         tableConfig.setTableName(generateConfig.getTableName());
         tableConfig.setDomainObjectName(generateConfig.getDomainObjectName());
 
-        // 针对postgresql单独配置
-        if (DataBaseTypeEnum.valueOf(selectedDatabaseConfig.getDataBaseType()).getDriverClass() == "org.postgresql.Driver") {
-            tableConfig.setDelimitIdentifiers(true);
-        }
+		// 针对postgresql单独配置
+		if (StringUtils.equals(DataBaseTypeEnum.PostgreSQL.getDriverClass(), DataBaseTypeEnum.valueOf(selectedDatabaseConfig.getDataBaseType()).getDriverClass())) {
+			tableConfig.setDelimitIdentifiers(true);
+		}
 
        /*
        // 添加GeneratedKey主键生成
@@ -86,10 +103,10 @@ public class MybatisGeneratorBridge {
 		    tableConfig.setMapperName(generateConfig.getMapperName());
 	    }
         // add ignore columns
-        if (ignoredColumns != null) {
+        if (CollectionUtils.isNotEmpty(ignoredColumns)) {
             ignoredColumns.forEach(tableConfig::addIgnoredColumn);
         }
-        if (columnOverrides != null) {
+        if (CollectionUtils.isNotEmpty(columnOverrides )) {
             columnOverrides.forEach(tableConfig::addColumnOverride);
         }
         JDBCConnectionConfiguration jdbcConfig = new JDBCConnectionConfiguration();
@@ -137,7 +154,7 @@ public class MybatisGeneratorBridge {
 	    context.setCommentGeneratorConfiguration(commentConfig);
 
 		// 增加自定义插件
-	    addCustomPlugin(context, paramPackage);
+	    addCustomPlugins(context, paramPackage);
 
 	    context.setTargetRuntime("MyBatis3");
 
@@ -156,7 +173,7 @@ public class MybatisGeneratorBridge {
 	 * @param context
 	 * @param paramPackage parm参数包路径
 	 */
-	private void addCustomPlugin(Context context, String paramPackage) {
+	private static void addCustomPlugins(Context context, String paramPackage) {
 		// 默认设置TINYINT->Boolean类型
 		JavaTypeResolverConfiguration typeResolverConfiguration = new JavaTypeResolverConfiguration();
 		typeResolverConfiguration.setConfigurationType(TinyIntTypeResolver.class.getName());
@@ -212,23 +229,23 @@ public class MybatisGeneratorBridge {
 		context.addPluginConfiguration(sortPlugin);
 	}
 
-	public void setGenerateConfig(MybatisCodeGenerateConfig generateConfig) {
-		this.generateConfig = generateConfig;
+	/**
+	 * 导入配置
+	 * by itcrazy0717
+	 *
+	 * @param generateConfig
+	 * @param databaseConfig
+	 * @param progressCallback
+	 * @param ignoredColumns
+	 * @param columnOverrides
+	 */
+	public static void loadConfig(MybatisCodeGenerateConfig generateConfig, DatabaseConfig databaseConfig,
+	                              ProgressCallback progressCallback, List<IgnoredColumn> ignoredColumns,
+	                              List<ColumnOverride> columnOverrides) {
+		MybatisCodeGenerateUtil.generateConfig = generateConfig;
+		MybatisCodeGenerateUtil.selectedDatabaseConfig = databaseConfig;
+		MybatisCodeGenerateUtil.progressCallback = progressCallback;
+		MybatisCodeGenerateUtil.ignoredColumns = ignoredColumns;
+		MybatisCodeGenerateUtil.columnOverrides = columnOverrides;
 	}
-
-	public void setDatabaseConfig(DatabaseConfig databaseConfig) {
-		this.selectedDatabaseConfig = databaseConfig;
-	}
-
-	public void setProgressCallback(ProgressCallback progressCallback) {
-        this.progressCallback = progressCallback;
-    }
-
-    public void setIgnoredColumns(List<IgnoredColumn> ignoredColumns) {
-        this.ignoredColumns = ignoredColumns;
-    }
-
-    public void setColumnOverrides(List<ColumnOverride> columnOverrides) {
-        this.columnOverrides = columnOverrides;
-    }
 }

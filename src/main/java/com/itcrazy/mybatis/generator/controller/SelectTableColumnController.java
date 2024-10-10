@@ -9,7 +9,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.mybatis.generator.config.ColumnOverride;
 import org.mybatis.generator.config.IgnoredColumn;
 
-import com.itcrazy.mybatis.generator.dto.TableColumn;
+import com.itcrazy.mybatis.generator.model.TableColumn;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

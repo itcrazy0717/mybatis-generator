@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.itcrazy.mybatis.generator.controller.MainApplicationController;
-import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateConfigUtil;
+import com.itcrazy.mybatis.generator.util.LocalSqliteUtil;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -29,7 +29,7 @@ public class MainApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        MybatisCodeGenerateConfigUtil.createEmptyFiles();
+        LocalSqliteUtil.createEmptyFiles();
         URL url = Thread.currentThread().getContextClassLoader().getResource("fxml/mainApplication.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(url);
         Parent root = fxmlLoader.load();

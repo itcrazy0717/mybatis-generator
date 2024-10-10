@@ -1,4 +1,4 @@
-package com.itcrazy.mybatis.generator.dto;
+package com.itcrazy.mybatis.generator.model;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

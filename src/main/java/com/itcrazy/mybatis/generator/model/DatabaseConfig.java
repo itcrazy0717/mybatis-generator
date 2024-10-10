@@ -1,4 +1,4 @@
-package com.itcrazy.mybatis.generator.dto;
+package com.itcrazy.mybatis.generator.model;
 
 import lombok.Data;
 

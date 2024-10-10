@@ -7,8 +7,8 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.itcrazy.mybatis.generator.dto.MybatisCodeGenerateConfig;
-import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateConfigUtil;
+import com.itcrazy.mybatis.generator.model.MybatisCodeGenerateConfig;
+import com.itcrazy.mybatis.generator.util.LocalSqliteUtil;
 import com.itcrazy.mybatis.generator.view.AlertUtil;
 
 import javafx.collections.FXCollections;
@@ -66,7 +66,7 @@ public class GenerateCodeConfigController extends BaseFXController {
                         btn1.setOnAction(event -> {
                             try {
                                 // 应用配置
-                                MybatisCodeGenerateConfig generatorConfig = MybatisCodeGenerateConfigUtil.loadGeneratorConfig(item.toString());
+                                MybatisCodeGenerateConfig generatorConfig = LocalSqliteUtil.loadGeneratorConfig(item.toString());
                                 mainApplicationController.assembleCodeGenerateConfig(generatorConfig);
                                 controller.closeDialogStage();
                             } catch (Exception e) {
@@ -77,7 +77,7 @@ public class GenerateCodeConfigController extends BaseFXController {
                             try {
                                 // 删除配置
                                 LOGGER.debug("item: {}", item);
-                                MybatisCodeGenerateConfigUtil.deleteCodeGenerateConfig(item.toString());
+                                LocalSqliteUtil.deleteCodeGenerateConfig(item.toString());
                                 refreshTableView();
                             } catch (Exception e) {
                                 AlertUtil.showErrorAlert(e.getMessage());
@@ -93,7 +93,7 @@ public class GenerateCodeConfigController extends BaseFXController {
 
     public void refreshTableView() {
         try {
-            List<MybatisCodeGenerateConfig> configs = MybatisCodeGenerateConfigUtil.loadGeneratorConfigs();
+            List<MybatisCodeGenerateConfig> configs = LocalSqliteUtil.loadGeneratorConfigs();
             configTable.setItems(FXCollections.observableList(configs));
         } catch (Exception e) {
             AlertUtil.showErrorAlert(e.getMessage());

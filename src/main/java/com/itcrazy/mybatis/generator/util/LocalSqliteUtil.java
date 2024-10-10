@@ -18,17 +18,17 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
-import com.itcrazy.mybatis.generator.dto.DatabaseConfig;
-import com.itcrazy.mybatis.generator.dto.MybatisCodeGenerateConfig;
+import com.itcrazy.mybatis.generator.model.DatabaseConfig;
+import com.itcrazy.mybatis.generator.model.MybatisCodeGenerateConfig;
 
 /**
  * @author: itcrazy0717
  * @version: $ MybatisCodeGenerateConfigUtil.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public class MybatisCodeGenerateConfigUtil {
+public class LocalSqliteUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MybatisCodeGenerateConfigUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LocalSqliteUtil.class);
 
 	/**
 	 * 配置目录
@@ -51,7 +51,7 @@ public class MybatisCodeGenerateConfigUtil {
         }
     }
 
-    static void createEmptyXMLFile(File uiConfigFile) throws IOException {
+    public static void createEmptyXMLFile(File uiConfigFile) throws IOException {
         InputStream fis = null;
         FileOutputStream fos = null;
         try {

@@ -18,14 +18,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
-import com.itcrazy.mybatis.generator.dto.DatabaseConfig;
-import com.itcrazy.mybatis.generator.dto.TableColumn;
+import com.itcrazy.mybatis.generator.model.DatabaseConfig;
+import com.itcrazy.mybatis.generator.model.TableColumn;
 
 
 /**
  * @author: itcrazy0717
  * @version: $ DataBaseUtil.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
- * @description:
+ * @description:数据库工具
  */
 public class DataBaseUtil {
 
@@ -48,7 +48,7 @@ public class DataBaseUtil {
 
     static {
         DATABASE_DRIVER_MAP = new HashMap<>();
-        List<String> driverJars = MybatisCodeGenerateConfigUtil.getAllJDBCDriverJarPaths();
+        List<String> driverJars = LocalSqliteUtil.getAllJDBCDriverJarPaths();
         ClassLoader classloader = ClassloaderUtility.getCustomClassloader(driverJars);
         DataBaseTypeEnum[] dbTypes = DataBaseTypeEnum.values();
         for (DataBaseTypeEnum dbType : dbTypes) {

@@ -19,15 +19,15 @@ import org.mybatis.generator.config.IgnoredColumn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.itcrazy.mybatis.generator.bridge.MybatisGeneratorBridge;
-import com.itcrazy.mybatis.generator.dto.DatabaseConfig;
-import com.itcrazy.mybatis.generator.dto.MybatisCodeGenerateConfig;
-import com.itcrazy.mybatis.generator.dto.TableColumn;
+import com.itcrazy.mybatis.generator.model.DatabaseConfig;
+import com.itcrazy.mybatis.generator.model.MybatisCodeGenerateConfig;
+import com.itcrazy.mybatis.generator.model.TableColumn;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
+import com.itcrazy.mybatis.generator.util.LocalSqliteUtil;
 import com.itcrazy.mybatis.generator.util.MyStringUtils;
-import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateConfigUtil;
+import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateUtil;
 import com.itcrazy.mybatis.generator.view.AlertUtil;
-import com.itcrazy.mybatis.generator.view.UIProgressCallback;
+import com.itcrazy.mybatis.generator.view.ShowProgressCallback;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -149,7 +149,7 @@ public class MainApplicationController extends BaseFXController {
                     item3.setOnAction(event1 -> {
                         DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
                         try {
-                            MybatisCodeGenerateConfigUtil.deleteDatabaseConfig(selectedConfig);
+                            LocalSqliteUtil.deleteDatabaseConfig(selectedConfig);
                             this.loadLeftDBTree();
                         } catch (Exception e) {
                             AlertUtil.showErrorAlert("Delete connection failed! Reason: " + e.getMessage());
@@ -203,7 +203,7 @@ public class MainApplicationController extends BaseFXController {
         TreeItem<String> rootTreeItem = leftDBTree.getRoot();
         rootTreeItem.getChildren().clear();
         try {
-            List<DatabaseConfig> dbConfigs = MybatisCodeGenerateConfigUtil.loadDatabaseConfig();
+            List<DatabaseConfig> dbConfigs = LocalSqliteUtil.loadDatabaseConfig();
             for (DatabaseConfig dbConfig : dbConfigs) {
                 TreeItem<String> treeItem = new TreeItem<>();
                 treeItem.setValue(dbConfig.getName());
@@ -245,16 +245,11 @@ public class MainApplicationController extends BaseFXController {
             return;
         }
 
-        MybatisGeneratorBridge bridge = new MybatisGeneratorBridge();
-        bridge.setGenerateConfig(generatorConfig);
-        bridge.setDatabaseConfig(selectedDatabaseConfig);
-        bridge.setIgnoredColumns(ignoredColumns);
-        bridge.setColumnOverrides(columnOverrides);
-        UIProgressCallback alert = new UIProgressCallback(Alert.AlertType.INFORMATION);
-        bridge.setProgressCallback(alert);
-        alert.show();
+        ShowProgressCallback progressCallback = new ShowProgressCallback(Alert.AlertType.INFORMATION);
+	    MybatisCodeGenerateUtil.loadConfig(generatorConfig,selectedDatabaseConfig,progressCallback,ignoredColumns,columnOverrides);
+        progressCallback.show();
         try {
-            bridge.generate();
+	        MybatisCodeGenerateUtil.generate();
         } catch (Exception e) {
             LOGGER.error("generate code failed, reason: {}", e);
             AlertUtil.showErrorAlert(e.getMessage());
@@ -296,7 +291,7 @@ public class MainApplicationController extends BaseFXController {
             try {
                 MybatisCodeGenerateConfig generateConfig = getMybatisCodeGenerateConfig();
                 generateConfig.setName(name);
-                MybatisCodeGenerateConfigUtil.saveCodeGenerateConfig(generateConfig);
+                LocalSqliteUtil.saveCodeGenerateConfig(generateConfig);
             } catch (Exception e) {
                 AlertUtil.showErrorAlert("删除配置失败");
             }

@@ -7,8 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.itcrazy.mybatis.generator.dto.DatabaseConfig;
-import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateConfigUtil;
+import com.itcrazy.mybatis.generator.model.DatabaseConfig;
+import com.itcrazy.mybatis.generator.util.LocalSqliteUtil;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
 import com.itcrazy.mybatis.generator.view.AlertUtil;
 
@@ -57,7 +57,7 @@ public class DataBaseConnectionController extends BaseFXController {
             return;
         }
         try {
-            MybatisCodeGenerateConfigUtil.saveDatabaseConfig(this.isUpdate, primayKey, config);
+            LocalSqliteUtil.saveDatabaseConfig(this.isUpdate, primayKey, config);
             getDialogStage().close();
             mainUIController.loadLeftDBTree();
         } catch (Exception e) {

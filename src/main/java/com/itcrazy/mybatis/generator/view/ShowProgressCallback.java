@@ -8,14 +8,14 @@ import javafx.scene.control.Alert;
 
 /**
  * @author: itcrazy0717
- * @version: $ UIProgressCallback.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
+ * @version: $ ShowProgressCallback.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public class UIProgressCallback extends Alert implements ProgressCallback {
+public class ShowProgressCallback extends Alert implements ProgressCallback {
 
     private StringProperty progressText = new SimpleStringProperty();
 
-    public UIProgressCallback(AlertType alertType) {
+    public ShowProgressCallback(AlertType alertType) {
         super(alertType);
         this.contentTextProperty().bindBidirectional(progressText);
     }
