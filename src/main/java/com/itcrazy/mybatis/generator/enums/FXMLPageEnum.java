@@ -1,11 +1,14 @@
-package com.itcrazy.mybatis.generator.controller;
+package com.itcrazy.mybatis.generator.enums;
+
+import lombok.Getter;
 
 /**
  * @author: itcrazy0717
- * @version: $ FXMLPage.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
+ * @version: $ FXMLPageEnum.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public enum FXMLPage {
+@Getter
+public enum FXMLPageEnum {
 
 	/**
 	 * 新数据库连接
@@ -23,15 +26,10 @@ public enum FXMLPage {
 	GENERATE_CONFIG("fxml/generateConfig.fxml"),
     ;
 
-    private String fxml;
+    private final String fxml;
 
-    FXMLPage(String fxml) {
+    FXMLPageEnum(String fxml) {
         this.fxml = fxml;
     }
-
-    public String getFxml() {
-        return this.fxml;
-    }
-
 
 }

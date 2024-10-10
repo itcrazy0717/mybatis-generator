@@ -19,6 +19,7 @@ import org.mybatis.generator.config.IgnoredColumn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.itcrazy.mybatis.generator.enums.FXMLPageEnum;
 import com.itcrazy.mybatis.generator.model.DatabaseConfig;
 import com.itcrazy.mybatis.generator.model.MybatisCodeGenerateConfig;
 import com.itcrazy.mybatis.generator.model.TableColumn;
@@ -54,7 +55,7 @@ import javafx.util.Callback;
  * @version: $ MainApplicationController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public class MainApplicationController extends BaseFXController {
+public class MainApplicationController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainApplicationController.class);
 
@@ -106,7 +107,7 @@ public class MainApplicationController extends BaseFXController {
         dbImage.setFitWidth(40);
         connectionLabel.setGraphic(dbImage);
         connectionLabel.setOnMouseClicked(event -> {
-            DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("新建数据库连接", FXMLPage.NEW_DATA_BASE_CONNECTION, false);
+            DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("新建数据库连接", FXMLPageEnum.NEW_DATA_BASE_CONNECTION, false);
             controller.setMainUIController(this);
             // 为窗口增加ico图标
             controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/computer.png"))));
@@ -117,7 +118,7 @@ public class MainApplicationController extends BaseFXController {
         configImage.setFitWidth(40);
         configsLabel.setGraphic(configImage);
         configsLabel.setOnMouseClicked(event -> {
-            GenerateCodeConfigController controller = (GenerateCodeConfigController) loadFXMLPage("配置", FXMLPage.GENERATE_CONFIG, false);
+            GenerateCodeConfigController controller = (GenerateCodeConfigController) loadFXMLPage("配置", FXMLPageEnum.GENERATE_CONFIG, false);
             controller.setMainApplicationController(this);
             // 为窗口增加ico图标
             controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/config_list.png"))));
@@ -140,7 +141,7 @@ public class MainApplicationController extends BaseFXController {
                     MenuItem item2 = new MenuItem("编辑连接");
                     item2.setOnAction(event1 -> {
                         DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
-                        DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("编辑数据库连接", FXMLPage.NEW_DATA_BASE_CONNECTION, false);
+                        DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("编辑数据库连接", FXMLPageEnum.NEW_DATA_BASE_CONNECTION, false);
                         controller.setMainUIController(this);
                         controller.setConfig(selectedConfig);
                         controller.showDialogStage();
@@ -223,7 +224,7 @@ public class MainApplicationController extends BaseFXController {
     @FXML
     public void chooseProjectFolder() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        File selectedFolder = directoryChooser.showDialog(getPrimaryStage());
+        File selectedFolder = directoryChooser.showDialog(getMainStage());
         if (selectedFolder != null) {
             projectFolderField.setText(selectedFolder.getAbsolutePath());
         }
@@ -249,9 +250,9 @@ public class MainApplicationController extends BaseFXController {
 	    MybatisCodeGenerateUtil.loadConfig(generatorConfig,selectedDatabaseConfig,progressCallback,ignoredColumns,columnOverrides);
         progressCallback.show();
         try {
-	        MybatisCodeGenerateUtil.generate();
+	        MybatisCodeGenerateUtil.generateCode();
         } catch (Exception e) {
-            LOGGER.error("generate code failed, reason: {}", e);
+            LOGGER.error("generate code failed", e);
             AlertUtil.showErrorAlert(e.getMessage());
         }
     }
@@ -340,7 +341,7 @@ public class MainApplicationController extends BaseFXController {
             AlertUtil.showWarnAlert("请先在左侧选择数据库表");
             return;
         }
-        SelectTableColumnController controller = (SelectTableColumnController) loadFXMLPage("定制列", FXMLPage.SELECT_TABLE_COLUMN, true);
+        SelectTableColumnController controller = (SelectTableColumnController) loadFXMLPage("定制列", FXMLPageEnum.SELECT_TABLE_COLUMN, true);
         // 为定制项窗口增加ico图标
         controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/table.png"))));
         controller.setMainUIController(this);

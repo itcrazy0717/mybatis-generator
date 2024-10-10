@@ -74,7 +74,7 @@ public class MybatisCodeGenerateUtil {
 	 *
 	 * @throws Exception
 	 */
-	public static void generate() throws Exception {
+	public static void generateCode() throws Exception {
         Configuration configuration = new Configuration();
         Context context = new Context(ModelType.CONDITIONAL);
         configuration.addContext(context);

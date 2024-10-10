@@ -23,7 +23,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
  * @version: $ SelectTableColumnController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public class SelectTableColumnController extends BaseFXController {
+public class SelectTableColumnController extends BaseController {
 
     @FXML
     private TableView<TableColumn> columnListView;

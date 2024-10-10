@@ -21,7 +21,7 @@ import javafx.scene.control.TextField;
  * @version: $ DataBaseConnectionController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public class DataBaseConnectionController extends BaseFXController {
+public class DataBaseConnectionController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataBaseConnectionController.class);
 

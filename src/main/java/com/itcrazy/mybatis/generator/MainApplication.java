@@ -40,7 +40,7 @@ public class MainApplication extends Application {
         primaryStage.show();
 
         MainApplicationController controller = fxmlLoader.getController();
-        controller.setPrimaryStage(primaryStage);
+        controller.setMainStage(primaryStage);
     }
 
     public static void main(String[] args) {
