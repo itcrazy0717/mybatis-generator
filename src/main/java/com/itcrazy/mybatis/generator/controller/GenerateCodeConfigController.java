@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.itcrazy.mybatis.generator.model.MybatisCodeGenerateConfig;
 import com.itcrazy.mybatis.generator.util.LocalSqliteUtil;
-import com.itcrazy.mybatis.generator.view.AlertUtil;
+import com.itcrazy.mybatis.generator.util.MessageTipsUtil;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -70,7 +70,7 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
                                 mainApplicationController.assembleCodeGenerateConfig(codeGenerateConfig);
                                 controller.closeDialogStage();
                             } catch (Exception e) {
-                                AlertUtil.showErrorAlert(e.getMessage());
+                                MessageTipsUtil.showErrorInfo(e.getMessage());
                             }
                         });
                         btn2.setOnAction(event -> {
@@ -80,7 +80,7 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
                                 LocalSqliteUtil.deleteCodeGenerateConfigByName(item.toString());
                                 refreshTableView();
                             } catch (Exception e) {
-                                AlertUtil.showErrorAlert(e.getMessage());
+                                MessageTipsUtil.showErrorInfo(e.getMessage());
                             }
                         });
                         setGraphic(hBox);
@@ -100,7 +100,7 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
             List<MybatisCodeGenerateConfig> configs = LocalSqliteUtil.loadCodeGenerateConfigList();
             codeGenerateView.setItems(FXCollections.observableList(configs));
         } catch (Exception e) {
-            AlertUtil.showErrorAlert(e.getMessage());
+            MessageTipsUtil.showErrorInfo(e.getMessage());
         }
     }
 

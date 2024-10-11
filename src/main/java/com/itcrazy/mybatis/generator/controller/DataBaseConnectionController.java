@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.itcrazy.mybatis.generator.model.DatabaseConnectionConfig;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
 import com.itcrazy.mybatis.generator.util.LocalSqliteUtil;
-import com.itcrazy.mybatis.generator.view.AlertUtil;
+import com.itcrazy.mybatis.generator.util.MessageTipsUtil;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
@@ -66,7 +66,7 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
             mainApplicationController.loadDataBaseViewList();
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
-            AlertUtil.showErrorAlert(e.getMessage());
+            MessageTipsUtil.showErrorInfo(e.getMessage());
         }
     }
 
@@ -78,10 +78,10 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
         }
         try {
             DataBaseUtil.getConnection(config);
-            AlertUtil.showInfoAlert("连接成功");
+            MessageTipsUtil.showInfo("连接成功");
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
-            AlertUtil.showWarnAlert("连接失败");
+            MessageTipsUtil.showWarnInfo("连接失败");
         }
 
     }
@@ -120,7 +120,7 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
         config.setSchemaName(schema);
         config.setEncoding(encoding);
         if (StringUtils.isAnyBlank(name, host, port, userName, encoding, dbType, schema)) {
-            AlertUtil.showWarnAlert("密码以外其他字段必填");
+            MessageTipsUtil.showWarnInfo("密码以外其他字段必填");
             return null;
         }
         return config;

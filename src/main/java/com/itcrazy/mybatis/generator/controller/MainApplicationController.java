@@ -27,7 +27,7 @@ import com.itcrazy.mybatis.generator.util.DataBaseUtil;
 import com.itcrazy.mybatis.generator.util.LocalSqliteUtil;
 import com.itcrazy.mybatis.generator.util.MyStringUtils;
 import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateUtil;
-import com.itcrazy.mybatis.generator.view.AlertUtil;
+import com.itcrazy.mybatis.generator.util.MessageTipsUtil;
 import com.itcrazy.mybatis.generator.view.ShowProgressCallback;
 
 import javafx.collections.FXCollections;
@@ -153,7 +153,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                             LocalSqliteUtil.deleteDatabaseConfig(selectedConfig);
                             this.loadDataBaseViewList();
                         } catch (Exception e) {
-                            AlertUtil.showErrorAlert("Delete connection failed! Reason: " + e.getMessage());
+                            MessageTipsUtil.showErrorInfo("Delete connection failed! Reason: " + e.getMessage());
                         }
                     });
                     contextMenu.getItems().addAll(item1, item2, item3);
@@ -181,10 +181,10 @@ public class MainApplicationController extends BaseFxmlPageController {
                             }
                         } catch (SQLRecoverableException e) {
                             LOGGER.error(e.getMessage(), e);
-                            AlertUtil.showErrorAlert("数据库连接超时");
+                            MessageTipsUtil.showErrorInfo("数据库连接超时");
                         } catch (Exception e) {
                             LOGGER.error(e.getMessage(), e);
-                            AlertUtil.showErrorAlert(e.getMessage());
+                            MessageTipsUtil.showErrorInfo(e.getMessage());
                         }
                     } else if (level == 2) { // left DB tree level3
                         String tableName = treeCell.getTreeItem().getValue();
@@ -221,7 +221,7 @@ public class MainApplicationController extends BaseFxmlPageController {
 			}
 		} catch (Exception e) {
 			LOGGER.error("connect db failed", e);
-			AlertUtil.showErrorAlert(e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
+			MessageTipsUtil.showErrorInfo(e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -237,12 +237,12 @@ public class MainApplicationController extends BaseFxmlPageController {
     @FXML
     public void generateCode() {
         if (StringUtils.isBlank(tableName)) {
-            AlertUtil.showWarnAlert("请先在左侧选择数据库表");
+            MessageTipsUtil.showWarnInfo("请先在左侧选择数据库表");
             return;
         }
         String result = validateConfig();
         if (result != null) {
-            AlertUtil.showErrorAlert(result);
+            MessageTipsUtil.showErrorInfo(result);
             return;
         }
         MybatisCodeGenerateConfig generatorConfig = getMybatisCodeGenerateConfig();
@@ -257,7 +257,7 @@ public class MainApplicationController extends BaseFxmlPageController {
 	        MybatisCodeGenerateUtil.generateCode();
         } catch (Exception e) {
             LOGGER.error("generate code failed", e);
-            AlertUtil.showErrorAlert(e.getMessage());
+            MessageTipsUtil.showErrorInfo(e.getMessage());
         }
     }
 
@@ -289,7 +289,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         if (result.isPresent()) {
             String name = result.get();
             if (StringUtils.isBlank(name)) {
-                AlertUtil.showErrorAlert("名称不能为空");
+                MessageTipsUtil.showErrorInfo("名称不能为空");
                 return;
             }
             LOGGER.info("user choose name: {}", name);
@@ -298,7 +298,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                 generateConfig.setName(name);
                 LocalSqliteUtil.saveCodeGenerateConfig(generateConfig);
             } catch (Exception e) {
-                AlertUtil.showErrorAlert("删除配置失败");
+                MessageTipsUtil.showErrorInfo("删除配置失败");
             }
         }
     }
@@ -342,7 +342,7 @@ public class MainApplicationController extends BaseFxmlPageController {
     @FXML
     public void openTableColumnCustomizationPage() {
         if (tableName == null) {
-            AlertUtil.showWarnAlert("请先在左侧选择数据库表");
+            MessageTipsUtil.showWarnInfo("请先在左侧选择数据库表");
             return;
         }
         SelectTableColumnController controller = (SelectTableColumnController) loadFXMLPage("定制列", FxmlPageEnum.SELECT_TABLE_COLUMN, true);
@@ -359,7 +359,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             controller.showDialogStage();
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
-            AlertUtil.showErrorAlert(e.getMessage());
+            MessageTipsUtil.showErrorInfo(e.getMessage());
         }
     }
 
@@ -400,7 +400,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                         }
                         return true;
                     } catch (Exception e) {
-                        AlertUtil.showErrorAlert("创建目录失败，请检查目录是否是文件而非目录");
+                        MessageTipsUtil.showErrorInfo("创建目录失败，请检查目录是否是文件而非目录");
                     }
                 } else {
                     return false;
