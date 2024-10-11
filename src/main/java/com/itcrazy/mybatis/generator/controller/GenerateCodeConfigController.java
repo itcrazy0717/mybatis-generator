@@ -30,7 +30,7 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
     private static final Logger LOGGER = LoggerFactory.getLogger(GenerateCodeConfigController.class);
 
     @FXML
-    private TableView<MybatisCodeGenerateConfig> configTable;
+    private TableView<MybatisCodeGenerateConfig> codeGenerateView;
 
     @FXML
     private TableColumn nameColumn;
@@ -66,8 +66,8 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
                         btn1.setOnAction(event -> {
                             try {
                                 // 应用配置
-                                MybatisCodeGenerateConfig generatorConfig = LocalSqliteUtil.loadGeneratorConfig(item.toString());
-                                mainApplicationController.assembleCodeGenerateConfig(generatorConfig);
+                                MybatisCodeGenerateConfig codeGenerateConfig = LocalSqliteUtil.loadCodeGenerateConfigByName(item.toString());
+                                mainApplicationController.assembleCodeGenerateConfig(codeGenerateConfig);
                                 controller.closeDialogStage();
                             } catch (Exception e) {
                                 AlertUtil.showErrorAlert(e.getMessage());
@@ -77,7 +77,7 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
                             try {
                                 // 删除配置
                                 LOGGER.debug("item: {}", item);
-                                LocalSqliteUtil.deleteCodeGenerateConfig(item.toString());
+                                LocalSqliteUtil.deleteCodeGenerateConfigByName(item.toString());
                                 refreshTableView();
                             } catch (Exception e) {
                                 AlertUtil.showErrorAlert(e.getMessage());
@@ -91,10 +91,14 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
         refreshTableView();
     }
 
-    public void refreshTableView() {
+	/**
+	 * 刷新表视图
+	 * by itcrazy0717
+	 */
+	public void refreshTableView() {
         try {
-            List<MybatisCodeGenerateConfig> configs = LocalSqliteUtil.loadGeneratorConfigs();
-            configTable.setItems(FXCollections.observableList(configs));
+            List<MybatisCodeGenerateConfig> configs = LocalSqliteUtil.loadCodeGenerateConfigList();
+            codeGenerateView.setItems(FXCollections.observableList(configs));
         } catch (Exception e) {
             AlertUtil.showErrorAlert(e.getMessage());
         }

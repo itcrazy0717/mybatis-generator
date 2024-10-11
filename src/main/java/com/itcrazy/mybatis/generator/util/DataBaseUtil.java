@@ -48,7 +48,7 @@ public class DataBaseUtil {
 
     static {
         DATABASE_DRIVER_MAP = new HashMap<>();
-        List<String> driverJars = LocalSqliteUtil.getAllJDBCDriverJarPaths();
+        List<String> driverJars = LocalSqliteUtil.getAllDataBaseDriverJarPath();
         ClassLoader classloader = ClassloaderUtility.getCustomClassloader(driverJars);
         DataBaseTypeEnum[] dbTypes = DataBaseTypeEnum.values();
         for (DataBaseTypeEnum dbType : dbTypes) {

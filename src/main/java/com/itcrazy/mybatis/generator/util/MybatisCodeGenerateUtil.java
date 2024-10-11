@@ -79,7 +79,7 @@ public class MybatisCodeGenerateUtil {
         Context context = new Context(ModelType.CONDITIONAL);
         configuration.addContext(context);
         context.addProperty("javaFileEncoding", "UTF-8");
-        String connectorLibPath = LocalSqliteUtil.findConnectorLibPath(selectedDatabaseConfig.getDataBaseType());
+        String connectorLibPath = LocalSqliteUtil.getDataBaseDriverJarPath(selectedDatabaseConfig.getDataBaseType());
         LOGGER.info("connectorLibPath: {}", connectorLibPath);
         configuration.addClasspathEntry(connectorLibPath);
         // Table configuration

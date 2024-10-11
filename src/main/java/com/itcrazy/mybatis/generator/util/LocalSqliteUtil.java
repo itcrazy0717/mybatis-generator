@@ -4,19 +4,22 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
+import com.itcrazy.mybatis.generator.constant.SqliteConstants;
 import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
 import com.itcrazy.mybatis.generator.model.DatabaseConnectionConfig;
 import com.itcrazy.mybatis.generator.model.MybatisCodeGenerateConfig;
@@ -161,21 +164,33 @@ public class LocalSqliteUtil {
             String insertSql = String.format("INSERT INTO code_generate_config values('%s', '%s')", codeGenerateConfig.getName(), configJson);
             stat.executeUpdate(insertSql);
         } finally {
-	        if (Objects.nonNull(stat)) {stat.close();}
-	        if (Objects.nonNull(conn)) {conn.close();}
+	        if (Objects.nonNull(stat)) {
+		        stat.close();
+	        }
+	        if (Objects.nonNull(conn)) {
+		        conn.close();
+	        }
         }
     }
 
-    public static MybatisCodeGenerateConfig loadGeneratorConfig(String name) throws Exception {
+	/**
+	 * 根据名称导入代码生成配置
+	 * by itcrazy0717
+	 *
+	 * @param name
+	 * @return
+	 * @throws Exception
+	 */
+    public static MybatisCodeGenerateConfig loadCodeGenerateConfigByName(String name) throws Exception {
         Connection conn = null;
         Statement stat = null;
         ResultSet rs = null;
         try {
             conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
-            String sql = String.format("SELECT * FROM code_generate_config where name='%s'", name);
-            LOGGER.info("sql: {}", sql);
-            rs = stat.executeQuery(sql);
+            String selectSql = String.format("SELECT * FROM code_generate_config where name='%s'", name);
+            LOGGER.info("sql: {}", selectSql);
+            rs = stat.executeQuery(selectSql);
             MybatisCodeGenerateConfig generatorConfig = null;
             if (rs.next()) {
                 String value = rs.getString("value");
@@ -183,20 +198,33 @@ public class LocalSqliteUtil {
             }
             return generatorConfig;
         } finally {
-            if (rs != null) rs.close();
-            if (stat != null) stat.close();
-            if (conn != null) conn.close();
+	        if (Objects.nonNull(rs)) {
+		        rs.close();
+	        }
+	        if (Objects.nonNull(stat)) {
+		        stat.close();
+	        }
+	        if (Objects.nonNull(conn)) {
+		        conn.close();
+	        }
         }
     }
 
-    public static List<MybatisCodeGenerateConfig> loadGeneratorConfigs() throws Exception {
+	/**
+	 * 导入所有代码生成配置列表
+	 * by itcrazy0717
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	public static List<MybatisCodeGenerateConfig> loadCodeGenerateConfigList() throws Exception {
         Connection conn = null;
         Statement stat = null;
         ResultSet rs = null;
         try {
             conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
-            String sql = String.format("SELECT * FROM code_generate_config");
+            String sql = "SELECT * FROM code_generate_config";
             LOGGER.info("sql: {}", sql);
             rs = stat.executeQuery(sql);
             List<MybatisCodeGenerateConfig> configs = new ArrayList<>();
@@ -206,20 +234,26 @@ public class LocalSqliteUtil {
             }
             return configs;
         } finally {
-            if (rs != null) rs.close();
-            if (stat != null) stat.close();
-            if (conn != null) conn.close();
+	        if (Objects.nonNull(rs)) {
+		        rs.close();
+	        }
+	        if (Objects.nonNull(stat)) {
+		        stat.close();
+	        }
+	        if (Objects.nonNull(conn)) {
+		        conn.close();
+	        }
         }
     }
 
 	/**
-	 * 删除生成代码配置
+	 * 根据名称删除生成代码配置
 	 * by itcrazy0717
 	 *
 	 * @param name
 	 * @throws Exception
 	 */
-	public static void deleteCodeGenerateConfig(String name) throws Exception {
+	public static void deleteCodeGenerateConfigByName(String name) throws Exception {
         Connection conn = null;
         Statement stat = null;
         try {
@@ -229,51 +263,55 @@ public class LocalSqliteUtil {
             LOGGER.info("sql: {}", deleteSql);
             stat.executeUpdate(deleteSql);
         } finally {
-            if (stat != null) stat.close();
-            if (conn != null) conn.close();
+	        if (Objects.nonNull(stat)) {
+		        stat.close();
+	        }
+	        if (Objects.nonNull(conn)) {
+		        conn.close();
+	        }
         }
     }
 
-    public static String findConnectorLibPath(String dbType) {
-        DataBaseTypeEnum type = DataBaseTypeEnum.valueOf(dbType);
-        URL resource = Thread.currentThread().getContextClassLoader().getResource("logback.xml");
-        LOGGER.info("jar resource: {}", resource);
-        if (resource != null) {
-            try {
-                File file = new File(resource.toURI().getRawPath() + "/../lib/" + type.getDriverJar());
-                return file.getCanonicalPath();
-            } catch (Exception e) {
-                throw new RuntimeException("找不到驱动文件，请联系开发者");
-            }
-        } else {
-            throw new RuntimeException("lib can't find");
-        }
-    }
+	/**
+	 * 根据数据库类型获取驱动jar路径
+	 * by itcrazy0717
+	 *
+	 * @param dataBaseType
+	 * @return
+	 */
+	public static String getDataBaseDriverJarPath(String dataBaseType) {
+		DataBaseTypeEnum dataType = DataBaseTypeEnum.valueOf(dataBaseType);
+		try {
+			File file = new File(SqliteConstants.DATA_BASE_DRIVER_JAR_PATH + dataType.getDriverJar());
+			return file.getCanonicalPath();
+		} catch (Exception e) {
+			throw new RuntimeException("找不到驱动文件，请联系开发者!");
+		}
+	}
 
-    public static List<String> getAllJDBCDriverJarPaths() {
-        List<String> jarFilePathList = new ArrayList<>();
-        URL url = Thread.currentThread().getContextClassLoader().getResource("logback.xml");
-        try {
-            File file;
-            if (Objects.requireNonNull(url).getPath().contains(".jar")) {
-                file = new File("lib/");
-            } else {
-                file = new File("src/main/resources/lib");
-            }
-            System.out.println(file.getCanonicalPath());
-            File[] jarFiles = file.listFiles();
-            System.out.println("jarFiles:" + Arrays.toString(jarFiles));
-            if (Objects.nonNull(jarFiles)) {
-                for (File jarFile : jarFiles) {
-                    if (jarFile.isFile() && jarFile.getAbsolutePath().endsWith(".jar")) {
-                        jarFilePathList.add(jarFile.getAbsolutePath());
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("找不到驱动文件，请联系开发者");
-        }
-        return jarFilePathList;
-    }
+	/**
+	 * 获取数据库驱动jar路径集合
+	 * by itcrazy0717
+	 *
+	 * @return
+	 */
+	public static List<String> getAllDataBaseDriverJarPath() {
+		Set<String> jarFilePathSets = new HashSet<>();
+		try {
+			File file = new File(SqliteConstants.DATA_BASE_DRIVER_JAR_PATH);
+			LOGGER.info("driver jar path:{}", file.getCanonicalPath());
+			File[] jarFiles = file.listFiles();
+			LOGGER.info("driver jar file:{}", Arrays.toString(jarFiles));
+			if (Objects.nonNull(jarFiles)) {
+				Stream.of(jarFiles)
+				      .filter(Objects::nonNull)
+				      .filter(e -> e.isFile() && e.getAbsolutePath().endsWith(SqliteConstants.DATA_BASE_DRIVER_JAR_SUFFIX))
+				      .forEach(e -> jarFilePathSets.add(e.getAbsolutePath()));
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("找不到驱动文件，请联系开发者");
+		}
+		return new ArrayList<>(jarFilePathSets);
+	}
 
 }
