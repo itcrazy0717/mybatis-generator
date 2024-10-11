@@ -10,7 +10,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.itcrazy.mybatis.generator.enums.FXMLPageEnum;
+import com.itcrazy.mybatis.generator.enums.FxmlPageEnum;
 import com.itcrazy.mybatis.generator.view.AlertUtil;
 
 import javafx.fxml.FXMLLoader;
@@ -22,12 +22,12 @@ import javafx.stage.Stage;
 
 /**
  * @author: itcrazy0717
- * @version: $ BaseController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
+ * @version: $ BaseFxmlPageController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public abstract class BaseController implements Initializable {
+public abstract class BaseFxmlPageController implements Initializable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BaseController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BaseFxmlPageController.class);
 
 	/**
 	 * 主窗口
@@ -39,7 +39,8 @@ public abstract class BaseController implements Initializable {
 	 */
 	private Stage dialogStage;
 
-    private static final Map<FXMLPageEnum, SoftReference<? extends BaseController>> FXML_PAGE_CONTROLLER_MAP = new HashMap<>();
+
+	private static final Map<FxmlPageEnum, SoftReference<? extends BaseFxmlPageController>> FXML_PAGE_CONTROLLER_MAP = new HashMap<>();
 
 	/**
 	 * 导入对应page，并进行缓存
@@ -50,8 +51,8 @@ public abstract class BaseController implements Initializable {
 	 * @param cache
 	 * @return
 	 */
-    public BaseController loadFXMLPage(String title, FXMLPageEnum fxmlPage, boolean cache) {
-        SoftReference<? extends BaseController> fxmlPageReference = FXML_PAGE_CONTROLLER_MAP.get(fxmlPage);
+    public BaseFxmlPageController loadFXMLPage(String title, FxmlPageEnum fxmlPage, boolean cache) {
+        SoftReference<? extends BaseFxmlPageController> fxmlPageReference = FXML_PAGE_CONTROLLER_MAP.get(fxmlPage);
 	    if (cache && Objects.nonNull(fxmlPageReference)) {
 		    return fxmlPageReference.get();
 	    }
@@ -60,7 +61,7 @@ public abstract class BaseController implements Initializable {
         Parent loginNode;
         try {
             loginNode = loader.load();
-            BaseController controller = loader.getController();
+            BaseFxmlPageController controller = loader.getController();
             dialogStage = new Stage();
             dialogStage.setTitle(title);
             dialogStage.initModality(Modality.APPLICATION_MODAL);
@@ -71,9 +72,8 @@ public abstract class BaseController implements Initializable {
             dialogStage.show();
             controller.setDialogStage(dialogStage);
             // put into cache map
-            SoftReference<BaseController> softReference = new SoftReference<>(controller);
+            SoftReference<BaseFxmlPageController> softReference = new SoftReference<>(controller);
             FXML_PAGE_CONTROLLER_MAP.put(fxmlPage, softReference);
-
             return controller;
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);

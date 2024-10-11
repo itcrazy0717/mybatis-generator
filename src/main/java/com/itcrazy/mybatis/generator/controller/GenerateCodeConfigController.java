@@ -25,7 +25,7 @@ import javafx.scene.layout.HBox;
  * @version: $ GenerateCodeConfigController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public class GenerateCodeConfigController extends BaseController {
+public class GenerateCodeConfigController extends BaseFxmlPageController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GenerateCodeConfigController.class);
 

@@ -1,6 +1,7 @@
 package com.itcrazy.mybatis.generator.controller;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
@@ -8,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.itcrazy.mybatis.generator.model.DatabaseConfig;
-import com.itcrazy.mybatis.generator.util.LocalSqliteUtil;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
+import com.itcrazy.mybatis.generator.util.LocalSqliteUtil;
 import com.itcrazy.mybatis.generator.view.AlertUtil;
 
 import javafx.fxml.FXML;
@@ -21,7 +22,7 @@ import javafx.scene.control.TextField;
  * @version: $ DataBaseConnectionController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public class DataBaseConnectionController extends BaseController {
+public class DataBaseConnectionController extends BaseFxmlPageController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataBaseConnectionController.class);
 
@@ -41,9 +42,12 @@ public class DataBaseConnectionController extends BaseController {
     private ChoiceBox<String> encodingChoice;
     @FXML
     private ChoiceBox<String> dbTypeChoice;
-    private MainApplicationController mainUIController;
-    private boolean isUpdate = false;
-    private Integer primayKey;
+
+	private MainApplicationController mainUIController;
+
+	private boolean isUpdate = false;
+
+	private Integer primayKey;
 
 
     @Override
@@ -52,10 +56,10 @@ public class DataBaseConnectionController extends BaseController {
 
     @FXML
     void saveConnection() {
-        DatabaseConfig config = extractConfigForUI();
-        if (config == null) {
-            return;
-        }
+	    DatabaseConfig config = loadConfig();
+	    if (Objects.isNull(config)) {
+		    return;
+	    }
         try {
             LocalSqliteUtil.saveDatabaseConfig(this.isUpdate, primayKey, config);
             getDialogStage().close();
@@ -68,7 +72,7 @@ public class DataBaseConnectionController extends BaseController {
 
     @FXML
     void testConnection() {
-        DatabaseConfig config = extractConfigForUI();
+        DatabaseConfig config = loadConfig();
         if (config == null) {
             return;
         }
@@ -91,7 +95,13 @@ public class DataBaseConnectionController extends BaseController {
         this.mainUIController = controller;
     }
 
-    private DatabaseConfig extractConfigForUI() {
+	/**
+	 * 导入配置
+	 * by itcrazy0717
+	 *
+	 * @return
+	 */
+    private DatabaseConfig loadConfig() {
         String name = nameField.getText();
         String host = hostField.getText();
         String port = portField.getText();
@@ -109,7 +119,7 @@ public class DataBaseConnectionController extends BaseController {
         config.setPassword(password);
         config.setSchemaName(schema);
         config.setEncoding(encoding);
-        if (StringUtils.isAnyEmpty(name, host, port, userName, encoding, dbType, schema)) {
+        if (StringUtils.isAnyBlank(name, host, port, userName, encoding, dbType, schema)) {
             AlertUtil.showWarnAlert("密码以外其他字段必填");
             return null;
         }

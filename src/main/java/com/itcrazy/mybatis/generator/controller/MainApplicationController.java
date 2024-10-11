@@ -19,7 +19,7 @@ import org.mybatis.generator.config.IgnoredColumn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.itcrazy.mybatis.generator.enums.FXMLPageEnum;
+import com.itcrazy.mybatis.generator.enums.FxmlPageEnum;
 import com.itcrazy.mybatis.generator.model.DatabaseConfig;
 import com.itcrazy.mybatis.generator.model.MybatisCodeGenerateConfig;
 import com.itcrazy.mybatis.generator.model.TableColumn;
@@ -55,7 +55,7 @@ import javafx.util.Callback;
  * @version: $ MainApplicationController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public class MainApplicationController extends BaseController {
+public class MainApplicationController extends BaseFxmlPageController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainApplicationController.class);
 
@@ -107,7 +107,7 @@ public class MainApplicationController extends BaseController {
         dbImage.setFitWidth(40);
         connectionLabel.setGraphic(dbImage);
         connectionLabel.setOnMouseClicked(event -> {
-            DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("新建数据库连接", FXMLPageEnum.NEW_DATA_BASE_CONNECTION, false);
+            DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("新建数据库连接", FxmlPageEnum.NEW_DATA_BASE_CONNECTION, false);
             controller.setMainUIController(this);
             // 为窗口增加ico图标
             controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/computer.png"))));
@@ -118,7 +118,7 @@ public class MainApplicationController extends BaseController {
         configImage.setFitWidth(40);
         configsLabel.setGraphic(configImage);
         configsLabel.setOnMouseClicked(event -> {
-            GenerateCodeConfigController controller = (GenerateCodeConfigController) loadFXMLPage("配置", FXMLPageEnum.GENERATE_CONFIG, false);
+            GenerateCodeConfigController controller = (GenerateCodeConfigController) loadFXMLPage("配置", FxmlPageEnum.GENERATE_CONFIG, false);
             controller.setMainApplicationController(this);
             // 为窗口增加ico图标
             controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/config_list.png"))));
@@ -141,7 +141,7 @@ public class MainApplicationController extends BaseController {
                     MenuItem item2 = new MenuItem("编辑连接");
                     item2.setOnAction(event1 -> {
                         DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
-                        DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("编辑数据库连接", FXMLPageEnum.NEW_DATA_BASE_CONNECTION, false);
+                        DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("编辑数据库连接", FxmlPageEnum.NEW_DATA_BASE_CONNECTION, false);
                         controller.setMainUIController(this);
                         controller.setConfig(selectedConfig);
                         controller.showDialogStage();
@@ -216,7 +216,7 @@ public class MainApplicationController extends BaseController {
                 rootTreeItem.getChildren().add(treeItem);
             }
         } catch (Exception e) {
-            LOGGER.error("connect db failed, reason: {}", e);
+            LOGGER.error("connect db failed", e);
             AlertUtil.showErrorAlert(e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
         }
     }
@@ -341,7 +341,7 @@ public class MainApplicationController extends BaseController {
             AlertUtil.showWarnAlert("请先在左侧选择数据库表");
             return;
         }
-        SelectTableColumnController controller = (SelectTableColumnController) loadFXMLPage("定制列", FXMLPageEnum.SELECT_TABLE_COLUMN, true);
+        SelectTableColumnController controller = (SelectTableColumnController) loadFXMLPage("定制列", FxmlPageEnum.SELECT_TABLE_COLUMN, true);
         // 为定制项窗口增加ico图标
         controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/table.png"))));
         controller.setMainUIController(this);

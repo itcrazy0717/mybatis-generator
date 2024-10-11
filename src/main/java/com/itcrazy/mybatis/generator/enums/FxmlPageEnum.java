@@ -4,11 +4,11 @@ import lombok.Getter;
 
 /**
  * @author: itcrazy0717
- * @version: $ FXMLPageEnum.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
+ * @version: $ FxmlPageEnum.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
 @Getter
-public enum FXMLPageEnum {
+public enum FxmlPageEnum {
 
 	/**
 	 * 新数据库连接
@@ -28,7 +28,7 @@ public enum FXMLPageEnum {
 
     private final String fxml;
 
-    FXMLPageEnum(String fxml) {
+    FxmlPageEnum(String fxml) {
         this.fxml = fxml;
     }
 
