@@ -10,10 +10,10 @@ public class SqliteConstants {
 	/**
 	 * 数据库驱动文件地址
 	 */
-	public static final String DATA_BASE_DRIVER_JAR_PATH = "src/main/resources/lib/";
+	public static final String DATABASE_DRIVER_JAR_PATH = "src/main/resources/lib/";
 
 	/**
 	 * 数据库驱动文件后缀
 	 */
-	public static final String DATA_BASE_DRIVER_JAR_SUFFIX = ".jar";
+	public static final String DATABASE_DRIVER_JAR_SUFFIX = ".jar";
 }

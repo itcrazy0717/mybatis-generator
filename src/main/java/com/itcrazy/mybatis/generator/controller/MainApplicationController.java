@@ -107,7 +107,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         dbImage.setFitWidth(40);
         connectionLabel.setGraphic(dbImage);
         connectionLabel.setOnMouseClicked(event -> {
-            DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("新建数据库连接", FxmlPageEnum.NEW_DATA_BASE_CONNECTION, false);
+            DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("新建数据库连接", FxmlPageEnum.NEW_DATABASE_CONNECTION, false);
             controller.setMainApplicationController(this);
             // 为窗口增加ico图标
             controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/computer.png"))));
@@ -141,7 +141,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                     MenuItem item2 = new MenuItem("编辑连接");
                     item2.setOnAction(event1 -> {
                         DatabaseConnectionConfig selectedConfig = (DatabaseConnectionConfig) treeItem.getGraphic().getUserData();
-                        DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("编辑数据库连接", FxmlPageEnum.NEW_DATA_BASE_CONNECTION, false);
+                        DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("编辑数据库连接", FxmlPageEnum.NEW_DATABASE_CONNECTION, false);
                         controller.setMainApplicationController(this);
                         controller.fillDataBaseConnectionConfig(selectedConfig);
                         controller.showDialogStage();

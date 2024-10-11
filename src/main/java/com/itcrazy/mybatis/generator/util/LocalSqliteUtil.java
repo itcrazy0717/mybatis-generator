@@ -300,7 +300,7 @@ public class LocalSqliteUtil {
 	public static String getDataBaseDriverJarPath(String dataBaseType) {
 		DataBaseTypeEnum dataType = DataBaseTypeEnum.valueOf(dataBaseType);
 		try {
-			File file = new File(SqliteConstants.DATA_BASE_DRIVER_JAR_PATH + dataType.getDriverJar());
+			File file = new File(SqliteConstants.DATABASE_DRIVER_JAR_PATH + dataType.getDriverJar());
 			return file.getCanonicalPath();
 		} catch (Exception e) {
 			throw new RuntimeException("找不到驱动文件，请联系开发者!");
@@ -316,14 +316,14 @@ public class LocalSqliteUtil {
 	public static List<String> getAllDataBaseDriverJarPath() {
 		Set<String> jarFilePathSets = new HashSet<>();
 		try {
-			File file = new File(SqliteConstants.DATA_BASE_DRIVER_JAR_PATH);
+			File file = new File(SqliteConstants.DATABASE_DRIVER_JAR_PATH);
 			LOGGER.info("driver jar path:{}", file.getCanonicalPath());
 			File[] jarFiles = file.listFiles();
 			LOGGER.info("driver jar file:{}", Arrays.toString(jarFiles));
 			if (Objects.nonNull(jarFiles)) {
 				Stream.of(jarFiles)
 				      .filter(Objects::nonNull)
-				      .filter(e -> e.isFile() && e.getAbsolutePath().endsWith(SqliteConstants.DATA_BASE_DRIVER_JAR_SUFFIX))
+				      .filter(e -> e.isFile() && e.getAbsolutePath().endsWith(SqliteConstants.DATABASE_DRIVER_JAR_SUFFIX))
 				      .forEach(e -> jarFilePathSets.add(e.getAbsolutePath()));
 			}
 		} catch (Exception e) {

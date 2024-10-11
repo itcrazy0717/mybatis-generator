@@ -39,7 +39,7 @@ public class DataBaseUtil {
     /**
      * 数据库连接超时时间
      */
-    private static final int DB_CONNECTION_TIMEOUTS_SECONDS = 1;
+    private static final int DATABASE_CONNECTION_TIMEOUT_SECOND = 20;
 
     /**
      * 数据库驱动集合
@@ -50,13 +50,13 @@ public class DataBaseUtil {
         DATABASE_DRIVER_MAP = new HashMap<>();
         List<String> driverJars = LocalSqliteUtil.getAllDataBaseDriverJarPath();
         ClassLoader classloader = ClassloaderUtility.getCustomClassloader(driverJars);
-        DataBaseTypeEnum[] dbTypes = DataBaseTypeEnum.values();
-        for (DataBaseTypeEnum dbType : dbTypes) {
+        DataBaseTypeEnum[] dataBaseTypeList = DataBaseTypeEnum.values();
+        for (DataBaseTypeEnum dataBaseType : dataBaseTypeList) {
             try {
-                Class<?> clazz = Class.forName(dbType.getDriverClass(), true, classloader);
+                Class<?> clazz = Class.forName(dataBaseType.getDriverClass(), true, classloader);
                 Driver driver = (Driver) clazz.newInstance();
                 LOGGER.info("load driver class: {}", driver);
-                DATABASE_DRIVER_MAP.put(dbType, driver);
+                DATABASE_DRIVER_MAP.put(dataBaseType, driver);
             } catch (Exception e) {
                 LOGGER.error("load driver error");
             }
@@ -70,7 +70,7 @@ public class DataBaseUtil {
         props.setProperty("user", config.getUserName());
         props.setProperty("password", config.getPassword());
 
-        DriverManager.setLoginTimeout(DB_CONNECTION_TIMEOUTS_SECONDS);
+        DriverManager.setLoginTimeout(DATABASE_CONNECTION_TIMEOUT_SECOND);
         Connection connection = DATABASE_DRIVER_MAP.get(DataBaseTypeEnum.valueOf(config.getDataBaseType())).connect(url, props);
         LOGGER.info("getConnection, connection url: {}", connection);
         return connection;

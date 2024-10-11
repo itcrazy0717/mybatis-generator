@@ -13,7 +13,7 @@ public enum FxmlPageEnum {
 	/**
 	 * 新数据库连接
 	 */
-	NEW_DATA_BASE_CONNECTION("fxml/newDataBaseConnection.fxml"),
+	NEW_DATABASE_CONNECTION("fxml/newDataBaseConnection.fxml"),
 
 	/**
 	 * 选择表对应列
