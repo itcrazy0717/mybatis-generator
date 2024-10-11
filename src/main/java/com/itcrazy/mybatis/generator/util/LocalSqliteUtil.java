@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
-import com.itcrazy.mybatis.generator.model.DatabaseConfig;
+import com.itcrazy.mybatis.generator.model.DatabaseConnectionConfig;
 import com.itcrazy.mybatis.generator.model.MybatisCodeGenerateConfig;
 
 /**
@@ -69,7 +69,7 @@ public class LocalSqliteUtil {
 
     }
 
-    public static List<DatabaseConfig> loadDatabaseConfig() throws Exception {
+    public static List<DatabaseConnectionConfig> loadDatabaseConfig() throws Exception {
         Connection conn = null;
         Statement stat = null;
         ResultSet rs = null;
@@ -77,11 +77,11 @@ public class LocalSqliteUtil {
             conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
             rs = stat.executeQuery("SELECT * FROM database_connection_config");
-            List<DatabaseConfig> configs = new ArrayList<>();
+            List<DatabaseConnectionConfig> configs = new ArrayList<>();
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String value = rs.getString("value");
-                DatabaseConfig databaseConfig = JSON.parseObject(value, DatabaseConfig.class);
+                DatabaseConnectionConfig databaseConfig = JSON.parseObject(value, DatabaseConnectionConfig.class);
                 databaseConfig.setId(id);
                 configs.add(databaseConfig);
             }
@@ -94,7 +94,16 @@ public class LocalSqliteUtil {
         }
     }
 
-    public static void saveDatabaseConfig(boolean isUpdate, Integer primaryKey, DatabaseConfig dbConfig) throws Exception {
+	/**
+	 * 保存数据库连接配置
+	 * by itcrazy0717
+	 *
+	 * @param isUpdate
+	 * @param primaryKey
+	 * @param dbConfig
+	 * @throws Exception
+	 */
+	public static void saveDatabaseConnectionConfig(DatabaseConnectionConfig dbConfig, Integer primaryKey, boolean isUpdate) throws Exception {
         String configName = dbConfig.getName();
         Connection conn = null;
         Statement stat = null;
@@ -121,7 +130,7 @@ public class LocalSqliteUtil {
         }
     }
 
-    public static void deleteDatabaseConfig(DatabaseConfig databaseConfig) throws Exception {
+    public static void deleteDatabaseConfig(DatabaseConnectionConfig databaseConfig) throws Exception {
         Connection conn = null;
         Statement stat = null;
         try {

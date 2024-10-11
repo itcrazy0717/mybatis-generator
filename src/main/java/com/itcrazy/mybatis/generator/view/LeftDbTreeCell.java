@@ -2,7 +2,7 @@ package com.itcrazy.mybatis.generator.view;
 
 import java.lang.ref.WeakReference;
 
-import com.itcrazy.mybatis.generator.model.DatabaseConfig;
+import com.itcrazy.mybatis.generator.model.DatabaseConnectionConfig;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -16,10 +16,10 @@ import javafx.scene.layout.HBox;
  * @version: $ LeftDbTreeCell.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public class LeftDbTreeCell extends TreeCell<DatabaseConfig> {
+public class LeftDbTreeCell extends TreeCell<DatabaseConnectionConfig> {
     private HBox hbox;
 
-    private WeakReference<TreeItem<DatabaseConfig>> treeItemRef;
+    private WeakReference<TreeItem<DatabaseConnectionConfig>> treeItemRef;
 
     private InvalidationListener treeItemGraphicListener = observable -> updateDisplay(getItem(), isEmpty());
 
@@ -27,12 +27,12 @@ public class LeftDbTreeCell extends TreeCell<DatabaseConfig> {
 
         @Override
         public void invalidated(Observable observable) {
-            TreeItem<DatabaseConfig> oldTreeItem = treeItemRef == null ? null : treeItemRef.get();
+            TreeItem<DatabaseConnectionConfig> oldTreeItem = treeItemRef == null ? null : treeItemRef.get();
             if (oldTreeItem != null) {
                 oldTreeItem.graphicProperty().removeListener(weakTreeItemGraphicListener);
             }
 
-            TreeItem<DatabaseConfig> newTreeItem = getTreeItem();
+            TreeItem<DatabaseConnectionConfig> newTreeItem = getTreeItem();
             if (newTreeItem != null) {
                 newTreeItem.graphicProperty().addListener(weakTreeItemGraphicListener);
                 treeItemRef = new WeakReference<>(newTreeItem);
@@ -54,14 +54,14 @@ public class LeftDbTreeCell extends TreeCell<DatabaseConfig> {
         }
     }
 
-    void updateDisplay(DatabaseConfig item, boolean empty) {
+    void updateDisplay(DatabaseConnectionConfig item, boolean empty) {
         if (item == null || empty) {
             hbox = null;
             setText(null);
             setGraphic(null);
         } else {
             // update the graphic if one is set in the TreeItem
-            TreeItem<DatabaseConfig> treeItem = getTreeItem();
+            TreeItem<DatabaseConnectionConfig> treeItem = getTreeItem();
             if (treeItem != null && treeItem.getGraphic() != null) {
                 hbox = null;
                 setText(item.toString());
@@ -75,7 +75,7 @@ public class LeftDbTreeCell extends TreeCell<DatabaseConfig> {
     }
 
     @Override
-    public void updateItem(DatabaseConfig item, boolean empty) {
+    public void updateItem(DatabaseConnectionConfig item, boolean empty) {
         super.updateItem(item, empty);
         updateDisplay(item, empty);
     }

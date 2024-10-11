@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
-import com.itcrazy.mybatis.generator.model.DatabaseConfig;
+import com.itcrazy.mybatis.generator.model.DatabaseConnectionConfig;
 import com.itcrazy.mybatis.generator.model.TableColumn;
 
 
@@ -63,7 +63,7 @@ public class DataBaseUtil {
         }
     }
 
-    public static Connection getConnection(DatabaseConfig config) throws ClassNotFoundException, SQLException {
+    public static Connection getConnection(DatabaseConnectionConfig config) throws ClassNotFoundException, SQLException {
         String url = getConnectionUrlWithSchema(config);
         Properties props = new Properties();
 
@@ -84,7 +84,7 @@ public class DataBaseUtil {
      * @return
      * @throws Exception
      */
-    public static List<String> getTableNameList(DatabaseConfig databaseConfig) throws Exception {
+    public static List<String> getTableNameList(DatabaseConnectionConfig databaseConfig) throws Exception {
         String url = getConnectionUrlWithSchema(databaseConfig);
         LOGGER.info("get_table_name_list, connection url: {}", url);
         try (Connection connection = getConnection(databaseConfig)) {
@@ -117,7 +117,7 @@ public class DataBaseUtil {
         }
     }
 
-    public static List<TableColumn> getTableColumns(DatabaseConfig dbConfig, String tableName) throws Exception {
+    public static List<TableColumn> getTableColumns(DatabaseConnectionConfig dbConfig, String tableName) throws Exception {
         String url = getConnectionUrlWithSchema(dbConfig);
         LOGGER.info("getTableColumns, connection url: {}", url);
         Connection conn = getConnection(dbConfig);
@@ -138,7 +138,7 @@ public class DataBaseUtil {
         }
     }
 
-    public static String getConnectionUrlWithSchema(DatabaseConfig dbConfig) throws ClassNotFoundException {
+    public static String getConnectionUrlWithSchema(DatabaseConnectionConfig dbConfig) throws ClassNotFoundException {
         DataBaseTypeEnum dataBaseType = DataBaseTypeEnum.valueOf(dbConfig.getDataBaseType());
         String connectionUrl = String.format(dataBaseType.getConnectionUrlPattern(), dbConfig.getHostUrl(), dbConfig.getPort(), dbConfig.getSchemaName(), dbConfig.getEncoding());
         LOGGER.info("get_connection_url_with_schema, connection url: {}", connectionUrl);

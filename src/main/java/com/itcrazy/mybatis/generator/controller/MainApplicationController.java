@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.itcrazy.mybatis.generator.enums.FxmlPageEnum;
-import com.itcrazy.mybatis.generator.model.DatabaseConfig;
+import com.itcrazy.mybatis.generator.model.DatabaseConnectionConfig;
 import com.itcrazy.mybatis.generator.model.MybatisCodeGenerateConfig;
 import com.itcrazy.mybatis.generator.model.TableColumn;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
@@ -84,12 +84,12 @@ public class MainApplicationController extends BaseFxmlPageController {
     @FXML
     private TextField projectFolderField;
     @FXML
-    private TreeView<String> leftDBTree;
+    private TreeView<String> dataBaseViewTree;
 
 	/**
 	 * 当前选择的数据库
 	 */
-	private DatabaseConfig selectedDatabaseConfig;
+	private DatabaseConnectionConfig selectedDatabaseConfig;
 
 	/**
 	 * 当前选择的表名
@@ -108,7 +108,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         connectionLabel.setGraphic(dbImage);
         connectionLabel.setOnMouseClicked(event -> {
             DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("新建数据库连接", FxmlPageEnum.NEW_DATA_BASE_CONNECTION, false);
-            controller.setMainUIController(this);
+            controller.setMainApplicationController(this);
             // 为窗口增加ico图标
             controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/computer.png"))));
             controller.showDialogStage();
@@ -125,13 +125,13 @@ public class MainApplicationController extends BaseFxmlPageController {
             controller.showDialogStage();
         });
 
-        leftDBTree.setShowRoot(false);
-        leftDBTree.setRoot(new TreeItem<>());
+        dataBaseViewTree.setShowRoot(false);
+        dataBaseViewTree.setRoot(new TreeItem<>());
         Callback<TreeView<String>, TreeCell<String>> defaultCellFactory = TextFieldTreeCell.forTreeView();
-        leftDBTree.setCellFactory((TreeView<String> tv) -> {
+        dataBaseViewTree.setCellFactory((TreeView<String> tv) -> {
             TreeCell<String> cell = defaultCellFactory.call(tv);
             cell.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                int level = leftDBTree.getTreeItemLevel(cell.getTreeItem());
+                int level = dataBaseViewTree.getTreeItemLevel(cell.getTreeItem());
                 TreeCell<String> treeCell = (TreeCell<String>) event.getSource();
                 TreeItem<String> treeItem = treeCell.getTreeItem();
                 if (level == 1) {
@@ -140,18 +140,18 @@ public class MainApplicationController extends BaseFxmlPageController {
                     item1.setOnAction(event1 -> treeItem.getChildren().clear());
                     MenuItem item2 = new MenuItem("编辑连接");
                     item2.setOnAction(event1 -> {
-                        DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
+                        DatabaseConnectionConfig selectedConfig = (DatabaseConnectionConfig) treeItem.getGraphic().getUserData();
                         DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("编辑数据库连接", FxmlPageEnum.NEW_DATA_BASE_CONNECTION, false);
-                        controller.setMainUIController(this);
-                        controller.setConfig(selectedConfig);
+                        controller.setMainApplicationController(this);
+                        controller.fillDataBaseConnectionConfig(selectedConfig);
                         controller.showDialogStage();
                     });
                     MenuItem item3 = new MenuItem("删除连接");
                     item3.setOnAction(event1 -> {
-                        DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
+                        DatabaseConnectionConfig selectedConfig = (DatabaseConnectionConfig) treeItem.getGraphic().getUserData();
                         try {
                             LocalSqliteUtil.deleteDatabaseConfig(selectedConfig);
-                            this.loadLeftDBTree();
+                            this.loadDataBaseViewList();
                         } catch (Exception e) {
                             AlertUtil.showErrorAlert("Delete connection failed! Reason: " + e.getMessage());
                         }
@@ -162,8 +162,8 @@ public class MainApplicationController extends BaseFxmlPageController {
                 if (event.getClickCount() == 2) {
                     treeItem.setExpanded(true);
                     if (level == 1) {
-                        System.out.println("index: " + leftDBTree.getSelectionModel().getSelectedIndex());
-                        DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
+                        System.out.println("index: " + dataBaseViewTree.getSelectionModel().getSelectedIndex());
+                        DatabaseConnectionConfig selectedConfig = (DatabaseConnectionConfig) treeItem.getGraphic().getUserData();
                         try {
                             List<String> tableNameList = DataBaseUtil.getTableNameList(selectedConfig);
                             if (CollectionUtils.isNotEmpty(tableNameList)) {
@@ -188,7 +188,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                         }
                     } else if (level == 2) { // left DB tree level3
                         String tableName = treeCell.getTreeItem().getValue();
-                        selectedDatabaseConfig = (DatabaseConfig) treeItem.getParent().getGraphic().getUserData();
+                        selectedDatabaseConfig = (DatabaseConnectionConfig) treeItem.getParent().getGraphic().getUserData();
                         this.tableName = tableName;
                         tableNameField.setText(tableName);
                         domainObjectNameField.setText(MyStringUtils.dbStringToCamelStyle(tableName) + "DO");
@@ -197,29 +197,33 @@ public class MainApplicationController extends BaseFxmlPageController {
             });
             return cell;
         });
-        loadLeftDBTree();
+        loadDataBaseViewList();
     }
 
-    void loadLeftDBTree() {
-        TreeItem<String> rootTreeItem = leftDBTree.getRoot();
-        rootTreeItem.getChildren().clear();
-        try {
-            List<DatabaseConfig> dbConfigs = LocalSqliteUtil.loadDatabaseConfig();
-            for (DatabaseConfig dbConfig : dbConfigs) {
-                TreeItem<String> treeItem = new TreeItem<>();
-                treeItem.setValue(dbConfig.getName());
-                ImageView dbImage = new ImageView("icons/computer.png");
-                dbImage.setFitHeight(16);
-                dbImage.setFitWidth(16);
-                dbImage.setUserData(dbConfig);
-                treeItem.setGraphic(dbImage);
-                rootTreeItem.getChildren().add(treeItem);
-            }
-        } catch (Exception e) {
-            LOGGER.error("connect db failed", e);
-            AlertUtil.showErrorAlert(e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
-        }
-    }
+	/**
+	 * 导入数据库视图列表
+	 * by itcrazy0717
+	 */
+	public void loadDataBaseViewList() {
+		TreeItem<String> rootTreeItem = dataBaseViewTree.getRoot();
+		rootTreeItem.getChildren().clear();
+		try {
+			List<DatabaseConnectionConfig> dbConfigList = LocalSqliteUtil.loadDatabaseConfig();
+			for (DatabaseConnectionConfig dbConfig : dbConfigList) {
+				TreeItem<String> treeItem = new TreeItem<>();
+				treeItem.setValue(dbConfig.getName());
+				ImageView dbImage = new ImageView("icons/computer.png");
+				dbImage.setFitHeight(16);
+				dbImage.setFitWidth(16);
+				dbImage.setUserData(dbConfig);
+				treeItem.setGraphic(dbImage);
+				rootTreeItem.getChildren().add(treeItem);
+			}
+		} catch (Exception e) {
+			LOGGER.error("connect db failed", e);
+			AlertUtil.showErrorAlert(e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
+		}
+	}
 
     @FXML
     public void chooseProjectFolder() {

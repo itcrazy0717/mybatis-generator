@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.itcrazy.mybatis.generator.model.DatabaseConfig;
+import com.itcrazy.mybatis.generator.model.DatabaseConnectionConfig;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
 import com.itcrazy.mybatis.generator.util.LocalSqliteUtil;
 import com.itcrazy.mybatis.generator.view.AlertUtil;
@@ -43,7 +43,7 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
     @FXML
     private ChoiceBox<String> dbTypeChoice;
 
-	private MainApplicationController mainUIController;
+	private MainApplicationController mainApplicationController;
 
 	private boolean isUpdate = false;
 
@@ -56,14 +56,14 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
 
     @FXML
     void saveConnection() {
-	    DatabaseConfig config = loadConfig();
+	    DatabaseConnectionConfig config = loadDataBaseConnectionConfig();
 	    if (Objects.isNull(config)) {
 		    return;
 	    }
         try {
-            LocalSqliteUtil.saveDatabaseConfig(this.isUpdate, primayKey, config);
+	        LocalSqliteUtil.saveDatabaseConnectionConfig(config, primayKey, this.isUpdate);
             getDialogStage().close();
-            mainUIController.loadLeftDBTree();
+            mainApplicationController.loadDataBaseViewList();
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             AlertUtil.showErrorAlert(e.getMessage());
@@ -72,8 +72,8 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
 
     @FXML
     void testConnection() {
-        DatabaseConfig config = loadConfig();
-        if (config == null) {
+        DatabaseConnectionConfig config = loadDataBaseConnectionConfig();
+        if (Objects.isNull(config)) {
             return;
         }
         try {
@@ -91,17 +91,17 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
         getDialogStage().close();
     }
 
-    void setMainUIController(MainApplicationController controller) {
-        this.mainUIController = controller;
+    void setMainApplicationController(MainApplicationController controller) {
+        this.mainApplicationController = controller;
     }
 
 	/**
-	 * 导入配置
+	 * 导入数据库连接配置
 	 * by itcrazy0717
 	 *
 	 * @return
 	 */
-    private DatabaseConfig loadConfig() {
+    private DatabaseConnectionConfig loadDataBaseConnectionConfig() {
         String name = nameField.getText();
         String host = hostField.getText();
         String port = portField.getText();
@@ -110,7 +110,7 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
         String encoding = encodingChoice.getValue();
         String dbType = dbTypeChoice.getValue();
         String schema = schemaField.getText();
-        DatabaseConfig config = new DatabaseConfig();
+        DatabaseConnectionConfig config = new DatabaseConnectionConfig();
         config.setName(name);
         config.setDataBaseType(dbType);
         config.setHostUrl(host);
@@ -126,17 +126,23 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
         return config;
     }
 
-    public void setConfig(DatabaseConfig config) {
-        isUpdate = true;
-        primayKey = config.getId();
-        nameField.setText(config.getName());
-        hostField.setText(config.getHostUrl());
-        portField.setText(config.getPort());
-        userNameField.setText(config.getUserName());
-        passwordField.setText(config.getPassword());
-        encodingChoice.setValue(config.getEncoding());
-        dbTypeChoice.setValue(config.getDataBaseType());
-        schemaField.setText(config.getSchemaName());
-    }
+	/**
+	 * 填充数据库连接配置
+	 * by itcrazy0717
+	 *
+	 * @param config
+	 */
+	public void fillDataBaseConnectionConfig(DatabaseConnectionConfig config) {
+		isUpdate = true;
+		primayKey = config.getId();
+		nameField.setText(config.getName());
+		hostField.setText(config.getHostUrl());
+		portField.setText(config.getPort());
+		userNameField.setText(config.getUserName());
+		passwordField.setText(config.getPassword());
+		encodingChoice.setValue(config.getEncoding());
+		dbTypeChoice.setValue(config.getDataBaseType());
+		schemaField.setText(config.getSchemaName());
+	}
 
 }

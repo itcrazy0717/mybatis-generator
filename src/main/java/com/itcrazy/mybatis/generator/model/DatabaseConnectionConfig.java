@@ -4,11 +4,11 @@ import lombok.Data;
 
 /**
  * @author: itcrazy0717
- * @version: $ DatabaseConfig.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
+ * @version: $ DatabaseConnectionConfig.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
 @Data
-public class DatabaseConfig {
+public class DatabaseConnectionConfig {
 
     /**
      * The primary key in the sqlite db

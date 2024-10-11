@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
-import com.itcrazy.mybatis.generator.model.DatabaseConfig;
+import com.itcrazy.mybatis.generator.model.DatabaseConnectionConfig;
 import com.itcrazy.mybatis.generator.model.MybatisCodeGenerateConfig;
 import com.itcrazy.mybatis.generator.plugins.CustomCommentGenerator;
 import com.itcrazy.mybatis.generator.typeresolver.TinyIntTypeResolver;
@@ -51,7 +51,7 @@ public class MybatisCodeGenerateUtil {
 	/**
 	 * 数据库配置
 	 */
-	private static DatabaseConfig selectedDatabaseConfig;
+	private static DatabaseConnectionConfig selectedDatabaseConfig;
 
 	/**
 	 * 回调处理
@@ -239,7 +239,7 @@ public class MybatisCodeGenerateUtil {
 	 * @param ignoredColumns
 	 * @param columnOverrides
 	 */
-	public static void loadConfig(MybatisCodeGenerateConfig generateConfig, DatabaseConfig databaseConfig,
+	public static void loadConfig(MybatisCodeGenerateConfig generateConfig, DatabaseConnectionConfig databaseConfig,
 	                              ProgressCallback progressCallback, List<IgnoredColumn> ignoredColumns,
 	                              List<ColumnOverride> columnOverrides) {
 		MybatisCodeGenerateUtil.generateConfig = generateConfig;
