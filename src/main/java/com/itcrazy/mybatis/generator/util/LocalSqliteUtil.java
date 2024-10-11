@@ -66,8 +66,12 @@ public class LocalSqliteUtil {
                 fos.write(buffer, 0, byteread);
             }
         } finally {
-            if (fis != null) fis.close();
-            if (fos != null) fos.close();
+	        if (Objects.nonNull(fis)) {
+		        fis.close();
+	        }
+	        if (Objects.nonNull(fos)) {
+		        fos.close();
+	        }
         }
 
     }
@@ -91,9 +95,15 @@ public class LocalSqliteUtil {
 
             return configs;
         } finally {
-            if (rs != null) rs.close();
-            if (stat != null) stat.close();
-            if (conn != null) conn.close();
+	        if (Objects.nonNull(rs)) {
+		        rs.close();
+	        }
+	        if (Objects.nonNull(stat)) {
+		        stat.close();
+	        }
+	        if (Objects.nonNull(conn)) {
+		        conn.close();
+	        }
         }
     }
 
@@ -128,8 +138,12 @@ public class LocalSqliteUtil {
             }
             stat.executeUpdate(sql);
         } finally {
-            if (stat != null) stat.close();
-            if (conn != null) conn.close();
+	        if (Objects.nonNull(stat)) {
+		        stat.close();
+	        }
+	        if (Objects.nonNull(conn)) {
+		        conn.close();
+	        }
         }
     }
 
@@ -142,8 +156,12 @@ public class LocalSqliteUtil {
             String sql = String.format("delete from database_connection_config where id=%d", databaseConfig.getId());
             stat.executeUpdate(sql);
         } finally {
-            if (stat != null) stat.close();
-            if (conn != null) conn.close();
+	        if (Objects.nonNull(stat)) {
+		        stat.close();
+	        }
+	        if (Objects.nonNull(conn)) {
+		        conn.close();
+	        }
         }
     }
 
