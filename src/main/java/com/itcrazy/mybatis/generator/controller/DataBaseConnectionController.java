@@ -78,7 +78,7 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
         }
         try {
             DataBaseUtil.getConnection(config);
-            MessageTipsUtil.showInfo("连接成功");
+            MessageTipsUtil.showNormalInfo("连接成功");
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             MessageTipsUtil.showWarnInfo("连接失败");

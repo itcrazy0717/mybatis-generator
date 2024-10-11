@@ -9,22 +9,40 @@ import javafx.scene.control.Alert;
  */
 public class MessageTipsUtil {
 
-    public static void showInfo(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setContentText(message);
-        alert.show();
-    }
+	/**
+	 * 显示正常信息
+	 * by itcrazy0717
+	 *
+	 * @param message
+	 */
+	public static void showNormalInfo(String message) {
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		alert.setContentText(message);
+		alert.show();
+	}
 
-    public static void showWarnInfo(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setContentText(message);
-        alert.show();
-    }
+	/**
+	 * 显示警告信息
+	 * by itcrazy0717
+	 *
+	 * @param message
+	 */
+	public static void showWarnInfo(String message) {
+		Alert alert = new Alert(Alert.AlertType.WARNING);
+		alert.setContentText(message);
+		alert.show();
+	}
 
-    public static void showErrorInfo(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setContentText(message);
-        alert.show();
-    }
+	/**
+	 * 显示错误信息
+	 * by itcrazy0717
+	 *
+	 * @param message
+	 */
+	public static void showErrorInfo(String message) {
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setContentText(message);
+		alert.show();
+	}
 
 }
