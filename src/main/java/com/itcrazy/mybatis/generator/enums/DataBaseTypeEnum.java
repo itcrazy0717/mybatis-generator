@@ -13,7 +13,7 @@ public enum DataBaseTypeEnum {
     /**
      * MySQL数据库
      */
-    MySQL("com.mysql.cj.jdbc.Driver", "jdbc:mysql://%s:%s/%s?useUnicode=true&useSSL=false&characterEncoding=%s", "mysql-connector-j-8.4.0.jar"),
+    MySQL("com.mysql.cj.jdbc.Driver", "jdbc:mysql://%s:%s/%s?useUnicode=true&useSSL=false&characterEncoding=%s", "mysql-connector-java-8.0.30.jar"),
 
     /**
      * Oracle数据库
