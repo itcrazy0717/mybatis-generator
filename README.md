@@ -1,11 +1,23 @@
 # mybatis-generator
 
 #### 介绍
-mybatis逆向工程
+本工具基于mybatis-generator-gui项目并根据实际开发习惯进行了对应调整，原项目地址:https://github.com/zouzg/mybatis-generator-gui
+，感谢原作者的无私奉献！
 
-#### 软件架构
-软件架构说明
+#### 说明
+##### 工具运行相关界面
+![img.png](src/main/resources/readmeimages/img.png)
+![img_1.png](src/main/resources/readmeimages/img_1.png)
+![img_2.png](src/main/resources/readmeimages/img_2.png)
+代码生成截图如下：
+![img_3.png](src/main/resources/readmeimages/img_3.png)
 
+注：
+- 与原工具相比，调整了配置界面，优化配置
+- 新增批量插入插件、example替换插件、注释插件、排序插件、分页插件
+- 优化查询参数，使其更适合实际生成开发
+- mapper.xml文件覆盖
+- 将实体与查询参数对应分开，便于管理
 
 #### 安装教程
 
