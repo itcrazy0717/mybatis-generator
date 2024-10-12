@@ -29,7 +29,7 @@ public class MainApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        LocalSqliteUtil.createEmptyFiles();
+        LocalSqliteUtil.createConfigSqlite();
         URL url = Thread.currentThread().getContextClassLoader().getResource("fxml/mainApplication.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(url);
         Parent root = fxmlLoader.load();

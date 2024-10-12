@@ -43,23 +43,39 @@ public class LocalSqliteUtil {
 	 */
 	private static final String SQLITE_FILE = "/sqlite3.db";
 
-    public static void createEmptyFiles() throws Exception {
+	/**
+	 * 生成配置数据库
+	 * by itcrazy0717
+	 *
+	 * @throws Exception
+	 */
+    public static void createConfigSqlite() throws Exception {
         File file = new File(LOCAL_CONFIG_DATABASE_DIR);
         if (!file.exists()) {
             file.mkdir();
         }
-        File uiConfigFile = new File(LOCAL_CONFIG_DATABASE_DIR + SQLITE_FILE);
-        if (!uiConfigFile.exists()) {
-            createEmptyXMLFile(uiConfigFile);
+        File cofigSqliteFile = new File(LOCAL_CONFIG_DATABASE_DIR + SQLITE_FILE);
+        if (!cofigSqliteFile.exists()) {
+            createSqlite(cofigSqliteFile);
         }
     }
 
-    public static void createEmptyXMLFile(File uiConfigFile) throws IOException {
-        InputStream fis = null;
-        FileOutputStream fos = null;
-        try {
-            fis = Thread.currentThread().getContextClassLoader().getResourceAsStream("sqlite3.db");
-            fos = new FileOutputStream(uiConfigFile);
+	/**
+	 * 生成sqlite
+	 * by itcrazy0717
+	 *
+	 * @param file
+	 * @throws IOException
+	 */
+	public static void createSqlite(File file) throws IOException {
+		InputStream fis = null;
+		FileOutputStream fos = null;
+		try {
+			fis = Thread.currentThread().getContextClassLoader().getResourceAsStream("sqlite3.db");
+			if (Objects.isNull(fis)) {
+				throw new RuntimeException("默认配置数据库不存在");
+			}
+            fos = new FileOutputStream(file);
             byte[] buffer = new byte[1024];
             int byteread = 0;
             while ((byteread = fis.read(buffer)) != -1) {
@@ -76,7 +92,14 @@ public class LocalSqliteUtil {
 
     }
 
-    public static List<DatabaseConnectionConfig> loadDatabaseConfig() throws Exception {
+	/**
+	 * 导入数据库连接配置
+	 * by itcrazy0717
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	public static List<DatabaseConnectionConfig> loadDatabaseConnectionConfig() throws Exception {
         Connection conn = null;
         Statement stat = null;
         ResultSet rs = null;
@@ -147,7 +170,14 @@ public class LocalSqliteUtil {
         }
     }
 
-    public static void deleteDatabaseConfig(DatabaseConnectionConfig databaseConfig) throws Exception {
+	/**
+	 * 删除数据库连接配置
+	 * by itcrazy0717
+	 *
+	 * @param databaseConfig
+	 * @throws Exception
+	 */
+	public static void deleteDatabaseConnectionConfig(DatabaseConnectionConfig databaseConfig) throws Exception {
         Connection conn = null;
         Statement stat = null;
         try {

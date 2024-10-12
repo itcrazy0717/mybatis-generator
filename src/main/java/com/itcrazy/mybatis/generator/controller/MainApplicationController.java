@@ -113,7 +113,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/computer.png"))));
             controller.showDialogStage();
         });
-        ImageView configImage = new ImageView("icons/config_list.png");
+        ImageView configImage = new ImageView("icons/configlist.png");
         configImage.setFitHeight(40);
         configImage.setFitWidth(40);
         configsLabel.setGraphic(configImage);
@@ -121,7 +121,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             GenerateCodeConfigController controller = (GenerateCodeConfigController) loadFxmlPage("配置", FxmlPageEnum.GENERATE_CONFIG, false);
             controller.setMainApplicationController(this);
             // 为窗口增加ico图标
-            controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/config_list.png"))));
+            controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/configlist.png"))));
             controller.showDialogStage();
         });
 
@@ -150,7 +150,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                     item3.setOnAction(event1 -> {
                         DatabaseConnectionConfig selectedConfig = (DatabaseConnectionConfig) treeItem.getGraphic().getUserData();
                         try {
-                            LocalSqliteUtil.deleteDatabaseConfig(selectedConfig);
+                            LocalSqliteUtil.deleteDatabaseConnectionConfig(selectedConfig);
                             this.loadDataBaseViewList();
                         } catch (Exception e) {
                             MessageTipsUtil.showErrorInfo("Delete connection failed! Reason: " + e.getMessage());
@@ -208,7 +208,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         TreeItem<String> rootTreeItem = dataBaseViewTree.getRoot();
         rootTreeItem.getChildren().clear();
         try {
-            List<DatabaseConnectionConfig> dbConfigList = LocalSqliteUtil.loadDatabaseConfig();
+            List<DatabaseConnectionConfig> dbConfigList = LocalSqliteUtil.loadDatabaseConnectionConfig();
             for (DatabaseConnectionConfig dbConfig : dbConfigList) {
                 TreeItem<String> treeItem = new TreeItem<>();
                 treeItem.setValue(dbConfig.getName());
