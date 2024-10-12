@@ -36,19 +36,19 @@ public class LocalSqliteUtil {
 	/**
 	 * 配置目录
 	 */
-	private static final String BASE_DIR = "config";
+	private static final String LOCAL_CONFIG_DATABASE_DIR = "config";
 
 	/**
 	 * 配置文件路径
 	 */
-	private static final String CONFIG_FILE = "/sqlite3.db";
+	private static final String SQLITE_FILE = "/sqlite3.db";
 
     public static void createEmptyFiles() throws Exception {
-        File file = new File(BASE_DIR);
+        File file = new File(LOCAL_CONFIG_DATABASE_DIR);
         if (!file.exists()) {
             file.mkdir();
         }
-        File uiConfigFile = new File(BASE_DIR + CONFIG_FILE);
+        File uiConfigFile = new File(LOCAL_CONFIG_DATABASE_DIR + SQLITE_FILE);
         if (!uiConfigFile.exists()) {
             createEmptyXMLFile(uiConfigFile);
         }
