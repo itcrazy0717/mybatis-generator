@@ -25,9 +25,9 @@ import com.itcrazy.mybatis.generator.model.MybatisCodeGenerateConfig;
 import com.itcrazy.mybatis.generator.model.TableColumn;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
 import com.itcrazy.mybatis.generator.util.LocalSqliteUtil;
+import com.itcrazy.mybatis.generator.util.MessageTipsUtil;
 import com.itcrazy.mybatis.generator.util.MyStringUtils;
 import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateUtil;
-import com.itcrazy.mybatis.generator.util.MessageTipsUtil;
 import com.itcrazy.mybatis.generator.view.ShowProgressCallback;
 
 import javafx.collections.FXCollections;
@@ -71,8 +71,8 @@ public class MainApplicationController extends BaseFxmlPageController {
     private TextField mapperTargetPackage;
     @FXML
     private TextField daoTargetPackage;
-	@FXML
-	private TextField paramTargetPackage;
+    @FXML
+    private TextField paramTargetPackage;
     @FXML
     private TextField tableNameField;
     @FXML
@@ -86,15 +86,15 @@ public class MainApplicationController extends BaseFxmlPageController {
     @FXML
     private TreeView<String> dataBaseViewTree;
 
-	/**
-	 * 当前选择的数据库
-	 */
-	private DatabaseConnectionConfig selectedDatabaseConfig;
+    /**
+     * 当前选择的数据库
+     */
+    private DatabaseConnectionConfig selectedDatabaseConfig;
 
-	/**
-	 * 当前选择的表名
-	 */
-	private String tableName;
+    /**
+     * 当前选择的表名
+     */
+    private String tableName;
 
     private List<IgnoredColumn> ignoredColumns;
 
@@ -107,7 +107,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         dbImage.setFitWidth(40);
         connectionLabel.setGraphic(dbImage);
         connectionLabel.setOnMouseClicked(event -> {
-            DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("新建数据库连接", FxmlPageEnum.NEW_DATABASE_CONNECTION, false);
+            DataBaseConnectionController controller = (DataBaseConnectionController) loadFxmlPage("新建数据库连接", FxmlPageEnum.NEW_DATABASE_CONNECTION, false);
             controller.setMainApplicationController(this);
             // 为窗口增加ico图标
             controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/computer.png"))));
@@ -118,7 +118,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         configImage.setFitWidth(40);
         configsLabel.setGraphic(configImage);
         configsLabel.setOnMouseClicked(event -> {
-            GenerateCodeConfigController controller = (GenerateCodeConfigController) loadFXMLPage("配置", FxmlPageEnum.GENERATE_CONFIG, false);
+            GenerateCodeConfigController controller = (GenerateCodeConfigController) loadFxmlPage("配置", FxmlPageEnum.GENERATE_CONFIG, false);
             controller.setMainApplicationController(this);
             // 为窗口增加ico图标
             controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/config_list.png"))));
@@ -141,7 +141,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                     MenuItem item2 = new MenuItem("编辑连接");
                     item2.setOnAction(event1 -> {
                         DatabaseConnectionConfig selectedConfig = (DatabaseConnectionConfig) treeItem.getGraphic().getUserData();
-                        DataBaseConnectionController controller = (DataBaseConnectionController) loadFXMLPage("编辑数据库连接", FxmlPageEnum.NEW_DATABASE_CONNECTION, false);
+                        DataBaseConnectionController controller = (DataBaseConnectionController) loadFxmlPage("编辑数据库连接", FxmlPageEnum.NEW_DATABASE_CONNECTION, false);
                         controller.setMainApplicationController(this);
                         controller.fillDataBaseConnectionConfig(selectedConfig);
                         controller.showDialogStage();
@@ -200,30 +200,30 @@ public class MainApplicationController extends BaseFxmlPageController {
         loadDataBaseViewList();
     }
 
-	/**
-	 * 导入数据库视图列表
-	 * by itcrazy0717
-	 */
-	public void loadDataBaseViewList() {
-		TreeItem<String> rootTreeItem = dataBaseViewTree.getRoot();
-		rootTreeItem.getChildren().clear();
-		try {
-			List<DatabaseConnectionConfig> dbConfigList = LocalSqliteUtil.loadDatabaseConfig();
-			for (DatabaseConnectionConfig dbConfig : dbConfigList) {
-				TreeItem<String> treeItem = new TreeItem<>();
-				treeItem.setValue(dbConfig.getName());
-				ImageView dbImage = new ImageView("icons/computer.png");
-				dbImage.setFitHeight(16);
-				dbImage.setFitWidth(16);
-				dbImage.setUserData(dbConfig);
-				treeItem.setGraphic(dbImage);
-				rootTreeItem.getChildren().add(treeItem);
-			}
-		} catch (Exception e) {
-			LOGGER.error("connect db failed", e);
-			MessageTipsUtil.showErrorInfo(e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
-		}
-	}
+    /**
+     * 导入数据库视图列表
+     * by itcrazy0717
+     */
+    public void loadDataBaseViewList() {
+        TreeItem<String> rootTreeItem = dataBaseViewTree.getRoot();
+        rootTreeItem.getChildren().clear();
+        try {
+            List<DatabaseConnectionConfig> dbConfigList = LocalSqliteUtil.loadDatabaseConfig();
+            for (DatabaseConnectionConfig dbConfig : dbConfigList) {
+                TreeItem<String> treeItem = new TreeItem<>();
+                treeItem.setValue(dbConfig.getName());
+                ImageView dbImage = new ImageView("icons/computer.png");
+                dbImage.setFitHeight(16);
+                dbImage.setFitWidth(16);
+                dbImage.setUserData(dbConfig);
+                treeItem.setGraphic(dbImage);
+                rootTreeItem.getChildren().add(treeItem);
+            }
+        } catch (Exception e) {
+            LOGGER.error("connect db failed", e);
+            MessageTipsUtil.showErrorInfo(e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
+        }
+    }
 
     @FXML
     public void chooseProjectFolder() {
@@ -251,10 +251,10 @@ public class MainApplicationController extends BaseFxmlPageController {
         }
 
         ShowProgressCallback progressCallback = new ShowProgressCallback(Alert.AlertType.INFORMATION);
-	    MybatisCodeGenerateUtil.loadConfig(generatorConfig,selectedDatabaseConfig,progressCallback,ignoredColumns,columnOverrides);
+        MybatisCodeGenerateUtil.loadConfig(generatorConfig, selectedDatabaseConfig, progressCallback, ignoredColumns, columnOverrides);
         progressCallback.show();
         try {
-	        MybatisCodeGenerateUtil.generateCode();
+            MybatisCodeGenerateUtil.generateCode();
         } catch (Exception e) {
             LOGGER.error("generate code failed", e);
             MessageTipsUtil.showErrorInfo(e.getMessage());
@@ -276,11 +276,11 @@ public class MainApplicationController extends BaseFxmlPageController {
         return null;
     }
 
-	/**
-	 * 保存代码生成配置
-	 * by itcrazy0717
-	 */
-	@FXML
+    /**
+     * 保存代码生成配置
+     * by itcrazy0717
+     */
+    @FXML
     public void saveCodeGenerateConfig() {
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle("保存当前配置");
@@ -303,12 +303,12 @@ public class MainApplicationController extends BaseFxmlPageController {
         }
     }
 
-	/**
-	 * 获取生成mybatis代码配置
-	 * by itcrazy0717
-	 *
-	 * @return
-	 */
+    /**
+     * 获取生成mybatis代码配置
+     * by itcrazy0717
+     *
+     * @return
+     */
     public MybatisCodeGenerateConfig getMybatisCodeGenerateConfig() {
         MybatisCodeGenerateConfig config = new MybatisCodeGenerateConfig();
         config.setProjectFolder(projectFolderField.getText());
@@ -320,16 +320,16 @@ public class MainApplicationController extends BaseFxmlPageController {
         config.setMapperXMLTargetFolder(mappingTargetProject.getText());
         config.setTableName(tableNameField.getText());
         config.setDomainObjectName(domainObjectNameField.getText());
-		config.setParamModelPackage(paramTargetPackage.getText());
+        config.setParamModelPackage(paramTargetPackage.getText());
         return config;
     }
 
-	/**
-	 * 组装代码生成配置
-	 * by itcrazy0717
-	 *
-	 * @param generatorConfig
-	 */
+    /**
+     * 组装代码生成配置
+     * by itcrazy0717
+     *
+     * @param generatorConfig
+     */
     public void assembleCodeGenerateConfig(MybatisCodeGenerateConfig generatorConfig) {
         projectFolderField.setText(generatorConfig.getProjectFolder());
         modelTargetPackage.setText(generatorConfig.getModelPackage());
@@ -341,14 +341,14 @@ public class MainApplicationController extends BaseFxmlPageController {
 
     @FXML
     public void openTableColumnCustomizationPage() {
-        if (tableName == null) {
+        if (StringUtils.isBlank(tableName)) {
             MessageTipsUtil.showWarnInfo("请先在左侧选择数据库表");
             return;
         }
-        SelectTableColumnController controller = (SelectTableColumnController) loadFXMLPage("定制列", FxmlPageEnum.SELECT_TABLE_COLUMN, true);
+        SelectTableColumnController controller = (SelectTableColumnController) loadFxmlPage("定制列", FxmlPageEnum.SELECT_TABLE_COLUMN, true);
         // 为定制项窗口增加ico图标
         controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/table.png"))));
-        controller.setMainUIController(this);
+        controller.setMainApplicationController(this);
         try {
             // If select same schema and another table, update table data
             if (!tableName.equals(controller.getTableName())) {

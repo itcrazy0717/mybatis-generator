@@ -91,11 +91,11 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
         refreshTableView();
     }
 
-	/**
-	 * 刷新表视图
-	 * by itcrazy0717
-	 */
-	public void refreshTableView() {
+    /**
+     * 刷新表视图
+     * by itcrazy0717
+     */
+    public void refreshTableView() {
         try {
             List<MybatisCodeGenerateConfig> configs = LocalSqliteUtil.loadCodeGenerateConfigList();
             codeGenerateView.setItems(FXCollections.observableList(configs));
@@ -104,7 +104,7 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
         }
     }
 
-    void setMainApplicationController(MainApplicationController mainApplicationController) {
+    public void setMainApplicationController(MainApplicationController mainApplicationController) {
         this.mainApplicationController = mainApplicationController;
     }
 

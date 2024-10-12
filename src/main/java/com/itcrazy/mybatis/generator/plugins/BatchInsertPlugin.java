@@ -41,7 +41,6 @@ public class BatchInsertPlugin extends PluginAdapter {
     @Override
     public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass,
                                    IntrospectedTable introspectedTable) {
-
         String configurationType = this.properties.getProperty("configurationType");
         if (StringUtils.isNotBlank(configurationType) && "ANNOTATEDMAPPER".equalsIgnoreCase(configurationType)) {
             return super.clientGenerated(interfaze, topLevelClass, introspectedTable);
@@ -51,23 +50,23 @@ public class BatchInsertPlugin extends PluginAdapter {
         importedTypes.add(FullyQualifiedJavaType.getNewListInstance());
         importedTypes.add(new FullyQualifiedJavaType(introspectedTable.getBaseRecordType()));
 
-        Method ibsmethod = new Method();
+        Method batchInsertMethod = new Method();
 
-        ibsmethod.addJavaDocLine("/**");
-        ibsmethod.addJavaDocLine(" * 批量插入");
-        ibsmethod.addJavaDocLine(" * @param records");
-        ibsmethod.addJavaDocLine(" * @return");
-        ibsmethod.addJavaDocLine(" *");
-        ibsmethod.addJavaDocLine(" * @mbg.generated");
-        ibsmethod.addJavaDocLine(" */");
+        batchInsertMethod.addJavaDocLine("/**");
+        batchInsertMethod.addJavaDocLine(" * 批量插入");
+        batchInsertMethod.addJavaDocLine(" * @param records");
+        batchInsertMethod.addJavaDocLine(" * @return");
+        batchInsertMethod.addJavaDocLine(" *");
+        batchInsertMethod.addJavaDocLine(" * @mbg.generated");
+        batchInsertMethod.addJavaDocLine(" */");
         // 1.设置方法可见性
-        ibsmethod.setVisibility(JavaVisibility.PUBLIC);
+        batchInsertMethod.setVisibility(JavaVisibility.PUBLIC);
         // 2.设置返回值类型
         // int型
-        FullyQualifiedJavaType ibsreturnType = FullyQualifiedJavaType.getIntInstance();
-        ibsmethod.setReturnType(ibsreturnType);
+        FullyQualifiedJavaType returnType = FullyQualifiedJavaType.getIntInstance();
+        batchInsertMethod.setReturnType(returnType);
         // 3.设置方法名
-        ibsmethod.setName("batchInsert");
+        batchInsertMethod.setName("batchInsert");
         // 4.设置参数列表
         FullyQualifiedJavaType paramType = FullyQualifiedJavaType.getNewListInstance();
         FullyQualifiedJavaType paramListType;
@@ -76,22 +75,21 @@ public class BatchInsertPlugin extends PluginAdapter {
         } else if (introspectedTable.getRules().generatePrimaryKeyClass()) {
             paramListType = new FullyQualifiedJavaType(introspectedTable.getPrimaryKeyType());
         } else {
-            //$NON-NLS-1$
             throw new RuntimeException(getString("RuntimeError.12"));
         }
         paramType.addTypeArgument(paramListType);
 
-        ibsmethod.addParameter(new Parameter(paramType, "records"));
+        batchInsertMethod.addParameter(new Parameter(paramType, "records"));
 
         interfaze.addImportedTypes(importedTypes);
-        interfaze.addMethod(ibsmethod);
+        interfaze.addMethod(batchInsertMethod);
         return super.clientGenerated(interfaze, topLevelClass, introspectedTable);
     }
 
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
         List<IntrospectedColumn> columns = introspectedTable.getAllColumns();
-        //获得要自增的列名
+        // 获得要自增的列名
         String incrementField = null;
         String isGenerateKey = properties.getProperty("isGenerateKey");
         if (Boolean.parseBoolean(isGenerateKey)) {
@@ -102,14 +100,14 @@ public class BatchInsertPlugin extends PluginAdapter {
         StringBuilder javaPropertyAndDbType = new StringBuilder();
         for (IntrospectedColumn introspectedColumn : columns) {
             String columnName = introspectedColumn.getActualColumnName();
-            //不是自增字段的才会出现在批量插入中
+            // 不是自增字段的才会出现在批量插入中
             if (!columnName.equalsIgnoreCase(incrementField)) {
                 dbcolumnsName.append(columnName).append(",");
                 javaPropertyAndDbType.append("#{item.").append(introspectedColumn.getJavaProperty()).append(",jdbcType=").append(introspectedColumn.getJdbcTypeName());
                 if (stringHasValue(introspectedColumn.getTypeHandler())) {
-                    javaPropertyAndDbType.append(",typeHandler="); //$NON-NLS-1$
+                    javaPropertyAndDbType.append(",typeHandler=");
                     javaPropertyAndDbType.append(introspectedColumn.getTypeHandler());
-                    javaPropertyAndDbType.append(",javaType="); //$NON-NLS-1$
+                    javaPropertyAndDbType.append(",javaType=");
                     javaPropertyAndDbType.append(introspectedColumn.getFullyQualifiedJavaType().getFullyQualifiedNameWithoutTypeParameters());
                 }
                 javaPropertyAndDbType.append("},");
@@ -127,9 +125,9 @@ public class BatchInsertPlugin extends PluginAdapter {
             if (introspectedColumn != null) {
                 if (gk.isJdbcStandard()) {
                     insertBatchElement.addAttribute(new Attribute(
-                            "useGeneratedKeys", "true")); //$NON-NLS-1$ //$NON-NLS-2$
+                            "useGeneratedKeys", "true"));
                     insertBatchElement.addAttribute(new Attribute(
-                            "keyProperty", introspectedColumn.getJavaProperty())); //$NON-NLS-1$
+                            "keyProperty", introspectedColumn.getJavaProperty()));
                 }
             }
         }

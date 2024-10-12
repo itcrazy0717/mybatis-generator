@@ -21,7 +21,7 @@ public enum FxmlPageEnum {
 	SELECT_TABLE_COLUMN("fxml/selectTableColumn.fxml"),
 
 	/**
-	 * 生产配置
+	 * 生成配置
 	 */
 	GENERATE_CONFIG("fxml/generateConfig.fxml"),
     ;

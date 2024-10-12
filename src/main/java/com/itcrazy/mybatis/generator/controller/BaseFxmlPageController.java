@@ -51,7 +51,7 @@ public abstract class BaseFxmlPageController implements Initializable {
 	 * @param cache
 	 * @return
 	 */
-    public BaseFxmlPageController loadFXMLPage(String title, FxmlPageEnum fxmlPage, boolean cache) {
+    public BaseFxmlPageController loadFxmlPage(String title, FxmlPageEnum fxmlPage, boolean cache) {
         SoftReference<? extends BaseFxmlPageController> fxmlPageReference = FXML_PAGE_CONTROLLER_MAP.get(fxmlPage);
 	    if (cache && Objects.nonNull(fxmlPageReference)) {
 		    return fxmlPageReference.get();

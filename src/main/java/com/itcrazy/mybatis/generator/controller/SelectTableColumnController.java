@@ -40,7 +40,7 @@ public class SelectTableColumnController extends BaseFxmlPageController {
     @FXML
     private javafx.scene.control.TableColumn<TableColumn, String> typeHandlerColumn;
 
-    private MainApplicationController mainUIController;
+    private MainApplicationController mainApplicationController;
 
     private String tableName;
 
@@ -87,8 +87,8 @@ public class SelectTableColumnController extends BaseFxmlPageController {
                     columnOverrides.add(columnOverride);
                 }
             });
-            mainUIController.setIgnoredColumns(ignoredColumns);
-            mainUIController.setColumnOverrides(columnOverrides);
+            mainApplicationController.setIgnoredColumns(ignoredColumns);
+            mainApplicationController.setColumnOverrides(columnOverrides);
         }
         getDialogStage().close();
     }
@@ -102,8 +102,8 @@ public class SelectTableColumnController extends BaseFxmlPageController {
         columnListView.setItems(columns);
     }
 
-    public void setMainUIController(MainApplicationController mainUIController) {
-        this.mainUIController = mainUIController;
+    public void setMainApplicationController(MainApplicationController mainApplicationController) {
+        this.mainApplicationController = mainApplicationController;
     }
 
     public String getTableName() {
