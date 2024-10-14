@@ -16,4 +16,9 @@ public class SqliteConstants {
 	 * 数据库驱动文件后缀
 	 */
 	public static final String DATABASE_DRIVER_JAR_SUFFIX = ".jar";
+
+	/**
+	 * 数据库驱动文件路径前缀
+	 */
+	public static final String DATABASE_DRIVER_JAR_PATH_SUFFIX="lib/";
 }

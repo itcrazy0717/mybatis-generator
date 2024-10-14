@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -15,6 +16,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -330,7 +332,7 @@ public class LocalSqliteUtil {
 	public static String getDataBaseDriverJarPath(String dataBaseType) {
 		DataBaseTypeEnum dataType = DataBaseTypeEnum.valueOf(dataBaseType);
 		try {
-			File file = new File(SqliteConstants.DATABASE_DRIVER_JAR_PATH + dataType.getDriverJar());
+			File file = getDataBaseDriverClassJarFile(dataType);
 			return file.getCanonicalPath();
 		} catch (Exception e) {
 			throw new RuntimeException("找不到驱动文件，请联系开发者!");
@@ -346,7 +348,7 @@ public class LocalSqliteUtil {
 	public static List<String> getAllDataBaseDriverJarPath() {
 		Set<String> jarFilePathSets = new HashSet<>();
 		try {
-			File file = new File(SqliteConstants.DATABASE_DRIVER_JAR_PATH);
+			File file = getDataBaseDriverClassJarFile(null);
 			LOGGER.info("driver jar path:{}", file.getCanonicalPath());
 			File[] jarFiles = file.listFiles();
 			LOGGER.info("driver jar file:{}", Arrays.toString(jarFiles));
@@ -360,6 +362,28 @@ public class LocalSqliteUtil {
 			throw new RuntimeException("找不到驱动文件，请联系开发者");
 		}
 		return new ArrayList<>(jarFilePathSets);
+	}
+
+	/**
+	 * 获取数据库驱动文件对象
+	 * by itcrazy0717
+	 *
+	 * @param dataType
+	 * @return
+	 */
+	private static File getDataBaseDriverClassJarFile(DataBaseTypeEnum dataType) {
+		// 用sqlite3.db做数据文件基础，主要是为了生成jfx文件时能准确找到驱动文件
+		URL url = Thread.currentThread().getContextClassLoader().getResource("sqlite3.db");
+		String path;
+		if (url.getPath().contains(SqliteConstants.DATABASE_DRIVER_JAR_SUFFIX)) {
+			path = SqliteConstants.DATABASE_DRIVER_JAR_PATH_SUFFIX;
+		} else {
+			path = SqliteConstants.DATABASE_DRIVER_JAR_PATH;
+		}
+		if (Objects.nonNull(dataType) && StringUtils.isNotBlank(dataType.getDriverJar())) {
+			path = path + dataType.getDriverJar();
+		}
+		return new File(path);
 	}
 
 }
