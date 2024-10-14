@@ -9,7 +9,7 @@
 - 优化查询参数，参考自己生产使用情况，使其更符合自身开发习惯
 - 实体对象与查询参数默认分目录存放，也可自定义配置，实现灵活管控
 - 由于实际开发需求，目前只对MySQL数据库进行了测试，其他数据库未进行相应测试
-- 原项目地址:https://github.com/zouzg/mybatis-generator-gui ,感谢原作者的无私奉献！
+- 原项目地址: https://github.com/zouzg/mybatis-generator-gui ,感谢原作者的无私奉献！
 
 #### 相关说明
 ##### 工具运行相关界面
