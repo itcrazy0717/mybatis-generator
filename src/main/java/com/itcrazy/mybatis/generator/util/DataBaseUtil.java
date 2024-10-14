@@ -58,7 +58,7 @@ public class DataBaseUtil {
                 LOGGER.info("load driver class: {}", driver);
                 DATABASE_DRIVER_MAP.put(dataBaseType, driver);
             } catch (Exception e) {
-                LOGGER.error("load driver error");
+	            LOGGER.error("load driver error", e);
             }
         }
     }
