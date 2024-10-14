@@ -63,8 +63,17 @@ public class DataBaseUtil {
         }
     }
 
+	/**
+	 * 获取数据库连接
+	 * by itcrazy0717
+	 *
+	 * @param config
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
     public static Connection getConnection(DatabaseConnectionConfig config) throws ClassNotFoundException, SQLException {
-        String url = getConnectionUrlWithSchema(config);
+        String url = buildConnectionUrlWithSchema(config);
         Properties props = new Properties();
 
         props.setProperty("user", config.getUserName());
@@ -85,7 +94,7 @@ public class DataBaseUtil {
      * @throws Exception
      */
     public static List<String> getTableNameList(DatabaseConnectionConfig databaseConfig) throws Exception {
-        String url = getConnectionUrlWithSchema(databaseConfig);
+        String url = buildConnectionUrlWithSchema(databaseConfig);
         LOGGER.info("get_table_name_list, connection url: {}", url);
         try (Connection connection = getConnection(databaseConfig)) {
             // 获取数据库类型
@@ -117,28 +126,42 @@ public class DataBaseUtil {
         }
     }
 
+	/**
+	 * 获取数据表列
+	 * by itcrazy0717
+	 *
+	 * @param dbConfig
+	 * @param tableName
+	 * @return
+	 * @throws Exception
+	 */
     public static List<TableColumn> getTableColumns(DatabaseConnectionConfig dbConfig, String tableName) throws Exception {
-        String url = getConnectionUrlWithSchema(dbConfig);
+        String url = buildConnectionUrlWithSchema(dbConfig);
         LOGGER.info("getTableColumns, connection url: {}", url);
-        Connection conn = getConnection(dbConfig);
-        try {
-            DatabaseMetaData md = conn.getMetaData();
-            ResultSet rs = md.getColumns(null, null, tableName, null);
-            List<TableColumn> columns = new ArrayList<>();
-            while (rs.next()) {
-                TableColumn tableColumn = new TableColumn();
-                String columnName = rs.getString("COLUMN_NAME");
-                tableColumn.setColumnName(columnName);
-                tableColumn.setJdbcType(rs.getString("TYPE_NAME"));
-                columns.add(tableColumn);
-            }
-            return columns;
-        } finally {
-            conn.close();
-        }
+	    try (Connection conn = getConnection(dbConfig)) {
+		    DatabaseMetaData metaData = conn.getMetaData();
+		    ResultSet rs = metaData.getColumns(null, null, tableName, null);
+		    List<TableColumn> columns = new ArrayList<>();
+		    while (rs.next()) {
+			    TableColumn tableColumn = new TableColumn();
+			    String columnName = rs.getString("COLUMN_NAME");
+			    tableColumn.setColumnName(columnName);
+			    tableColumn.setJdbcType(rs.getString("TYPE_NAME"));
+			    columns.add(tableColumn);
+		    }
+		    return columns;
+	    }
     }
 
-    public static String getConnectionUrlWithSchema(DatabaseConnectionConfig dbConfig) throws ClassNotFoundException {
+	/**
+	 * 构建数据库连接url
+	 * by itcrazy0717
+	 *
+	 * @param dbConfig
+	 * @return
+	 * @throws ClassNotFoundException
+	 */
+    public static String buildConnectionUrlWithSchema(DatabaseConnectionConfig dbConfig) throws ClassNotFoundException {
         DataBaseTypeEnum dataBaseType = DataBaseTypeEnum.valueOf(dbConfig.getDataBaseType());
         String connectionUrl = String.format(dataBaseType.getConnectionUrlPattern(), dbConfig.getHostUrl(), dbConfig.getPort(), dbConfig.getSchemaName(), dbConfig.getEncoding());
         LOGGER.info("get_connection_url_with_schema, connection url: {}", connectionUrl);

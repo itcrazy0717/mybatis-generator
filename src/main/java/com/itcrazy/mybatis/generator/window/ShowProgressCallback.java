@@ -1,4 +1,4 @@
-package com.itcrazy.mybatis.generator.view;
+package com.itcrazy.mybatis.generator.window;
 
 import org.mybatis.generator.api.ProgressCallback;
 

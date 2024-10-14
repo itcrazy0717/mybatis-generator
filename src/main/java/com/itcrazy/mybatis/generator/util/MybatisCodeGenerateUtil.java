@@ -111,7 +111,7 @@ public class MybatisCodeGenerateUtil {
         }
         JDBCConnectionConfiguration jdbcConfig = new JDBCConnectionConfiguration();
         jdbcConfig.setDriverClass(DataBaseTypeEnum.valueOf(selectedDatabaseConfig.getDataBaseType()).getDriverClass());
-        jdbcConfig.setConnectionURL(DataBaseUtil.getConnectionUrlWithSchema(selectedDatabaseConfig));
+        jdbcConfig.setConnectionURL(DataBaseUtil.buildConnectionUrlWithSchema(selectedDatabaseConfig));
         jdbcConfig.setUserId(selectedDatabaseConfig.getUserName());
         jdbcConfig.setPassword(selectedDatabaseConfig.getPassword());
         // 实体类路径配置

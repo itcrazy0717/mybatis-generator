@@ -26,9 +26,9 @@ import com.itcrazy.mybatis.generator.model.TableColumn;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
 import com.itcrazy.mybatis.generator.util.LocalSqliteUtil;
 import com.itcrazy.mybatis.generator.util.MessageTipsUtil;
-import com.itcrazy.mybatis.generator.util.MyStringUtils;
+import com.itcrazy.mybatis.generator.util.DataBaseStringUtil;
 import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateUtil;
-import com.itcrazy.mybatis.generator.view.ShowProgressCallback;
+import com.itcrazy.mybatis.generator.window.ShowProgressCallback;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -191,7 +191,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                         selectedDatabaseConfig = (DatabaseConnectionConfig) treeItem.getParent().getGraphic().getUserData();
                         this.tableName = tableName;
                         tableNameField.setText(tableName);
-                        domainObjectNameField.setText(MyStringUtils.dbStringToCamelStyle(tableName) + "DO");
+                        domainObjectNameField.setText(DataBaseStringUtil.tableNameToCamelStyle(tableName) + "DO");
                     }
                 }
             });
@@ -315,7 +315,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         config.setModelPackage(modelTargetPackage.getText());
         config.setModelAndDaoInterfacePackageTargetFolder(modelAndDaoInterfaceTargetProject.getText());
         config.setDaoPackage(daoTargetPackage.getText());
-        config.setMapperName(MyStringUtils.dbStringToCamelStyle(tableName) + "DAO");
+        config.setMapperName(DataBaseStringUtil.tableNameToCamelStyle(tableName) + "DAO");
         config.setMapperXMLPackage(mapperTargetPackage.getText());
         config.setMapperXMLTargetFolder(mappingTargetProject.getText());
         config.setTableName(tableNameField.getText());
