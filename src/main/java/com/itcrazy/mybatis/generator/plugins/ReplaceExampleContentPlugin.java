@@ -380,7 +380,6 @@ public class ReplaceExampleContentPlugin extends PluginAdapter {
      * @return
      */
     private boolean replaceExample(Method method, IntrospectedTable introspectedTable) {
-
         List<Parameter> parameters = method.getParameters();
         List<Parameter> newParameters = new ArrayList<>();
         for (Parameter parameter : parameters) {
