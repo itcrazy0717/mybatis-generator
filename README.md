@@ -22,7 +22,7 @@
 ![img_3.png](src/main/resources/readmeimages/img_3.png)
 
 ##### 如何运行
-###### jdk版本最低要求>=1.8
+###### jdk版本要求>=1.8
 
 - 下载项目后，直接运行：com.itcrazy.mybatis.generator.MainApplication
 - 做成安装包，正在摸索中.............
