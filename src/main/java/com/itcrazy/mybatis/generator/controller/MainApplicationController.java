@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
@@ -320,7 +322,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         config.setMapperXMLPackage(mapperTargetPackage.getText());
         config.setMapperXMLTargetFolder(mappingTargetProject.getText());
         config.setTableName(tableNameField.getText());
-        config.setDomainObjectName(domainObjectNameField.getText());
+	    config.setDomainObjectName(buildDomainObjectName(domainObjectNameField.getText()));
         config.setParamModelPackage(paramTargetPackage.getText());
         return config;
     }
@@ -410,4 +412,25 @@ public class MainApplicationController extends BaseFxmlPageController {
         }
         return true;
     }
+
+	/**
+	 * 构建实体类名-自动补齐DO后缀
+	 * by itcrazy0717
+	 *
+	 * @param domainObjecName
+	 * @return
+	 */
+	private String buildDomainObjectName(String domainObjecName) {
+		String result = DataBaseStringUtil.tableNameToCamelStyle(domainObjecName);
+		if (StringUtils.isBlank(result)) {
+			throw new RuntimeException("实体类名称为空");
+		}
+		// 判断实体类名是否以DO结尾，如果不是则补齐
+		Pattern pattern = Pattern.compile("DO$");
+		Matcher matcher = pattern.matcher(domainObjecName);
+		if (!matcher.find()) {
+			return domainObjecName + "DO";
+		}
+		return domainObjecName;
+	}
 }
