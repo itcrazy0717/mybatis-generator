@@ -79,9 +79,9 @@ public class LocalSqliteUtil {
 			}
             fos = new FileOutputStream(file);
             byte[] buffer = new byte[1024];
-            int byteread = 0;
-            while ((byteread = fis.read(buffer)) != -1) {
-                fos.write(buffer, 0, byteread);
+            int byteRead = 0;
+            while ((byteRead = fis.read(buffer)) != -1) {
+                fos.write(buffer, 0, byteRead);
             }
         } finally {
 	        if (Objects.nonNull(fis)) {
@@ -91,7 +91,6 @@ public class LocalSqliteUtil {
 		        fos.close();
 	        }
         }
-
     }
 
 	/**

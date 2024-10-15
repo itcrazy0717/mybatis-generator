@@ -57,13 +57,13 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
                         setText(null);
                         setGraphic(null);
                     } else {
-                        Button btn1 = new Button("应用");
-                        Button btn2 = new Button("删除");
+                        Button btnApply = new Button("应用");
+                        Button btnDelete = new Button("删除");
                         HBox hBox = new HBox();
                         hBox.setSpacing(10);
-                        hBox.getChildren().add(btn1);
-                        hBox.getChildren().add(btn2);
-                        btn1.setOnAction(event -> {
+                        hBox.getChildren().add(btnApply);
+                        hBox.getChildren().add(btnDelete);
+                        btnApply.setOnAction(event -> {
                             try {
                                 // 应用配置
                                 MybatisCodeGenerateConfig codeGenerateConfig = LocalSqliteUtil.loadCodeGenerateConfigByName(item.toString());
@@ -73,7 +73,7 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
                                 MessageTipsUtil.showErrorInfo(e.getMessage());
                             }
                         });
-                        btn2.setOnAction(event -> {
+                        btnDelete.setOnAction(event -> {
                             try {
                                 // 删除配置
                                 LOGGER.debug("item: {}", item);

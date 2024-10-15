@@ -19,14 +19,15 @@ import org.mybatis.generator.config.IgnoredColumn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.itcrazy.mybatis.generator.constant.IconConstants;
 import com.itcrazy.mybatis.generator.enums.FxmlPageEnum;
 import com.itcrazy.mybatis.generator.model.DatabaseConnectionConfig;
 import com.itcrazy.mybatis.generator.model.MybatisCodeGenerateConfig;
 import com.itcrazy.mybatis.generator.model.TableColumn;
+import com.itcrazy.mybatis.generator.util.DataBaseStringUtil;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
 import com.itcrazy.mybatis.generator.util.LocalSqliteUtil;
 import com.itcrazy.mybatis.generator.util.MessageTipsUtil;
-import com.itcrazy.mybatis.generator.util.DataBaseStringUtil;
 import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateUtil;
 import com.itcrazy.mybatis.generator.window.ShowProgressCallback;
 
@@ -102,7 +103,7 @@ public class MainApplicationController extends BaseFxmlPageController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ImageView dbImage = new ImageView("icons/computer.png");
+	    ImageView dbImage = new ImageView(IconConstants.COMPUTER_ICON_URL);
         dbImage.setFitHeight(40);
         dbImage.setFitWidth(40);
         connectionLabel.setGraphic(dbImage);
@@ -110,10 +111,10 @@ public class MainApplicationController extends BaseFxmlPageController {
             DataBaseConnectionController controller = (DataBaseConnectionController) loadFxmlPage("新建数据库连接", FxmlPageEnum.NEW_DATABASE_CONNECTION, false);
             controller.setMainApplicationController(this);
             // 为窗口增加ico图标
-            controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/computer.png"))));
+	        controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(IconConstants.COMPUTER_ICON_URL))));
             controller.showDialogStage();
         });
-        ImageView configImage = new ImageView("icons/configlist.png");
+	    ImageView configImage = new ImageView(IconConstants.CONFIG_ICON_URL);
         configImage.setFitHeight(40);
         configImage.setFitWidth(40);
         configsLabel.setGraphic(configImage);
@@ -121,7 +122,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             GenerateCodeConfigController controller = (GenerateCodeConfigController) loadFxmlPage("配置", FxmlPageEnum.GENERATE_CONFIG, false);
             controller.setMainApplicationController(this);
             // 为窗口增加ico图标
-            controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/configlist.png"))));
+	        controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(IconConstants.CONFIG_ICON_URL))));
             controller.showDialogStage();
         });
 
@@ -171,7 +172,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                                 children.clear();
                                 for (String tableName : tableNameList) {
                                     TreeItem<String> newTreeItem = new TreeItem<>();
-                                    ImageView imageView = new ImageView("icons/table.png");
+	                                ImageView imageView = new ImageView(IconConstants.TABLE_ICON_URL);
                                     imageView.setFitHeight(16);
                                     imageView.setFitWidth(16);
                                     newTreeItem.setGraphic(imageView);
@@ -212,7 +213,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             for (DatabaseConnectionConfig dbConfig : dbConfigList) {
                 TreeItem<String> treeItem = new TreeItem<>();
                 treeItem.setValue(dbConfig.getName());
-                ImageView dbImage = new ImageView("icons/computer.png");
+	            ImageView dbImage = new ImageView(IconConstants.COMPUTER_ICON_URL);
                 dbImage.setFitHeight(16);
                 dbImage.setFitWidth(16);
                 dbImage.setUserData(dbConfig);
@@ -347,7 +348,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         }
         SelectTableColumnController controller = (SelectTableColumnController) loadFxmlPage("定制列", FxmlPageEnum.SELECT_TABLE_COLUMN, true);
         // 为定制项窗口增加ico图标
-        controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("icons/table.png"))));
+	    controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(IconConstants.TABLE_ICON_URL))));
         controller.setMainApplicationController(this);
         try {
             // If select same schema and another table, update table data

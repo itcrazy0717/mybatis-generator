@@ -3,7 +3,7 @@
 #### 简介
 该工具基于mybatis-generator-gui项目进行重构，调整原工具配置界面，并根据自己实际开发习惯进行相应调整，主要修改点如下：
 - 升级mybatis-generator-core版本到1.3.7
-- 升级MySQL驱动文件版本到8.0.30，兼容MySQL8.0以下版本，已满足生产绝大部分需求
+- 升级MySQL驱动文件版本到8.0.30，兼容MySQL8.0以下版本，已满足绝大部分生产需求
 - 重构配置界面，优化配置项，使其语义更加明确
 - 插件默认化，无需勾选，默认常用插件，且重构&添加相关插件，主要包含：批量插入插件、example内容替换插件、注释插件、排序插件、分页插件、xml文件覆写插件、TINYINT默认转换成Boolean插件
 - 优化查询参数，参考自己生产使用情况，使其更符合自身开发习惯
@@ -25,4 +25,12 @@
 ###### jdk版本要求>=1.8
 
 - 下载项目后，直接运行：com.itcrazy.mybatis.generator.MainApplication
-- 做成安装包，正在摸索中.............
+- 自行构建项目
+  ```html
+  git clone git@gitee.com:itcrazy0717/mybatis-generator.git
+  cd mybatis-generator
+  mvn jfx:jar
+  cd target/jfx/app/
+  java -jar mybatis-generator-gui.jar
+  ```
+  通过该方式可对命令创建快捷运行指令，启动非常方便
