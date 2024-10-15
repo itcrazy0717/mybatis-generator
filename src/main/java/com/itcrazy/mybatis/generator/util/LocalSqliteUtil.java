@@ -375,6 +375,10 @@ public class LocalSqliteUtil {
 		// 用sqlite3.db做数据文件基础，主要是为了生成jfx文件时能准确找到驱动文件
 		URL url = Thread.currentThread().getContextClassLoader().getResource("sqlite3.db");
 		String path;
+		if (Objects.isNull(url)) {
+			throw new RuntimeException("本地配置基础数据文件不存在");
+		}
+		// 生成jfx app时，路径中会存在.jar文件，因此需重新设置路径
 		if (url.getPath().contains(SqliteConstants.DATABASE_DRIVER_JAR_SUFFIX)) {
 			path = SqliteConstants.DATABASE_DRIVER_JAR_PATH_SUFFIX;
 		} else {
