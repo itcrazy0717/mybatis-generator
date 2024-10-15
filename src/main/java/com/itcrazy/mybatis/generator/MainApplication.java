@@ -50,15 +50,15 @@ public class MainApplication extends Application {
 		if (Integer.parseInt(version.substring(2, 3)) >= 8 && Integer.parseInt(version.substring(6)) >= 60) {
             launch(args);
         } else {
-            JFrame jFrame = new JFrame("版本错误");
-            jFrame.setSize(500, 100);
-	        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            JPanel jPanel = new JPanel();
-            JLabel jLabel = new JLabel("JDK的版本不能低于1.8.0.60，请升级至最近的JDK 1.8再运行此软件");
-            jPanel.add(jLabel);
-            jFrame.add(jPanel);
-            jFrame.setLocationRelativeTo(null);
-            jFrame.setVisible(true);
+            JFrame frame = new JFrame("版本错误");
+            frame.setSize(500, 100);
+	        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            JPanel panel = new JPanel();
+            JLabel label = new JLabel("JDK的版本不能低于1.8.0.60，请升级至最近的JDK1.8再运行此软件");
+            panel.add(label);
+            frame.add(panel);
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
         }
     }
 
