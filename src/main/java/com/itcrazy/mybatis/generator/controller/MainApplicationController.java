@@ -270,7 +270,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             return "项目目录不能为空";
         }
         if (StringUtils.isBlank(domainObjectNameField.getText())) {
-            return "类名不能为空";
+            return "实体类名不能为空";
         }
         if (StringUtils.isAnyBlank(modelTargetPackage.getText(), mapperTargetPackage.getText(), daoTargetPackage.getText())) {
             return "包名不能为空";
