@@ -42,7 +42,7 @@ public class ShowProgressCallback extends Alert implements ProgressCallback {
 
     @Override
     public void done() {
-        progressText.setValue("代码生成成功");
+        progressText.setValue("代码已生成");
     }
 
     @Override

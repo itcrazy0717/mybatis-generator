@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 public class DataBaseStringUtil {
 
 	/**
-	 * 数据库表驼峰转换  my_test -> MyTest
+	 * 数据库表名驼峰转换  my_test -> MyTest
 	 * by itcrazy0717
 	 *
 	 * @param str
@@ -23,14 +23,15 @@ public class DataBaseStringUtil {
 		    if (firstChar != '_') {
 			    sb.append(String.valueOf(firstChar).toUpperCase());
 		    }
-            for (int i = 1; i < str.length(); i++) {
-                char c = str.charAt(i);
-                if (c != '_') {
-                    sb.append(c);
+		    int length = str.length();
+		    for (int index = 1; index < length; index++) {
+                char stringChar = str.charAt(index);
+                if (stringChar != '_') {
+                    sb.append(stringChar);
                 } else {
-                    if (i + 1 < str.length()) {
-                        sb.append(String.valueOf(str.charAt(i + 1)).toUpperCase());
-                        i++;
+                    if (index + 1 < length) {
+                        sb.append(String.valueOf(str.charAt(index + 1)).toUpperCase());
+                        index++;
                     }
                 }
             }
