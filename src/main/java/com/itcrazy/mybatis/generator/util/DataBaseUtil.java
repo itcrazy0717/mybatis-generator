@@ -39,7 +39,7 @@ public class DataBaseUtil {
     /**
      * 数据库连接超时时间
      */
-    private static final int DATABASE_CONNECTION_TIMEOUT_SECOND = 20;
+    private static final int DATABASE_CONNECTION_TIMEOUT_SECOND = 3;
 
     /**
      * 数据库驱动集合
