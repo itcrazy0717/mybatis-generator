@@ -27,5 +27,4 @@ public class IconConstants {
 	 */
 	public static final String MAIN_ICON_URL = "icons/ico.png";
 
-
 }
