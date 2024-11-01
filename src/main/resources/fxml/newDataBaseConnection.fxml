@@ -32,7 +32,7 @@
                         <String fx:value="MySQL" />
                         <String fx:value="Oracle" />
                         <String fx:value="PostgreSQL" />
-                        <String fx:value="SQL_Server" />
+                        <String fx:value="SQLServer" />
                     </FXCollections>
                 </items>
             </ChoiceBox>
