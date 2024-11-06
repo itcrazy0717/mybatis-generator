@@ -354,6 +354,7 @@ public class LocalSqliteUtil {
 			LOGGER.info("driver jar file:{}", Arrays.toString(jarFiles));
 			if (Objects.nonNull(jarFiles)) {
 				// 对驱动文件进行过滤
+				// 获取驱动文件名称
 				Set<String> driverClassNameSets = Arrays.stream(DataBaseTypeEnum.values())
 														.map(DataBaseTypeEnum::getDriverJar)
 														.collect(Collectors.toSet());
