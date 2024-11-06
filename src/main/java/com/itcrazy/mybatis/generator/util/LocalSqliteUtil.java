@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
@@ -352,10 +353,15 @@ public class LocalSqliteUtil {
 			File[] jarFiles = file.listFiles();
 			LOGGER.info("driver jar file:{}", Arrays.toString(jarFiles));
 			if (Objects.nonNull(jarFiles)) {
+				// 对驱动文件进行过滤
+				Set<String> driverClassNameSets = Arrays.stream(DataBaseTypeEnum.values())
+														.map(DataBaseTypeEnum::getDriverJar)
+														.collect(Collectors.toSet());
 				Stream.of(jarFiles)
-				      .filter(Objects::nonNull)
-				      .filter(e -> e.isFile() && e.getAbsolutePath().endsWith(SqliteConstants.DATABASE_DRIVER_JAR_SUFFIX))
-				      .forEach(e -> jarFilePathSets.add(e.getAbsolutePath()));
+					  .filter(Objects::nonNull)
+					  .filter(e -> e.isFile() && e.getAbsolutePath().endsWith(SqliteConstants.DATABASE_DRIVER_JAR_SUFFIX))
+					  .filter(e -> driverClassNameSets.contains(e.getName()))
+					  .forEach(e -> jarFilePathSets.add(e.getAbsolutePath()));
 			}
 		} catch (Exception e) {
 			throw new RuntimeException("找不到驱动文件，请联系开发者");
@@ -388,7 +394,7 @@ public class LocalSqliteUtil {
 		}
         File file = new File(path);
         File[] files = file.listFiles();
-		// 驱动文件兜底，部分jdk找不到文件
+		// 驱动文件兜底，解决部分jdk找不到文件的情况
 		if (Objects.isNull(files) || files.length == 0) {
 			String libPath = url.getPath().replace("sqlite3.db", "lib");
 			return new File(libPath);
