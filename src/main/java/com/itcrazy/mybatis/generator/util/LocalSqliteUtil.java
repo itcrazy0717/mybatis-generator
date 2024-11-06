@@ -389,7 +389,7 @@ public class LocalSqliteUtil {
         File file = new File(path);
         File[] files = file.listFiles();
 		// 驱动文件兜底，部分jdk找不到文件
-        if (Objects.isNull(files) || files.length == 0) {
+		if (Objects.isNull(files) || files.length == 0) {
 			String libPath = url.getPath().replace("sqlite3.db", "lib");
 			return new File(libPath);
 		}
