@@ -394,11 +394,14 @@ public class LocalSqliteUtil {
 			path = path + dataType.getDriverJar();
 		}
         File file = new File(path);
-        File[] files = file.listFiles();
-		// 驱动文件兜底，解决部分jdk找不到文件的情况
-		if (Objects.isNull(files) || files.length == 0) {
-			String libPath = url.getPath().replace("sqlite3.db", "lib");
-			return new File(libPath);
+		// 未指定数据类型的时候做驱动文件兜底处理
+		if (Objects.isNull(dataType)) {
+			File[] files = file.listFiles();
+			// 驱动文件兜底，解决部分jdk找不到文件的情况
+			if (Objects.isNull(files) || files.length == 0) {
+				String libPath = url.getPath().replace("sqlite3.db", "lib");
+				return new File(libPath);
+			}
 		}
 		return new File(path);
 	}
