@@ -4,7 +4,7 @@ import lombok.Getter;
 
 /**
  * @author: itcrazy0717
- * @version: $ DbType.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
+ * @version: $ DataBaseTypeEnum.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
 @Getter
