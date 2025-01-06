@@ -61,6 +61,8 @@ public class SortPlugin extends PluginAdapter {
         context.getCommentGenerator().addEnumComment(result, introspectedTable);
 
         StringBuilder ascString = new StringBuilder();
+        OutputUtilities.newLine(ascString);
+        OutputUtilities.javaIndent(ascString, 2);
         ascString.append("/**");
         OutputUtilities.newLine(ascString);
         OutputUtilities.javaIndent(ascString, 2);
@@ -74,6 +76,8 @@ public class SortPlugin extends PluginAdapter {
         result.addEnumConstant(ascString.toString());
 
         StringBuilder descString = new StringBuilder();
+        OutputUtilities.newLine(descString);
+        OutputUtilities.javaIndent(descString, 2);
         descString.append("/**");
         OutputUtilities.newLine(descString);
         OutputUtilities.javaIndent(descString, 2);
@@ -151,11 +155,13 @@ public class SortPlugin extends PluginAdapter {
         context.getCommentGenerator().addEnumComment(result, introspectedTable);
         for (IntrospectedColumn column : introspectedTable.getNonBLOBColumns()) {
             StringBuilder sb = new StringBuilder();
+            OutputUtilities.newLine(sb);
+            OutputUtilities.javaIndent(sb, 2);
             sb.append("/**");
             OutputUtilities.newLine(sb);
             OutputUtilities.javaIndent(sb, 2);
 
-            sb.append(" *").append(column.getRemarks());
+            sb.append(" * ").append(column.getRemarks());
             OutputUtilities.newLine(sb);
             OutputUtilities.javaIndent(sb, 2);
 
