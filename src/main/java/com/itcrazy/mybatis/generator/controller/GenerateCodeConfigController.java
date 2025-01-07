@@ -2,8 +2,10 @@ package com.itcrazy.mybatis.generator.controller;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 
@@ -58,10 +61,12 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
                         setGraphic(null);
                     } else {
                         Button btnApply = new Button("应用");
+                        Button btnModifyName = new Button("修改配置名称");
                         Button btnDelete = new Button("删除");
                         HBox hBox = new HBox();
                         hBox.setSpacing(10);
                         hBox.getChildren().add(btnApply);
+                        hBox.getChildren().add(btnModifyName);
                         hBox.getChildren().add(btnDelete);
                         btnApply.setOnAction(event -> {
                             try {
@@ -71,6 +76,29 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
                                 controller.closeDialogStage();
                             } catch (Exception e) {
                                 MessageTipsUtil.showErrorInfo(e.getMessage());
+                            }
+                        });
+                        btnModifyName.setOnAction(event -> {
+                            TextInputDialog dialog = new TextInputDialog(item.toString());
+                            dialog.setTitle("修改配置名称");
+                            dialog.setContentText("请输入配置名称");
+                            Optional<String> result = dialog.showAndWait();
+                            if (result.isPresent()) {
+                                String newConfigName = result.get();
+                                if (StringUtils.isBlank(newConfigName)) {
+                                    MessageTipsUtil.showErrorInfo("配置名称不能为空");
+                                    return;
+                                }
+                                if (StringUtils.equals(item.toString(), newConfigName)) {
+                                    MessageTipsUtil.showErrorInfo("配置名称未更改");
+                                    return;
+                                }
+                                try {
+                                    LocalSqliteUtil.updateCodeGenerateConfigName(newConfigName, item.toString());
+                                    refreshTableView();
+                                } catch (Exception e) {
+                                    MessageTipsUtil.showErrorInfo(e.getMessage());
+                                }
                             }
                         });
                         btnDelete.setOnAction(event -> {
