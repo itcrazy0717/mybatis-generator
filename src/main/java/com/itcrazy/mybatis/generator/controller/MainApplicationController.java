@@ -105,7 +105,7 @@ public class MainApplicationController extends BaseFxmlPageController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-	    ImageView dbImage = new ImageView(IconConstants.COMPUTER_ICON_URL);
+        ImageView dbImage = new ImageView(IconConstants.COMPUTER_ICON_URL);
         dbImage.setFitHeight(40);
         dbImage.setFitWidth(40);
         connectionLabel.setGraphic(dbImage);
@@ -113,10 +113,10 @@ public class MainApplicationController extends BaseFxmlPageController {
             DataBaseConnectionController controller = (DataBaseConnectionController) loadFxmlPage("新建数据库连接", FxmlPageEnum.NEW_DATABASE_CONNECTION, false);
             controller.setMainApplicationController(this);
             // 为窗口增加ico图标
-	        controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(IconConstants.COMPUTER_ICON_URL))));
+            controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(IconConstants.COMPUTER_ICON_URL))));
             controller.showDialogStage();
         });
-	    ImageView configImage = new ImageView(IconConstants.CONFIG_ICON_URL);
+        ImageView configImage = new ImageView(IconConstants.CONFIG_ICON_URL);
         configImage.setFitHeight(40);
         configImage.setFitWidth(40);
         configsLabel.setGraphic(configImage);
@@ -124,7 +124,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             GenerateCodeConfigController controller = (GenerateCodeConfigController) loadFxmlPage("配置", FxmlPageEnum.GENERATE_CONFIG, false);
             controller.setMainApplicationController(this);
             // 为窗口增加ico图标
-	        controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(IconConstants.CONFIG_ICON_URL))));
+            controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(IconConstants.CONFIG_ICON_URL))));
             controller.showDialogStage();
         });
 
@@ -174,7 +174,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                                 children.clear();
                                 for (String tableName : tableNameList) {
                                     TreeItem<String> newTreeItem = new TreeItem<>();
-	                                ImageView imageView = new ImageView(IconConstants.TABLE_ICON_URL);
+                                    ImageView imageView = new ImageView(IconConstants.TABLE_ICON_URL);
                                     imageView.setFitHeight(16);
                                     imageView.setFitWidth(16);
                                     newTreeItem.setGraphic(imageView);
@@ -215,7 +215,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             for (DatabaseConnectionConfig dbConfig : dbConfigList) {
                 TreeItem<String> treeItem = new TreeItem<>();
                 treeItem.setValue(dbConfig.getName());
-	            ImageView dbImage = new ImageView(IconConstants.COMPUTER_ICON_URL);
+                ImageView dbImage = new ImageView(IconConstants.COMPUTER_ICON_URL);
                 dbImage.setFitHeight(16);
                 dbImage.setFitWidth(16);
                 dbImage.setUserData(dbConfig);
@@ -275,7 +275,6 @@ public class MainApplicationController extends BaseFxmlPageController {
         if (StringUtils.isAnyBlank(modelTargetPackage.getText(), mapperTargetPackage.getText(), daoTargetPackage.getText())) {
             return "包名不能为空";
         }
-
         return null;
     }
 
@@ -285,6 +284,11 @@ public class MainApplicationController extends BaseFxmlPageController {
      */
     @FXML
     public void saveCodeGenerateConfig() {
+        String validateResult = validateConfig();
+        if (validateResult != null) {
+            MessageTipsUtil.showErrorInfo(validateResult);
+            return;
+        }
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle("保存当前配置");
         dialog.setContentText("请输入配置名称");
@@ -301,7 +305,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                 generateConfig.setName(name);
                 LocalSqliteUtil.saveCodeGenerateConfig(generateConfig);
             } catch (Exception e) {
-                MessageTipsUtil.showErrorInfo("删除配置失败");
+                MessageTipsUtil.showErrorInfo("配置保存异常，请检查必填项是否完整");
             }
         }
     }
@@ -322,7 +326,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         config.setMapperXMLPackage(mapperTargetPackage.getText());
         config.setMapperXMLTargetFolder(mappingTargetProject.getText());
         config.setTableName(tableNameField.getText());
-	    config.setDomainObjectName(buildDomainObjectName(domainObjectNameField.getText()));
+        config.setDomainObjectName(buildDomainObjectName(domainObjectNameField.getText()));
         config.setParamModelPackage(paramTargetPackage.getText());
         return config;
     }
@@ -350,7 +354,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         }
         SelectTableColumnController controller = (SelectTableColumnController) loadFxmlPage("定制列", FxmlPageEnum.SELECT_TABLE_COLUMN, true);
         // 为定制项窗口增加ico图标
-	    controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(IconConstants.TABLE_ICON_URL))));
+        controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(IconConstants.TABLE_ICON_URL))));
         controller.setMainApplicationController(this);
         try {
             // If select same schema and another table, update table data
@@ -413,24 +417,24 @@ public class MainApplicationController extends BaseFxmlPageController {
         return true;
     }
 
-	/**
-	 * 构建实体类名-自动补齐DO后缀
-	 * by itcrazy0717
-	 *
-	 * @param domainObjecName
-	 * @return
-	 */
-	private String buildDomainObjectName(String domainObjecName) {
-		String result = DataBaseStringUtil.tableNameToCamelStyle(domainObjecName);
-		if (StringUtils.isBlank(result)) {
-			throw new RuntimeException("实体类名称为空");
-		}
-		// 判断实体类名是否以DO结尾，如果不是则补齐
-		Pattern pattern = Pattern.compile("DO$");
-		Matcher matcher = pattern.matcher(domainObjecName);
-		if (!matcher.find()) {
-			return domainObjecName + "DO";
-		}
-		return domainObjecName;
-	}
+    /**
+     * 构建实体类名-自动补齐DO后缀
+     * by itcrazy0717
+     *
+     * @param domainObjecName
+     * @return
+     */
+    private String buildDomainObjectName(String domainObjecName) {
+        String result = DataBaseStringUtil.tableNameToCamelStyle(domainObjecName);
+        if (StringUtils.isBlank(result)) {
+            throw new RuntimeException("实体类名称为空");
+        }
+        // 判断实体类名是否以DO结尾，如果不是则补齐
+        Pattern pattern = Pattern.compile("DO$");
+        Matcher matcher = pattern.matcher(domainObjecName);
+        if (!matcher.find()) {
+            return domainObjecName + "DO";
+        }
+        return domainObjecName;
+    }
 }

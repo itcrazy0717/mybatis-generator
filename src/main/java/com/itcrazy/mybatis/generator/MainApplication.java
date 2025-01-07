@@ -26,7 +26,7 @@ import javafx.stage.Stage;
  */
 public class MainApplication extends Application {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MainApplication.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainApplication.class);
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -46,15 +46,17 @@ public class MainApplication extends Application {
 
     public static void main(String[] args) {
         String version = System.getProperty("java.version");
-        // jdk版本判断
-		if (Integer.parseInt(version.substring(2, 3)) >= 8 && Integer.parseInt(version.substring(6)) >= 60) {
+
+        int jdkVersion = Integer.parseInt(version.substring(2, 3));
+        // jdk版本限定
+        if (jdkVersion >= 8 && jdkVersion <= 10 && Integer.parseInt(version.substring(6)) >= 60) {
             launch(args);
         } else {
             JFrame frame = new JFrame("版本错误");
             frame.setSize(500, 100);
-	        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             JPanel panel = new JPanel();
-            JLabel label = new JLabel("JDK的版本不能低于1.8.0.60，请升级至最近的JDK1.8再运行此软件");
+            JLabel label = new JLabel("JDK的版本不能低于1.8.0.60，请升级至最近的JDK1.8再运行此软件，该软件不支持过高得JDK版本，JDK1.8最佳");
             panel.add(label);
             frame.add(panel);
             frame.setLocationRelativeTo(null);
