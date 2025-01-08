@@ -15,7 +15,10 @@ import com.itcrazy.mybatis.generator.util.SqliteUtil;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -108,8 +111,21 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                         });
                         btnDelete.setOnAction(event -> {
                             try {
-                                SqliteUtil.deleteCodeGenerateConfigByName(item.toString());
-                                refreshTableView();
+                                // 二次确认弹窗
+                                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                                alert.setTitle("确认");
+                                alert.setHeaderText("确认操作");
+                                alert.setContentText("确定要删除当前配置");
+                                ButtonType buttonTypeOk = new ButtonType("是", ButtonBar.ButtonData.OK_DONE);
+                                ButtonType buttonTypeCancel = new ButtonType("否", ButtonBar.ButtonData.CANCEL_CLOSE);
+                                alert.getButtonTypes().setAll(buttonTypeOk, buttonTypeCancel);
+
+                                ButtonType result = alert.showAndWait().orElse(buttonTypeCancel);
+                                // 确认后才进行删除
+                                if (result == buttonTypeOk) {
+                                    SqliteUtil.deleteCodeGenerateConfigByName(item.toString());
+                                    refreshTableView();
+                                }
                             } catch (Exception e) {
                                 MessageTipsUtil.showErrorInfo(e.getMessage());
                             }

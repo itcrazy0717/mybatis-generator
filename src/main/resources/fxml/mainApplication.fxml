@@ -36,7 +36,7 @@
                                 <Insets left="10.0" right="10.0"/>
                             </padding>
                         </Label>
-                        <Label fx:id="configsLabel" contentDisplay="TOP" text="代码生成模板配置">
+                        <Label fx:id="generatorTemplateLabel" contentDisplay="TOP" text="代码生成模板配置">
                             <padding>
                                 <Insets right="10.0"/>
                             </padding>

@@ -64,28 +64,75 @@ public class MainApplicationController extends BaseFxmlPageController {
 
     private static final String FOLDER_NO_EXIST = "部分目录不存在，是否创建";
 
+    /**
+     * 数据库连接label
+     */
     @FXML
     private Label connectionLabel;
+
+    /**
+     * 生成代码模板配置label
+     */
     @FXML
-    private Label configsLabel;
+    private Label generatorTemplateLabel;
+
+    /**
+     * 实体包全名
+     */
     @FXML
     private TextField modelTargetPackage;
+
+    /**
+     * XML文件包全名
+     */
     @FXML
     private TextField mapperTargetPackage;
+
+    /**
+     * DAO接口包全名
+     */
     @FXML
     private TextField daoTargetPackage;
+
+    /**
+     * 查询参数包全名(Param)
+     */
     @FXML
     private TextField paramTargetPackage;
+
+    /**
+     * 表名
+     */
     @FXML
     private TextField tableNameField;
+
+    /**
+     * 实体类名(xxxDO)
+     */
     @FXML
     private TextField domainObjectNameField;
+
+    /**
+     * 实体与接口对象存放目录
+     */
     @FXML
     private TextField modelAndDaoInterfaceTargetProject;
+
+    /**
+     * XML文件存放目录
+     */
     @FXML
     private TextField mappingTargetProject;
+
+    /**
+     * 项目所在目录
+     */
     @FXML
     private TextField projectFolderField;
+
+    /**
+     * 数据库树
+     */
     @FXML
     private TreeView<String> dataBaseViewTree;
 
@@ -119,8 +166,8 @@ public class MainApplicationController extends BaseFxmlPageController {
         ImageView configImage = new ImageView(IconConstants.CONFIG_ICON_URL);
         configImage.setFitHeight(40);
         configImage.setFitWidth(40);
-        configsLabel.setGraphic(configImage);
-        configsLabel.setOnMouseClicked(event -> {
+        generatorTemplateLabel.setGraphic(configImage);
+        generatorTemplateLabel.setOnMouseClicked(event -> {
             GenerateCodeTemplateController controller = (GenerateCodeTemplateController) loadFxmlPage("代码生成配置", FxmlPageEnum.GENERATE_CONFIG, false);
             controller.setMainApplicationController(this);
             // 为窗口增加ico图标

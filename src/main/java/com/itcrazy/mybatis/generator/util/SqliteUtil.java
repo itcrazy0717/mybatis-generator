@@ -59,7 +59,7 @@ public class SqliteUtil {
         }
         File cofigSqliteFile = new File(LOCAL_CONFIG_DATABASE_DIR + SQLITE_FILE);
         if (!cofigSqliteFile.exists()) {
-            createSqlite(cofigSqliteFile);
+            createSqliteDB(cofigSqliteFile);
         }
     }
 
@@ -70,7 +70,7 @@ public class SqliteUtil {
      * @param file
      * @throws IOException
      */
-    public static void createSqlite(File file) throws IOException {
+    public static void createSqliteDB(File file) throws IOException {
         InputStream fis = null;
         FileOutputStream fos = null;
         try {
@@ -117,7 +117,6 @@ public class SqliteUtil {
                 dbConnectionConfig.setId(id);
                 dbConnectionConfigList.add(dbConnectionConfig);
             }
-
             return dbConnectionConfigList;
         } finally {
             if (Objects.nonNull(resultSet)) {

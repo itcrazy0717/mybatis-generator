@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import com.itcrazy.mybatis.generator.model.DatabaseConnectionConfig;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
-import com.itcrazy.mybatis.generator.util.SqliteUtil;
 import com.itcrazy.mybatis.generator.util.MessageTipsUtil;
+import com.itcrazy.mybatis.generator.util.SqliteUtil;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
@@ -45,13 +45,20 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
 
 	private MainApplicationController mainApplicationController;
 
-	private boolean isUpdate = false;
+    /**
+     * 是否更新操作，默认不是
+     */
+	private boolean update = false;
 
 	private Integer primayKey;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // 设置数据库类型默认值
+        dbTypeChoice.setValue("MySQL");
+        // 设置编码默认值
+        encodingChoice.setValue("utf8");
     }
 
     @FXML
@@ -61,7 +68,7 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
 		    return;
 	    }
         try {
-	        SqliteUtil.saveDatabaseConnectionConfig(config, primayKey, this.isUpdate);
+	        SqliteUtil.saveDatabaseConnectionConfig(config, primayKey, this.update);
             getDialogStage().close();
             mainApplicationController.loadDataBaseViewList();
         } catch (Exception e) {
@@ -133,7 +140,7 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
 	 * @param config
 	 */
 	public void fillDataBaseConnectionConfig(DatabaseConnectionConfig config) {
-		isUpdate = true;
+        update = true;
 		primayKey = config.getId();
 		nameField.setText(config.getName());
 		hostField.setText(config.getHostUrl());
