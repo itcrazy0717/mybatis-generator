@@ -24,13 +24,13 @@ import org.slf4j.LoggerFactory;
 import com.itcrazy.mybatis.generator.constant.IconConstants;
 import com.itcrazy.mybatis.generator.enums.FxmlPageEnum;
 import com.itcrazy.mybatis.generator.model.DatabaseConnectionConfig;
-import com.itcrazy.mybatis.generator.model.MybatisCodeGenerateConfig;
+import com.itcrazy.mybatis.generator.model.MybatisGeneratorTemplate;
 import com.itcrazy.mybatis.generator.model.TableColumn;
 import com.itcrazy.mybatis.generator.util.DataBaseStringUtil;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
-import com.itcrazy.mybatis.generator.util.LocalSqliteUtil;
 import com.itcrazy.mybatis.generator.util.MessageTipsUtil;
 import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateUtil;
+import com.itcrazy.mybatis.generator.util.SqliteUtil;
 import com.itcrazy.mybatis.generator.window.ShowProgressCallback;
 
 import javafx.collections.FXCollections;
@@ -121,7 +121,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         configImage.setFitWidth(40);
         configsLabel.setGraphic(configImage);
         configsLabel.setOnMouseClicked(event -> {
-            GenerateCodeConfigController controller = (GenerateCodeConfigController) loadFxmlPage("配置", FxmlPageEnum.GENERATE_CONFIG, false);
+            GenerateCodeTemplateController controller = (GenerateCodeTemplateController) loadFxmlPage("代码生成配置", FxmlPageEnum.GENERATE_CONFIG, false);
             controller.setMainApplicationController(this);
             // 为窗口增加ico图标
             controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(IconConstants.CONFIG_ICON_URL))));
@@ -153,7 +153,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                     item3.setOnAction(event1 -> {
                         DatabaseConnectionConfig selectedConfig = (DatabaseConnectionConfig) treeItem.getGraphic().getUserData();
                         try {
-                            LocalSqliteUtil.deleteDatabaseConnectionConfig(selectedConfig);
+                            SqliteUtil.deleteDatabaseConnectionConfig(selectedConfig);
                             this.loadDataBaseViewList();
                         } catch (Exception e) {
                             MessageTipsUtil.showErrorInfo("Delete connection failed! Reason: " + e.getMessage());
@@ -211,7 +211,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         TreeItem<String> rootTreeItem = dataBaseViewTree.getRoot();
         rootTreeItem.getChildren().clear();
         try {
-            List<DatabaseConnectionConfig> dbConfigList = LocalSqliteUtil.loadDatabaseConnectionConfig();
+            List<DatabaseConnectionConfig> dbConfigList = SqliteUtil.loadDatabaseConnectionConfig();
             for (DatabaseConnectionConfig dbConfig : dbConfigList) {
                 TreeItem<String> treeItem = new TreeItem<>();
                 treeItem.setValue(dbConfig.getName());
@@ -243,12 +243,12 @@ public class MainApplicationController extends BaseFxmlPageController {
             MessageTipsUtil.showWarnInfo("请先在左侧选择数据库表");
             return;
         }
-        String result = validateConfig();
-        if (result != null) {
-            MessageTipsUtil.showErrorInfo(result);
+        String validateResult = validateConfigValue();
+        if (validateResult != null) {
+            MessageTipsUtil.showErrorInfo(validateResult);
             return;
         }
-        MybatisCodeGenerateConfig generatorConfig = getMybatisCodeGenerateConfig();
+        MybatisGeneratorTemplate generatorConfig = buildGeneratorTemplateContent();
         if (!checkDirs(generatorConfig)) {
             return;
         }
@@ -264,27 +264,44 @@ public class MainApplicationController extends BaseFxmlPageController {
         }
     }
 
-    private String validateConfig() {
-        String projectFolder = projectFolderField.getText();
-        if (StringUtils.isBlank(projectFolder)) {
-            return "项目目录不能为空";
-        }
+    /**
+     * 校验配置值
+     * by itcrazy0717
+     *
+     * @return
+     */
+    private String validateConfigValue() {
         if (StringUtils.isBlank(domainObjectNameField.getText())) {
             return "实体类名不能为空";
         }
-        if (StringUtils.isAnyBlank(modelTargetPackage.getText(), mapperTargetPackage.getText(), daoTargetPackage.getText())) {
-            return "包名不能为空";
+        if (StringUtils.isBlank(projectFolderField.getText())) {
+            return "项目目录不能为空";
+        }
+        if (StringUtils.isBlank(modelAndDaoInterfaceTargetProject.getText())) {
+            return "实体与接口对象存放目录为空";
+        }
+        if (StringUtils.isBlank(modelTargetPackage.getText())) {
+            return "实体包全名为空";
+        }
+        if (StringUtils.isBlank(daoTargetPackage.getText())) {
+            return "DAO接口包全名为空";
+        }
+        if (StringUtils.isBlank(mappingTargetProject.getText())) {
+            return "XML文件存放目录为空";
+        }
+        if (StringUtils.isBlank(mapperTargetPackage.getText())) {
+            return "XML文件包全名为空";
         }
         return null;
     }
 
     /**
-     * 保存代码生成配置
+     * 保存生成代码模板
      * by itcrazy0717
      */
     @FXML
-    public void saveCodeGenerateConfig() {
-        String validateResult = validateConfig();
+    public void saveGenerateCodeTemplate() {
+        String validateResult = validateConfigValue();
         if (validateResult != null) {
             MessageTipsUtil.showErrorInfo(validateResult);
             return;
@@ -294,16 +311,20 @@ public class MainApplicationController extends BaseFxmlPageController {
         dialog.setContentText("请输入配置名称");
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
-            String name = result.get();
-            if (StringUtils.isBlank(name)) {
+            String templateName = result.get();
+            if (StringUtils.isBlank(templateName)) {
                 MessageTipsUtil.showErrorInfo("名称不能为空");
                 return;
             }
-            LOGGER.info("user choose name: {}", name);
             try {
-                MybatisCodeGenerateConfig generateConfig = getMybatisCodeGenerateConfig();
-                generateConfig.setName(name);
-                LocalSqliteUtil.saveCodeGenerateConfig(generateConfig);
+                boolean exist = SqliteUtil.existGeneratorTemplate(templateName);
+                if (exist) {
+                    MessageTipsUtil.showErrorInfo("已存在相同名称的配置");
+                    return;
+                }
+                MybatisGeneratorTemplate generatorTemplate = buildGeneratorTemplateContent();
+                generatorTemplate.setName(templateName);
+                SqliteUtil.saveGeneratorTemplate(generatorTemplate);
             } catch (Exception e) {
                 MessageTipsUtil.showErrorInfo("配置保存异常，请检查必填项是否完整");
             }
@@ -311,13 +332,13 @@ public class MainApplicationController extends BaseFxmlPageController {
     }
 
     /**
-     * 获取生成mybatis代码配置
+     * 构建生成器模板内容
      * by itcrazy0717
      *
      * @return
      */
-    public MybatisCodeGenerateConfig getMybatisCodeGenerateConfig() {
-        MybatisCodeGenerateConfig config = new MybatisCodeGenerateConfig();
+    public MybatisGeneratorTemplate buildGeneratorTemplateContent() {
+        MybatisGeneratorTemplate config = new MybatisGeneratorTemplate();
         config.setProjectFolder(projectFolderField.getText());
         config.setModelPackage(modelTargetPackage.getText());
         config.setModelAndDaoInterfacePackageTargetFolder(modelAndDaoInterfaceTargetProject.getText());
@@ -335,15 +356,16 @@ public class MainApplicationController extends BaseFxmlPageController {
      * 组装代码生成配置
      * by itcrazy0717
      *
-     * @param generatorConfig
+     * @param template
      */
-    public void assembleCodeGenerateConfig(MybatisCodeGenerateConfig generatorConfig) {
-        projectFolderField.setText(generatorConfig.getProjectFolder());
-        modelTargetPackage.setText(generatorConfig.getModelPackage());
-        modelAndDaoInterfaceTargetProject.setText(generatorConfig.getModelAndDaoInterfacePackageTargetFolder());
-        daoTargetPackage.setText(generatorConfig.getDaoPackage());
-        mapperTargetPackage.setText(generatorConfig.getMapperXMLPackage());
-        mappingTargetProject.setText(generatorConfig.getMapperXMLTargetFolder());
+    public void assembleGeneratorTemplate(MybatisGeneratorTemplate template) {
+        projectFolderField.setText(template.getProjectFolder());
+        modelTargetPackage.setText(template.getModelPackage());
+        modelAndDaoInterfaceTargetProject.setText(template.getModelAndDaoInterfacePackageTargetFolder());
+        daoTargetPackage.setText(template.getDaoPackage());
+        paramTargetPackage.setText(template.getParamModelPackage());
+        mapperTargetPackage.setText(template.getMapperXMLPackage());
+        mappingTargetProject.setText(template.getMapperXMLTargetFolder());
     }
 
     @FXML
@@ -383,7 +405,7 @@ public class MainApplicationController extends BaseFxmlPageController {
      *
      * @return
      */
-    private boolean checkDirs(MybatisCodeGenerateConfig config) {
+    private boolean checkDirs(MybatisGeneratorTemplate config) {
         List<String> dirs = new ArrayList<>();
         dirs.add(config.getProjectFolder());
         dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getModelAndDaoInterfacePackageTargetFolder())));

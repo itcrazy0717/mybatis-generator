@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
 import com.itcrazy.mybatis.generator.model.DatabaseConnectionConfig;
-import com.itcrazy.mybatis.generator.model.MybatisCodeGenerateConfig;
+import com.itcrazy.mybatis.generator.model.MybatisGeneratorTemplate;
 import com.itcrazy.mybatis.generator.plugins.CustomCommentGenerator;
 import com.itcrazy.mybatis.generator.typeresolver.TinyIntTypeResolver;
 
@@ -46,7 +46,7 @@ public class MybatisCodeGenerateUtil {
 	/**
 	 * 代码生成配置
 	 */
-	private static MybatisCodeGenerateConfig generateConfig;
+	private static MybatisGeneratorTemplate generateConfig;
 
 	/**
 	 * 数据库配置
@@ -79,7 +79,7 @@ public class MybatisCodeGenerateUtil {
         Context context = new Context(ModelType.CONDITIONAL);
         configuration.addContext(context);
         context.addProperty("javaFileEncoding", "UTF-8");
-        String connectorLibPath = LocalSqliteUtil.getDataBaseDriverJarPath(selectedDatabaseConfig.getDataBaseType());
+        String connectorLibPath = SqliteUtil.getDataBaseDriverJarPath(selectedDatabaseConfig.getDataBaseType());
         LOGGER.info("connectorLibPath: {}", connectorLibPath);
         configuration.addClasspathEntry(connectorLibPath);
         // Table configuration
@@ -239,9 +239,9 @@ public class MybatisCodeGenerateUtil {
 	 * @param ignoredColumns
 	 * @param columnOverrides
 	 */
-	public static void loadConfig(MybatisCodeGenerateConfig generateConfig, DatabaseConnectionConfig databaseConfig,
-	                              ProgressCallback progressCallback, List<IgnoredColumn> ignoredColumns,
-	                              List<ColumnOverride> columnOverrides) {
+	public static void loadConfig(MybatisGeneratorTemplate generateConfig, DatabaseConnectionConfig databaseConfig,
+								  ProgressCallback progressCallback, List<IgnoredColumn> ignoredColumns,
+								  List<ColumnOverride> columnOverrides) {
 		MybatisCodeGenerateUtil.generateConfig = generateConfig;
 		MybatisCodeGenerateUtil.selectedDatabaseConfig = databaseConfig;
 		MybatisCodeGenerateUtil.progressCallback = progressCallback;

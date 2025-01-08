@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.itcrazy.mybatis.generator.constant.IconConstants;
 import com.itcrazy.mybatis.generator.controller.MainApplicationController;
-import com.itcrazy.mybatis.generator.util.LocalSqliteUtil;
+import com.itcrazy.mybatis.generator.util.SqliteUtil;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -30,7 +30,7 @@ public class MainApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        LocalSqliteUtil.createConfigSqlite();
+        SqliteUtil.createConfigSqlite();
         URL url = Thread.currentThread().getContextClassLoader().getResource("fxml/mainApplication.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(url);
         Parent root = fxmlLoader.load();

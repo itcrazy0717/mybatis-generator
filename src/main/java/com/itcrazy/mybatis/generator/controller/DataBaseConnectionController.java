@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.itcrazy.mybatis.generator.model.DatabaseConnectionConfig;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
-import com.itcrazy.mybatis.generator.util.LocalSqliteUtil;
+import com.itcrazy.mybatis.generator.util.SqliteUtil;
 import com.itcrazy.mybatis.generator.util.MessageTipsUtil;
 
 import javafx.fxml.FXML;
@@ -61,7 +61,7 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
 		    return;
 	    }
         try {
-	        LocalSqliteUtil.saveDatabaseConnectionConfig(config, primayKey, this.isUpdate);
+	        SqliteUtil.saveDatabaseConnectionConfig(config, primayKey, this.isUpdate);
             getDialogStage().close();
             mainApplicationController.loadDataBaseViewList();
         } catch (Exception e) {

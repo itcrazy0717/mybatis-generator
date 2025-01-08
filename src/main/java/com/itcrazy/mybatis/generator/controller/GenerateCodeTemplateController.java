@@ -9,9 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.itcrazy.mybatis.generator.model.MybatisCodeGenerateConfig;
-import com.itcrazy.mybatis.generator.util.LocalSqliteUtil;
+import com.itcrazy.mybatis.generator.model.MybatisGeneratorTemplate;
 import com.itcrazy.mybatis.generator.util.MessageTipsUtil;
+import com.itcrazy.mybatis.generator.util.SqliteUtil;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -25,15 +25,15 @@ import javafx.scene.layout.HBox;
 
 /**
  * @author: itcrazy0717
- * @version: $ GenerateCodeConfigController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
+ * @version: $ GenerateCodeTemplateController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public class GenerateCodeConfigController extends BaseFxmlPageController {
+public class GenerateCodeTemplateController extends BaseFxmlPageController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GenerateCodeConfigController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GenerateCodeTemplateController.class);
 
     @FXML
-    private TableView<MybatisCodeGenerateConfig> codeGenerateView;
+    private TableView<MybatisGeneratorTemplate> codeGenerateView;
 
     @FXML
     private TableColumn nameColumn;
@@ -43,7 +43,7 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
 
     private MainApplicationController mainApplicationController;
 
-    private GenerateCodeConfigController controller;
+    private GenerateCodeTemplateController controller;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -71,8 +71,8 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
                         btnApply.setOnAction(event -> {
                             try {
                                 // 应用配置
-                                MybatisCodeGenerateConfig codeGenerateConfig = LocalSqliteUtil.loadCodeGenerateConfigByName(item.toString());
-                                mainApplicationController.assembleCodeGenerateConfig(codeGenerateConfig);
+                                MybatisGeneratorTemplate template = SqliteUtil.loadGeneratorTemplateByName(item.toString());
+                                mainApplicationController.assembleGeneratorTemplate(template);
                                 controller.closeDialogStage();
                             } catch (Exception e) {
                                 MessageTipsUtil.showErrorInfo(e.getMessage());
@@ -84,17 +84,17 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
                             dialog.setContentText("请输入配置名称");
                             Optional<String> result = dialog.showAndWait();
                             if (result.isPresent()) {
-                                String newConfigName = result.get();
-                                if (StringUtils.isBlank(newConfigName)) {
+                                String newTemplateName = result.get();
+                                if (StringUtils.isBlank(newTemplateName)) {
                                     MessageTipsUtil.showErrorInfo("配置名称不能为空");
                                     return;
                                 }
-                                if (StringUtils.equals(item.toString(), newConfigName)) {
+                                if (StringUtils.equals(item.toString(), newTemplateName)) {
                                     MessageTipsUtil.showErrorInfo("配置名称未更改");
                                     return;
                                 }
                                 try {
-                                    LocalSqliteUtil.updateCodeGenerateConfigName(newConfigName, item.toString());
+                                    SqliteUtil.updateGeneratorTemplateName(newTemplateName, item.toString());
                                     refreshTableView();
                                 } catch (Exception e) {
                                     MessageTipsUtil.showErrorInfo(e.getMessage());
@@ -103,9 +103,7 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
                         });
                         btnDelete.setOnAction(event -> {
                             try {
-                                // 删除配置
-                                LOGGER.debug("item: {}", item);
-                                LocalSqliteUtil.deleteCodeGenerateConfigByName(item.toString());
+                                SqliteUtil.deleteCodeGenerateConfigByName(item.toString());
                                 refreshTableView();
                             } catch (Exception e) {
                                 MessageTipsUtil.showErrorInfo(e.getMessage());
@@ -125,7 +123,7 @@ public class GenerateCodeConfigController extends BaseFxmlPageController {
      */
     public void refreshTableView() {
         try {
-            List<MybatisCodeGenerateConfig> configs = LocalSqliteUtil.loadCodeGenerateConfigList();
+            List<MybatisGeneratorTemplate> configs = SqliteUtil.loadGeneratorTemplateList();
             codeGenerateView.setItems(FXCollections.observableList(configs));
         } catch (Exception e) {
             MessageTipsUtil.showErrorInfo(e.getMessage());

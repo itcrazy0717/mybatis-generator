@@ -23,7 +23,7 @@ public enum FxmlPageEnum {
 	/**
 	 * 生成配置
 	 */
-	GENERATE_CONFIG("fxml/generateConfig.fxml"),
+	GENERATE_CONFIG("fxml/generateCodeTemplate.fxml"),
     ;
 
     private final String fxml;
