@@ -94,6 +94,11 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                                     return;
                                 }
                                 try {
+                                    boolean exist = SqliteUtil.existGeneratorTemplate(newTemplateName);
+                                    if (exist) {
+                                        MessageTipsUtil.showErrorInfo("已存在相同名称的配置");
+                                        return;
+                                    }
                                     SqliteUtil.updateGeneratorTemplateName(newTemplateName, item.toString());
                                     refreshTableView();
                                 } catch (Exception e) {
