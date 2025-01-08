@@ -117,7 +117,7 @@
                                                     </HBox.margin>
                                                 </TextField>
                                                 <Button mnemonicParsing="false"
-                                                        onAction="#openTableColumnCustomizationPage" text="定制列">
+                                                        onAction="#openTableColumnCustomizationPage" text="定制列" visible="false">
                                                     <styleClass>
                                                         <String fx:value="btn"/>
                                                         <String fx:value="btn-success"/>
