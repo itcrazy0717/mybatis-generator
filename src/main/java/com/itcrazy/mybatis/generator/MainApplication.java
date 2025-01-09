@@ -56,7 +56,7 @@ public class MainApplication extends Application {
             frame.setSize(500, 100);
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             JPanel panel = new JPanel();
-            JLabel label = new JLabel("JDK的版本不能低于1.8.0.60，请升级至最近的JDK1.8再运行此软件，该软件不支持过高得JDK版本，JDK1.8最佳");
+            JLabel label = new JLabel("JDK的版本不能低于1.8.0.60，请升级至最近的JDK1.8再运行此软件，该软件不支持过高的JDK版本，使用JDK1.8最佳");
             panel.add(label);
             frame.add(panel);
             frame.setLocationRelativeTo(null);
