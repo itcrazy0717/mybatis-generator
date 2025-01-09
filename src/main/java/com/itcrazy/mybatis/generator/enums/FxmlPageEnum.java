@@ -10,20 +10,20 @@ import lombok.Getter;
 @Getter
 public enum FxmlPageEnum {
 
-	/**
-	 * 新数据库连接
-	 */
-	NEW_DATABASE_CONNECTION("fxml/newDataBaseConnection.fxml"),
+    /**
+     * 数据库连接
+     */
+    DATABASE_CONNECTION("fxml/dataBaseConnection.fxml"),
 
-	/**
-	 * 选择表对应列
-	 */
-	SELECT_TABLE_COLUMN("fxml/selectTableColumn.fxml"),
+    /**
+     * 选择表对应列
+     */
+    SELECT_TABLE_COLUMN("fxml/selectTableColumn.fxml"),
 
-	/**
-	 * 生成配置
-	 */
-	GENERATE_CONFIG("fxml/generateCodeTemplate.fxml"),
+    /**
+     * 配置
+     */
+    GENERATE_CODE_TEMPLATE("fxml/generateCodeTemplate.fxml"),
     ;
 
     private final String fxml;

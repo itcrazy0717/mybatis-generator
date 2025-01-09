@@ -50,6 +50,9 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
      */
 	private boolean update = false;
 
+    /**
+     * 主键
+     */
 	private Integer primayKey;
 
 
@@ -63,7 +66,7 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
 
     @FXML
     void saveConnection() {
-	    DatabaseConnectionConfig config = loadDataBaseConnectionConfig();
+	    DatabaseConnectionConfig config = buildDataBaseConnectionConfig();
 	    if (Objects.isNull(config)) {
 		    return;
 	    }
@@ -79,12 +82,12 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
 
     @FXML
     void testConnection() {
-        DatabaseConnectionConfig config = loadDataBaseConnectionConfig();
-        if (Objects.isNull(config)) {
+        DatabaseConnectionConfig connectionConfig = buildDataBaseConnectionConfig();
+        if (Objects.isNull(connectionConfig)) {
             return;
         }
         try {
-            DataBaseUtil.getConnection(config);
+            DataBaseUtil.getConnection(connectionConfig);
             MessageTipsUtil.showNormalInfo("连接成功");
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
@@ -103,12 +106,12 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
     }
 
 	/**
-	 * 导入数据库连接配置
+	 * 构建数据库连接配置
 	 * by itcrazy0717
 	 *
 	 * @return
 	 */
-    private DatabaseConnectionConfig loadDataBaseConnectionConfig() {
+    private DatabaseConnectionConfig buildDataBaseConnectionConfig() {
         String name = nameField.getText();
         String host = hostField.getText();
         String port = portField.getText();
@@ -117,20 +120,20 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
         String encoding = encodingChoice.getValue();
         String dbType = dbTypeChoice.getValue();
         String schema = schemaField.getText();
-        DatabaseConnectionConfig config = new DatabaseConnectionConfig();
-        config.setName(name);
-        config.setDataBaseType(dbType);
-        config.setHostUrl(host);
-        config.setPort(port);
-        config.setUserName(userName);
-        config.setPassword(password);
-        config.setSchemaName(schema);
-        config.setEncoding(encoding);
+        DatabaseConnectionConfig connectionConfig = new DatabaseConnectionConfig();
+        connectionConfig.setName(name);
+        connectionConfig.setDataBaseType(dbType);
+        connectionConfig.setHostUrl(host);
+        connectionConfig.setPort(port);
+        connectionConfig.setUserName(userName);
+        connectionConfig.setPassword(password);
+        connectionConfig.setSchemaName(schema);
+        connectionConfig.setEncoding(encoding);
         if (StringUtils.isAnyBlank(name, host, port, userName, encoding, dbType, schema)) {
             MessageTipsUtil.showWarnInfo("密码以外其他字段必填");
             return null;
         }
-        return config;
+        return connectionConfig;
     }
 
 	/**
@@ -140,6 +143,7 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
 	 * @param config
 	 */
 	public void fillDataBaseConnectionConfig(DatabaseConnectionConfig config) {
+        // 调用该函数时，确认为编辑操作
         update = true;
 		primayKey = config.getId();
 		nameField.setText(config.getName());

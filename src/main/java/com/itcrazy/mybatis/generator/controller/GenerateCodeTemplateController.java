@@ -2,6 +2,7 @@ package com.itcrazy.mybatis.generator.controller;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -59,30 +60,33 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                 @Override
                 protected void updateItem(Object item, boolean empty) {
                     super.updateItem(item, empty);
-                    if (item == null || empty) {
+                    if (Objects.isNull(item) || empty) {
                         setText(null);
                         setGraphic(null);
                     } else {
                         Button btnApply = new Button("应用");
-                        Button btnModifyName = new Button("修改配置名称");
+                        Button btnModifyName = new Button("修改名称");
                         Button btnDelete = new Button("删除");
                         HBox hBox = new HBox();
                         hBox.setSpacing(10);
                         hBox.getChildren().add(btnApply);
                         hBox.getChildren().add(btnModifyName);
                         hBox.getChildren().add(btnDelete);
+                        String templateName = item.toString();
+                        // 应用按钮响应事件
                         btnApply.setOnAction(event -> {
                             try {
                                 // 应用配置
-                                MybatisGeneratorTemplate template = SqliteUtil.loadGeneratorTemplateByName(item.toString());
+                                MybatisGeneratorTemplate template = SqliteUtil.loadGeneratorTemplateByName(templateName);
                                 mainApplicationController.assembleGeneratorTemplate(template);
                                 controller.closeDialogStage();
                             } catch (Exception e) {
                                 MessageTipsUtil.showErrorInfo(e.getMessage());
                             }
                         });
+                        // 修改配置名称事件
                         btnModifyName.setOnAction(event -> {
-                            TextInputDialog dialog = new TextInputDialog(item.toString());
+                            TextInputDialog dialog = new TextInputDialog(templateName);
                             dialog.setTitle("修改配置名称");
                             dialog.setContentText("请输入配置名称");
                             Optional<String> result = dialog.showAndWait();
@@ -92,8 +96,8 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                                     MessageTipsUtil.showErrorInfo("配置名称不能为空");
                                     return;
                                 }
-                                if (StringUtils.equals(item.toString(), newTemplateName)) {
-                                    MessageTipsUtil.showErrorInfo("配置名称未更改");
+                                if (StringUtils.equals(templateName, newTemplateName)) {
+                                    MessageTipsUtil.showWarnInfo("配置名称未更改");
                                     return;
                                 }
                                 try {
@@ -102,19 +106,20 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                                         MessageTipsUtil.showErrorInfo("已存在相同名称的配置");
                                         return;
                                     }
-                                    SqliteUtil.updateGeneratorTemplateName(newTemplateName, item.toString());
+                                    SqliteUtil.updateGeneratorTemplateName(newTemplateName, templateName);
                                     refreshTableView();
                                 } catch (Exception e) {
                                     MessageTipsUtil.showErrorInfo(e.getMessage());
                                 }
                             }
                         });
+                        // 删除配置事件
                         btnDelete.setOnAction(event -> {
                             try {
                                 // 二次确认弹窗
                                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                                alert.setTitle("确认");
-                                alert.setHeaderText("确认操作");
+                                alert.setTitle("删除配置");
+                                alert.setHeaderText("确认删除操作");
                                 alert.setContentText("确定要删除当前配置");
                                 ButtonType buttonTypeOk = new ButtonType("是", ButtonBar.ButtonData.OK_DONE);
                                 ButtonType buttonTypeCancel = new ButtonType("否", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -123,7 +128,7 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                                 ButtonType result = alert.showAndWait().orElse(buttonTypeCancel);
                                 // 确认后才进行删除
                                 if (result == buttonTypeOk) {
-                                    SqliteUtil.deleteCodeGenerateConfigByName(item.toString());
+                                    SqliteUtil.deleteGeneratorTemplateByName(templateName);
                                     refreshTableView();
                                 }
                             } catch (Exception e) {

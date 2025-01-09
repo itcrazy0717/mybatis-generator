@@ -157,7 +157,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         dbImage.setFitWidth(40);
         connectionLabel.setGraphic(dbImage);
         connectionLabel.setOnMouseClicked(event -> {
-            DataBaseConnectionController controller = (DataBaseConnectionController) loadFxmlPage("新建数据库连接", FxmlPageEnum.NEW_DATABASE_CONNECTION, false);
+            DataBaseConnectionController controller = (DataBaseConnectionController) loadFxmlPage("新建数据库连接", FxmlPageEnum.DATABASE_CONNECTION, false);
             controller.setMainApplicationController(this);
             // 为窗口增加ico图标
             controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(IconConstants.COMPUTER_ICON_URL))));
@@ -168,7 +168,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         configImage.setFitWidth(40);
         generatorTemplateLabel.setGraphic(configImage);
         generatorTemplateLabel.setOnMouseClicked(event -> {
-            GenerateCodeTemplateController controller = (GenerateCodeTemplateController) loadFxmlPage("代码生成配置", FxmlPageEnum.GENERATE_CONFIG, false);
+            GenerateCodeTemplateController controller = (GenerateCodeTemplateController) loadFxmlPage("配置", FxmlPageEnum.GENERATE_CODE_TEMPLATE, false);
             controller.setMainApplicationController(this);
             // 为窗口增加ico图标
             controller.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(IconConstants.CONFIG_ICON_URL))));
@@ -184,20 +184,24 @@ public class MainApplicationController extends BaseFxmlPageController {
                 int level = dataBaseViewTree.getTreeItemLevel(cell.getTreeItem());
                 TreeCell<String> treeCell = (TreeCell<String>) event.getSource();
                 TreeItem<String> treeItem = treeCell.getTreeItem();
+                // 第一层，数据库上的操作
                 if (level == 1) {
                     final ContextMenu contextMenu = new ContextMenu();
-                    MenuItem item1 = new MenuItem("关闭连接");
-                    item1.setOnAction(event1 -> treeItem.getChildren().clear());
-                    MenuItem item2 = new MenuItem("编辑连接");
-                    item2.setOnAction(event1 -> {
+                    // 关闭连接
+                    MenuItem closeMenuItem = new MenuItem("关闭连接");
+                    closeMenuItem.setOnAction(event1 -> treeItem.getChildren().clear());
+                    // 编辑连接
+                    MenuItem modifyMenuItem = new MenuItem("编辑连接");
+                    modifyMenuItem.setOnAction(actionEvent -> {
                         DatabaseConnectionConfig selectedConfig = (DatabaseConnectionConfig) treeItem.getGraphic().getUserData();
-                        DataBaseConnectionController controller = (DataBaseConnectionController) loadFxmlPage("编辑数据库连接", FxmlPageEnum.NEW_DATABASE_CONNECTION, false);
+                        DataBaseConnectionController controller = (DataBaseConnectionController) loadFxmlPage("编辑数据库连接", FxmlPageEnum.DATABASE_CONNECTION, false);
                         controller.setMainApplicationController(this);
                         controller.fillDataBaseConnectionConfig(selectedConfig);
                         controller.showDialogStage();
                     });
-                    MenuItem item3 = new MenuItem("删除连接");
-                    item3.setOnAction(event1 -> {
+                    // 删除连接
+                    MenuItem deleteMenuItem = new MenuItem("删除连接");
+                    deleteMenuItem.setOnAction(actionEvent -> {
                         DatabaseConnectionConfig selectedConfig = (DatabaseConnectionConfig) treeItem.getGraphic().getUserData();
                         try {
                             SqliteUtil.deleteDatabaseConnectionConfig(selectedConfig);
@@ -206,7 +210,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                             MessageTipsUtil.showErrorInfo("Delete connection failed! Reason: " + e.getMessage());
                         }
                     });
-                    contextMenu.getItems().addAll(item1, item2, item3);
+                    contextMenu.getItems().addAll(closeMenuItem, modifyMenuItem, deleteMenuItem);
                     cell.setContextMenu(contextMenu);
                 }
                 if (event.getClickCount() == 2) {
@@ -258,14 +262,14 @@ public class MainApplicationController extends BaseFxmlPageController {
         TreeItem<String> rootTreeItem = dataBaseViewTree.getRoot();
         rootTreeItem.getChildren().clear();
         try {
-            List<DatabaseConnectionConfig> dbConfigList = SqliteUtil.loadDatabaseConnectionConfig();
-            for (DatabaseConnectionConfig dbConfig : dbConfigList) {
+            List<DatabaseConnectionConfig> connectionConfigList = SqliteUtil.loadDatabaseConnectionConfig();
+            for (DatabaseConnectionConfig connectionConfig : connectionConfigList) {
                 TreeItem<String> treeItem = new TreeItem<>();
-                treeItem.setValue(dbConfig.getName());
+                treeItem.setValue(connectionConfig.getName());
                 ImageView dbImage = new ImageView(IconConstants.COMPUTER_ICON_URL);
                 dbImage.setFitHeight(16);
                 dbImage.setFitWidth(16);
-                dbImage.setUserData(dbConfig);
+                dbImage.setUserData(connectionConfig);
                 treeItem.setGraphic(dbImage);
                 rootTreeItem.getChildren().add(treeItem);
             }

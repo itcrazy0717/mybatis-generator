@@ -141,24 +141,24 @@ public class SqliteUtil {
      * @throws Exception
      */
     public static void saveDatabaseConnectionConfig(DatabaseConnectionConfig dbConnectConfig, Integer primaryKey, boolean update) throws Exception {
-        String configName = dbConnectConfig.getName();
+        String connectionName = dbConnectConfig.getName();
         Connection connection = null;
         Statement statement = null;
         try {
             connection = DataBaseUtil.getSqLiteConnection();
             statement = connection.createStatement();
             if (!update) {
-                ResultSet resultSet = statement.executeQuery("SELECT * from database_connection_config where name = '" + configName + "'");
+                ResultSet resultSet = statement.executeQuery("SELECT * from database_connection_config where name = '" + connectionName + "'");
                 if (resultSet.next()) {
-                    throw new RuntimeException("配置已经存在, 请使用其它名字");
+                    throw new RuntimeException("已存在相同名称的配置");
                 }
             }
             String dbConnectConfigJsonValue = JSON.toJSONString(dbConnectConfig);
             String executeSql;
             if (update) {
-                executeSql = String.format("UPDATE database_connection_config SET name = '%s', value = '%s' where id = %d", configName, dbConnectConfigJsonValue, primaryKey);
+                executeSql = String.format("UPDATE database_connection_config SET name = '%s', value = '%s' where id = %d", connectionName, dbConnectConfigJsonValue, primaryKey);
             } else {
-                executeSql = String.format("INSERT INTO database_connection_config (name, value) values('%s', '%s')", configName, dbConnectConfigJsonValue);
+                executeSql = String.format("INSERT INTO database_connection_config (name, value) values('%s', '%s')", connectionName, dbConnectConfigJsonValue);
             }
             statement.executeUpdate(executeSql);
         } finally {
@@ -269,7 +269,7 @@ public class SqliteUtil {
             connection = DataBaseUtil.getSqLiteConnection();
             statement = connection.createStatement();
             String executeSql = String.format("SELECT * FROM code_generator_template where name='%s'", templateName);
-            LOGGER.info("sql: {}", executeSql);
+            LOGGER.info("load_generator_template_by_name_sql: {}", executeSql);
             resultSet = statement.executeQuery(executeSql);
             MybatisGeneratorTemplate generatorConfig = null;
             if (resultSet.next()) {
@@ -308,8 +308,8 @@ public class SqliteUtil {
             List<MybatisGeneratorTemplate> templateList = new ArrayList<>();
             while (resultSet.next()) {
                 String templateName = resultSet.getString("name");
-                String value = resultSet.getString("value");
-                MybatisGeneratorTemplate template = JSON.parseObject(value, MybatisGeneratorTemplate.class);
+                String templateContent = resultSet.getString("value");
+                MybatisGeneratorTemplate template = JSON.parseObject(templateContent, MybatisGeneratorTemplate.class);
                 template.setName(templateName);
                 templateList.add(template);
             }
@@ -331,17 +331,17 @@ public class SqliteUtil {
      * 根据名称删除生成代码配置
      * by itcrazy0717
      *
-     * @param name
+     * @param templateName
      * @throws Exception
      */
-    public static void deleteCodeGenerateConfigByName(String name) throws Exception {
+    public static void deleteGeneratorTemplateByName(String templateName) throws Exception {
         Connection conn = null;
         Statement stat = null;
         try {
             conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
-            String deleteSql = String.format("DELETE FROM code_generator_template where name='%s'", name);
-            LOGGER.info("sql: {}", deleteSql);
+            String deleteSql = String.format("DELETE FROM code_generator_template where name='%s'", templateName);
+            LOGGER.info("delet_egenerator_template_by_name_sql: {}", deleteSql);
             stat.executeUpdate(deleteSql);
         } finally {
             if (Objects.nonNull(stat)) {
@@ -368,7 +368,7 @@ public class SqliteUtil {
             conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
             String updateSql = String.format("UPDATE code_generator_template SET name='%s' where name='%s'", newTemplateName, originalTemplateName);
-            LOGGER.info("sql: {}", updateSql);
+            LOGGER.info("update_generator_template_name_sql: {}", updateSql);
             stat.executeUpdate(updateSql);
         } finally {
             if (Objects.nonNull(stat)) {
