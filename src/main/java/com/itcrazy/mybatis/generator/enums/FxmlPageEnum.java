@@ -24,6 +24,11 @@ public enum FxmlPageEnum {
      * 配置
      */
     GENERATE_CODE_TEMPLATE("fxml/generateCodeTemplate.fxml"),
+
+    /**
+     * 配置详情
+     */
+    TEMPLATE_DETAIL("fxml/templateDetail.fxml"),
     ;
 
     private final String fxml;

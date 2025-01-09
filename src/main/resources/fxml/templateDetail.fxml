@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<AnchorPane prefHeight="300.0" prefWidth="569.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.itcrazy.mybatis.generator.controller.TemplateDetailController">
+    <children>
+        <GridPane alignment="CENTER_RIGHT" layoutX="10.0" layoutY="30.0" vgap="5.0" AnchorPane.leftAnchor="10.0"
+                  AnchorPane.rightAnchor="10.0">
+            <children>
+                <Label text="项目所在目录" GridPane.rowIndex="1"/>
+                <TextField fx:id="projectFolderField" prefHeight="27.0" editable="false"
+                           prefWidth="348.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <HBox.margin>
+                        <Insets right="5.0"/>
+                    </HBox.margin>
+                    <GridPane.margin>
+                        <Insets left="5.0" right="5.0"/>
+                    </GridPane.margin>
+                </TextField>
+
+                <Label text="实体与接口对象存放目录" GridPane.rowIndex="2"/>
+                <TextField fx:id="modelAndDaoInterfaceTargetProject" prefHeight="27.0" prefWidth="152.0"
+                           editable="false"
+                           GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <HBox.margin>
+                        <Insets right="5.0"/>
+                    </HBox.margin>
+                    <GridPane.margin>
+                        <Insets left="5.0" right="5.0"/>
+                    </GridPane.margin>
+                </TextField>
+
+                <Label text="实体包全名" GridPane.rowIndex="3"/>
+                <TextField fx:id="modelTargetPackage" prefHeight="27.0" prefWidth="152.0"
+                           editable="false"
+                           GridPane.columnIndex="1" GridPane.rowIndex="3">
+                    <HBox.margin>
+                        <Insets right="5.0"/>
+                    </HBox.margin>
+                    <GridPane.margin>
+                        <Insets left="5.0" right="5.0"/>
+                    </GridPane.margin>
+                </TextField>
+
+                <Label text="DAO接口包全名" GridPane.rowIndex="4"/>
+                <TextField fx:id="daoTargetPackage" prefHeight="27.0" prefWidth="152.0"
+                           editable="false" GridPane.columnIndex="1"
+                           GridPane.rowIndex="4">
+                    <HBox.margin>
+                        <Insets right="5.0"/>
+                    </HBox.margin>
+                    <GridPane.margin>
+                        <Insets left="5.0" right="5.0"/>
+                    </GridPane.margin>
+                </TextField>
+
+                <Label text="查询参数包全名(Param)" GridPane.rowIndex="5"/>
+                <TextField fx:id="paramTargetPackage" prefHeight="27.0" prefWidth="152.0"
+                           editable="false"
+                           GridPane.columnIndex="1"
+                           GridPane.rowIndex="5">
+                    <HBox.margin>
+                        <Insets right="5.0"/>
+                    </HBox.margin>
+                    <GridPane.margin>
+                        <Insets left="5.0" right="5.0"/>
+                    </GridPane.margin>
+                </TextField>
+
+                <Label text="XML文件存放目录" GridPane.rowIndex="6"/>
+                <TextField fx:id="mappingTargetProject" prefHeight="27.0" prefWidth="152.0"
+                           editable="false"
+                           GridPane.columnIndex="1" GridPane.rowIndex="6">
+                    <HBox.margin>
+                        <Insets right="5.0"/>
+                    </HBox.margin>
+                    <GridPane.margin>
+                        <Insets left="5.0" right="5.0"/>
+                    </GridPane.margin>
+                </TextField>
+
+                <Label text="XML文件包全名" GridPane.rowIndex="7"/>
+                <TextField fx:id="mapperTargetPackage" prefHeight="27.0" prefWidth="152.0"
+                           editable="false"
+                           GridPane.columnIndex="1"
+                           GridPane.rowIndex="7">
+                    <HBox.margin>
+                        <Insets right="5.0"/>
+                    </HBox.margin>
+                    <GridPane.margin>
+                        <Insets left="5.0" right="5.0"/>
+                    </GridPane.margin>
+                </TextField>
+            </children>
+        </GridPane>
+    </children>
+</AnchorPane>

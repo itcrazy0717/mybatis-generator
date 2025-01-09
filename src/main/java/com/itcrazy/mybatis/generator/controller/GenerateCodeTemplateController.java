@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.itcrazy.mybatis.generator.constant.IconConstants;
+import com.itcrazy.mybatis.generator.enums.FxmlPageEnum;
 import com.itcrazy.mybatis.generator.model.MybatisGeneratorTemplate;
 import com.itcrazy.mybatis.generator.util.MessageTipsUtil;
 import com.itcrazy.mybatis.generator.util.SqliteUtil;
@@ -25,6 +27,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 
 /**
@@ -65,11 +68,13 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                         setGraphic(null);
                     } else {
                         Button btnApply = new Button("应用");
+                        Button btnDetail = new Button("详情");
                         Button btnModifyName = new Button("修改名称");
                         Button btnDelete = new Button("删除");
                         HBox hBox = new HBox();
                         hBox.setSpacing(10);
                         hBox.getChildren().add(btnApply);
+                        hBox.getChildren().add(btnDetail);
                         hBox.getChildren().add(btnModifyName);
                         hBox.getChildren().add(btnDelete);
                         String templateName = item.toString();
@@ -84,6 +89,21 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                                 MessageTipsUtil.showErrorInfo(e.getMessage());
                             }
                         });
+                        // 详情按钮响应事件
+                        btnDetail.setOnAction(event -> {
+                            try {
+                                TemplateDetailController detailController = (TemplateDetailController) loadFxmlPage("配置详情", FxmlPageEnum.TEMPLATE_DETAIL, false);
+                                MybatisGeneratorTemplate template = SqliteUtil.loadGeneratorTemplateByName(templateName);
+                                // 组装配置
+                                detailController.assembleGeneratorTemplate(template);
+                                // 为窗口增加ico图标
+                                detailController.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(IconConstants.CONFIG_ICON_URL))));
+                                detailController.showDialogStage();
+                            } catch (Exception e) {
+                                MessageTipsUtil.showErrorInfo(e.getMessage());
+                            }
+                        });
+
                         // 修改配置名称事件
                         btnModifyName.setOnAction(event -> {
                             TextInputDialog dialog = new TextInputDialog(templateName);
