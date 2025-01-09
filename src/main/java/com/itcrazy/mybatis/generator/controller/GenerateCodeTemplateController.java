@@ -116,6 +116,7 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                                     MessageTipsUtil.showErrorInfo("配置名称不能为空");
                                     return;
                                 }
+                                newTemplateName = newTemplateName.trim();
                                 if (StringUtils.equals(templateName, newTemplateName)) {
                                     MessageTipsUtil.showWarnInfo("配置名称未更改");
                                     return;

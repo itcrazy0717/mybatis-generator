@@ -367,6 +367,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                 MessageTipsUtil.showErrorInfo("名称不能为空");
                 return;
             }
+            templateName = templateName.trim();
             try {
                 boolean exist = SqliteUtil.existGeneratorTemplate(templateName);
                 if (exist) {
