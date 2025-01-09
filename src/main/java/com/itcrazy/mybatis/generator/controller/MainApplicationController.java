@@ -389,18 +389,18 @@ public class MainApplicationController extends BaseFxmlPageController {
      * @return
      */
     public MybatisGeneratorTemplate buildGeneratorTemplateContent() {
-        MybatisGeneratorTemplate config = new MybatisGeneratorTemplate();
-        config.setProjectFolder(projectFolderField.getText());
-        config.setModelPackage(modelTargetPackage.getText());
-        config.setModelAndDaoInterfacePackageTargetFolder(modelAndDaoInterfaceTargetProject.getText());
-        config.setDaoPackage(daoTargetPackage.getText());
-        config.setMapperName(DataBaseStringUtil.tableNameToCamelStyle(tableName) + "DAO");
-        config.setMapperXMLPackage(mapperTargetPackage.getText());
-        config.setMapperXMLTargetFolder(mappingTargetProject.getText());
-        config.setTableName(tableNameField.getText());
-        config.setDomainObjectName(buildDomainObjectName(domainObjectNameField.getText()));
-        config.setParamModelPackage(paramTargetPackage.getText());
-        return config;
+        MybatisGeneratorTemplate template = new MybatisGeneratorTemplate();
+        template.setProjectFolder(projectFolderField.getText());
+        template.setModelPackage(modelTargetPackage.getText());
+        template.setModelAndDaoInterfacePackageTargetFolder(modelAndDaoInterfaceTargetProject.getText());
+        template.setDaoPackage(daoTargetPackage.getText());
+        template.setMapperName(DataBaseStringUtil.tableNameToCamelStyle(tableName) + "DAO");
+        template.setMapperXMLPackage(mapperTargetPackage.getText());
+        template.setMapperXMLTargetFolder(mappingTargetProject.getText());
+        template.setTableName(tableNameField.getText());
+        template.setDomainObjectName(buildDomainObjectName(domainObjectNameField.getText()));
+        template.setParamModelPackage(paramTargetPackage.getText());
+        return template;
     }
 
     /**
