@@ -294,7 +294,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             MessageTipsUtil.showWarnInfo("请先在左侧选择数据库表");
             return;
         }
-        String validateResult = validateConfigValue();
+        String validateResult = validateGeneratorTemplateValue(true);
         if (validateResult != null) {
             MessageTipsUtil.showErrorInfo(validateResult);
             return;
@@ -318,12 +318,17 @@ public class MainApplicationController extends BaseFxmlPageController {
     /**
      * 校验配置值
      * by itcrazy0717
-     *
+     * @param generateCode 是否是生成代码 true-是 false-不是
      * @return
      */
-    private String validateConfigValue() {
-        if (StringUtils.isBlank(domainObjectNameField.getText())) {
-            return "实体类名不能为空";
+    private String validateGeneratorTemplateValue(boolean generateCode) {
+        if (generateCode) {
+            if (StringUtils.isBlank(tableNameField.getText())) {
+                return "请先在左侧选择数据库表";
+            }
+            if (StringUtils.isBlank(domainObjectNameField.getText())) {
+                return "实体类名不能为空";
+            }
         }
         if (StringUtils.isBlank(projectFolderField.getText())) {
             return "项目目录不能为空";
@@ -352,7 +357,7 @@ public class MainApplicationController extends BaseFxmlPageController {
      */
     @FXML
     public void saveGenerateCodeTemplate() {
-        String validateResult = validateConfigValue();
+        String validateResult = validateGeneratorTemplateValue(false);
         if (validateResult != null) {
             MessageTipsUtil.showErrorInfo(validateResult);
             return;
