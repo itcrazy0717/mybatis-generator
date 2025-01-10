@@ -29,6 +29,7 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 /**
  * @author: itcrazy0717
@@ -50,11 +51,11 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
 
     private MainApplicationController mainApplicationController;
 
-    private GenerateCodeTemplateController controller;
+    private GenerateCodeTemplateController codeTemplateController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        controller = this;
+        codeTemplateController = this;
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         // 自定义操作列
         opsColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -84,8 +85,11 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                                 // 应用配置
                                 MybatisGeneratorTemplate template = SqliteUtil.loadGeneratorTemplateByName(templateName);
                                 mainApplicationController.assembleGeneratorTemplate(template);
-                                controller.closeDialogStage();
+                                // 获取当前窗口，保证点击“应用”按钮后，当前窗口能关闭
+                                Stage currentWindow = (Stage) this.getScene().getWindow();
+                                currentWindow.close();
                             } catch (Exception e) {
+                                LOGGER.error("apply_code_template_error", e);
                                 MessageTipsUtil.showErrorInfo(e.getMessage());
                             }
                         });
@@ -100,6 +104,7 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                                 detailController.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(IconConstants.CONFIG_ICON_URL))));
                                 detailController.showDialogStage();
                             } catch (Exception e) {
+                                LOGGER.error("detail_code_template_error", e);
                                 MessageTipsUtil.showErrorInfo(e.getMessage());
                             }
                         });
@@ -130,6 +135,7 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                                     SqliteUtil.updateGeneratorTemplateName(newTemplateName, templateName);
                                     refreshTableView();
                                 } catch (Exception e) {
+                                    LOGGER.error("modify_code_template_name_error", e);
                                     MessageTipsUtil.showErrorInfo(e.getMessage());
                                 }
                             }
@@ -153,6 +159,7 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                                     refreshTableView();
                                 }
                             } catch (Exception e) {
+                                LOGGER.error("delete_code_template_error", e);
                                 MessageTipsUtil.showErrorInfo(e.getMessage());
                             }
                         });
