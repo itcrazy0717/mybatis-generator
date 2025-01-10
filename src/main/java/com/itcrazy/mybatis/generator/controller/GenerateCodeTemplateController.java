@@ -93,6 +93,7 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                                 MessageTipsUtil.showErrorInfo(e.getMessage());
                             }
                         });
+
                         // 详情按钮响应事件
                         btnDetail.setOnAction(event -> {
                             try {
@@ -140,6 +141,7 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                                 }
                             }
                         });
+
                         // 删除配置事件
                         btnDelete.setOnAction(event -> {
                             try {
