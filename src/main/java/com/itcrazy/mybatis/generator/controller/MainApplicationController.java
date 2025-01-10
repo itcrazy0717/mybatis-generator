@@ -332,7 +332,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             }
         }
         if (StringUtils.isBlank(projectFolderField.getText())) {
-            return "项目目录不能为空";
+            return "项目所在目录不能为空";
         }
         if (StringUtils.isBlank(modelAndDaoInterfaceTargetProject.getText())) {
             return "实体与接口对象存放目录为空";
