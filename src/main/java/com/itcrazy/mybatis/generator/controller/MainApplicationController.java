@@ -77,28 +77,15 @@ public class MainApplicationController extends BaseFxmlPageController {
     private Label generatorTemplateLabel;
 
     /**
-     * 实体包全名
+     * 当前选择的表名
      */
-    @FXML
-    private TextField modelTargetPackage;
+    private String tableName;
 
     /**
-     * XML文件包全名
+     * 数据库树
      */
     @FXML
-    private TextField mapperTargetPackage;
-
-    /**
-     * DAO接口包全名
-     */
-    @FXML
-    private TextField daoTargetPackage;
-
-    /**
-     * 查询参数包全名(Param)
-     */
-    @FXML
-    private TextField paramTargetPackage;
+    private TreeView<String> dataBaseViewTree;
 
     /**
      * 表名
@@ -113,10 +100,34 @@ public class MainApplicationController extends BaseFxmlPageController {
     private TextField domainObjectNameField;
 
     /**
+     * 项目所在目录
+     */
+    @FXML
+    private TextField projectFolderField;
+
+    /**
      * 实体与接口对象存放目录
      */
     @FXML
     private TextField modelAndDaoInterfaceTargetProject;
+
+    /**
+     * 实体包全名
+     */
+    @FXML
+    private TextField modelTargetPackage;
+
+    /**
+     * DAO接口包全名
+     */
+    @FXML
+    private TextField daoTargetPackage;
+
+    /**
+     * 查询参数包全名(Param)
+     */
+    @FXML
+    private TextField paramTargetPackage;
 
     /**
      * XML文件存放目录
@@ -125,26 +136,15 @@ public class MainApplicationController extends BaseFxmlPageController {
     private TextField mappingTargetProject;
 
     /**
-     * 项目所在目录
+     * XML文件包全名
      */
     @FXML
-    private TextField projectFolderField;
-
-    /**
-     * 数据库树
-     */
-    @FXML
-    private TreeView<String> dataBaseViewTree;
+    private TextField mapperTargetPackage;
 
     /**
      * 当前选择的数据库
      */
     private DatabaseConnectionConfig selectedDatabaseConfig;
-
-    /**
-     * 当前选择的表名
-     */
-    private String tableName;
 
     private List<IgnoredColumn> ignoredColumns;
 
@@ -318,6 +318,7 @@ public class MainApplicationController extends BaseFxmlPageController {
     /**
      * 校验配置值
      * by itcrazy0717
+     *
      * @param generateCode 是否是生成代码 true-是 false-不是
      * @return
      */
