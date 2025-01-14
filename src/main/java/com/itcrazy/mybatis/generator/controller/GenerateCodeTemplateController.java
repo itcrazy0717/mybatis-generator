@@ -34,7 +34,7 @@ import javafx.stage.Stage;
 /**
  * @author: itcrazy0717
  * @version: $ GenerateCodeTemplateController.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
- * @description:
+ * @description: 生成代码模板控制器
  */
 public class GenerateCodeTemplateController extends BaseFxmlPageController {
 
@@ -49,13 +49,13 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
     @FXML
     private TableColumn opsColumn;
 
+    /**
+     * 主窗口控制器
+     */
     private MainApplicationController mainApplicationController;
-
-    private GenerateCodeTemplateController codeTemplateController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        codeTemplateController = this;
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         // 自定义操作列
         opsColumn.setCellValueFactory(new PropertyValueFactory<>("name"));

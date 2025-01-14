@@ -160,6 +160,7 @@ public class SqliteUtil {
             } else {
                 executeSql = String.format("INSERT INTO database_connection_config (name, value) values('%s', '%s')", connectionName, dbConnectConfigJsonValue);
             }
+            LOGGER.info("save_database_connection_config_execute_sql:{}", executeSql);
             statement.executeUpdate(executeSql);
         } finally {
             if (Objects.nonNull(statement)) {
@@ -185,6 +186,7 @@ public class SqliteUtil {
             connection = DataBaseUtil.getSqLiteConnection();
             statement = connection.createStatement();
             String executeSql = String.format("delete from database_connection_config where id=%d", databaseConfig.getId());
+            LOGGER.info("delete_database_connection_config_execute_sql:{}", executeSql);
             statement.executeUpdate(executeSql);
         } finally {
             if (Objects.nonNull(statement)) {
@@ -242,6 +244,7 @@ public class SqliteUtil {
             generatorTemplate.setName(null);
             String templateJsonValue = JSON.toJSONString(generatorTemplate);
             String executeSql = String.format("INSERT INTO code_generator_template values('%s', '%s')", templateName, templateJsonValue);
+            LOGGER.info("save_generator_template_execute_sql:{}", executeSql);
             statement.executeUpdate(executeSql);
         } finally {
             if (Objects.nonNull(statement)) {
@@ -269,7 +272,7 @@ public class SqliteUtil {
             connection = DataBaseUtil.getSqLiteConnection();
             statement = connection.createStatement();
             String executeSql = String.format("SELECT * FROM code_generator_template where name='%s'", templateName);
-            LOGGER.info("load_generator_template_by_name_sql: {}", executeSql);
+            LOGGER.info("load_generator_template_by_name_sql:{}", executeSql);
             resultSet = statement.executeQuery(executeSql);
             MybatisGeneratorTemplate generatorConfig = null;
             if (resultSet.next()) {
@@ -340,9 +343,9 @@ public class SqliteUtil {
         try {
             conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
-            String deleteSql = String.format("DELETE FROM code_generator_template where name='%s'", templateName);
-            LOGGER.info("delet_egenerator_template_by_name_sql: {}", deleteSql);
-            stat.executeUpdate(deleteSql);
+            String executeSql = String.format("DELETE FROM code_generator_template where name='%s'", templateName);
+            LOGGER.info("delet_egenerator_template_by_name_execute_sql:{}", executeSql);
+            stat.executeUpdate(executeSql);
         } finally {
             if (Objects.nonNull(stat)) {
                 stat.close();
@@ -367,9 +370,9 @@ public class SqliteUtil {
         try {
             conn = DataBaseUtil.getSqLiteConnection();
             stat = conn.createStatement();
-            String updateSql = String.format("UPDATE code_generator_template SET name='%s' where name='%s'", newTemplateName, originalTemplateName);
-            LOGGER.info("update_generator_template_name_sql: {}", updateSql);
-            stat.executeUpdate(updateSql);
+            String executeSql = String.format("UPDATE code_generator_template SET name='%s' where name='%s'", newTemplateName, originalTemplateName);
+            LOGGER.info("update_generator_template_name_execute_sql:{}", executeSql);
+            stat.executeUpdate(executeSql);
         } finally {
             if (Objects.nonNull(stat)) {
                 stat.close();
