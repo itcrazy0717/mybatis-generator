@@ -3,9 +3,6 @@ package com.itcrazy.mybatis.generator.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.itcrazy.mybatis.generator.model.MybatisGeneratorTemplate;
 
 import javafx.fxml.FXML;
@@ -17,8 +14,6 @@ import javafx.scene.control.TextField;
  * @description:
  */
 public class TemplateDetailController extends BaseFxmlPageController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TemplateDetailController.class);
 
     /**
      * 项目所在目录
