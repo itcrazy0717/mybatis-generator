@@ -4,10 +4,10 @@ import javafx.scene.control.Alert;
 
 /**
  * @author: itcrazy0717
- * @version: $ MessageTipsUtil.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
+ * @version: $ ShowMessageUtil.java,v0.1 2024-09-30 17:15 itcrazy0717 Exp $
  * @description:
  */
-public class MessageTipsUtil {
+public class ShowMessageUtil {
 
 	/**
 	 * 显示正常信息

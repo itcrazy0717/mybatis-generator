@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.itcrazy.mybatis.generator.enums.FxmlPageEnum;
-import com.itcrazy.mybatis.generator.util.MessageTipsUtil;
+import com.itcrazy.mybatis.generator.util.ShowMessageUtil;
 
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -77,7 +77,7 @@ public abstract class BaseFxmlPageController implements Initializable {
             return controller;
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
-            MessageTipsUtil.showErrorInfo(e.getMessage());
+            ShowMessageUtil.showErrorInfo(e.getMessage());
         }
         return null;
     }

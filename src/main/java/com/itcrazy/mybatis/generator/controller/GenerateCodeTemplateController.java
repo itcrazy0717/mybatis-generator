@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.itcrazy.mybatis.generator.constant.IconConstants;
 import com.itcrazy.mybatis.generator.enums.FxmlPageEnum;
 import com.itcrazy.mybatis.generator.model.MybatisGeneratorTemplate;
-import com.itcrazy.mybatis.generator.util.MessageTipsUtil;
+import com.itcrazy.mybatis.generator.util.ShowMessageUtil;
 import com.itcrazy.mybatis.generator.util.SqliteUtil;
 
 import javafx.collections.FXCollections;
@@ -90,7 +90,7 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                                 currentWindow.close();
                             } catch (Exception e) {
                                 LOGGER.error("apply_code_template_error", e);
-                                MessageTipsUtil.showErrorInfo(e.getMessage());
+                                ShowMessageUtil.showErrorInfo(e.getMessage());
                             }
                         });
 
@@ -106,7 +106,7 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                                 detailController.showDialogStage();
                             } catch (Exception e) {
                                 LOGGER.error("detail_code_template_error", e);
-                                MessageTipsUtil.showErrorInfo(e.getMessage());
+                                ShowMessageUtil.showErrorInfo(e.getMessage());
                             }
                         });
 
@@ -119,25 +119,25 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                             if (result.isPresent()) {
                                 String newTemplateName = result.get();
                                 if (StringUtils.isBlank(newTemplateName)) {
-                                    MessageTipsUtil.showErrorInfo("配置名称不能为空");
+                                    ShowMessageUtil.showErrorInfo("配置名称不能为空");
                                     return;
                                 }
                                 newTemplateName = newTemplateName.trim();
                                 if (StringUtils.equals(templateName, newTemplateName)) {
-                                    MessageTipsUtil.showWarnInfo("配置名称未更改");
+                                    ShowMessageUtil.showWarnInfo("配置名称未更改");
                                     return;
                                 }
                                 try {
                                     boolean exist = SqliteUtil.existGeneratorTemplate(newTemplateName);
                                     if (exist) {
-                                        MessageTipsUtil.showErrorInfo("已存在相同名称的配置");
+                                        ShowMessageUtil.showErrorInfo("已存在相同名称的配置");
                                         return;
                                     }
                                     SqliteUtil.updateGeneratorTemplateName(newTemplateName, templateName);
                                     refreshTableView();
                                 } catch (Exception e) {
                                     LOGGER.error("modify_code_template_name_error", e);
-                                    MessageTipsUtil.showErrorInfo(e.getMessage());
+                                    ShowMessageUtil.showErrorInfo(e.getMessage());
                                 }
                             }
                         });
@@ -162,7 +162,7 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                                 }
                             } catch (Exception e) {
                                 LOGGER.error("delete_code_template_error", e);
-                                MessageTipsUtil.showErrorInfo(e.getMessage());
+                                ShowMessageUtil.showErrorInfo(e.getMessage());
                             }
                         });
                         setGraphic(hBox);
@@ -182,7 +182,7 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
             List<MybatisGeneratorTemplate> configs = SqliteUtil.loadGeneratorTemplateList();
             codeGenerateView.setItems(FXCollections.observableList(configs));
         } catch (Exception e) {
-            MessageTipsUtil.showErrorInfo(e.getMessage());
+            ShowMessageUtil.showErrorInfo(e.getMessage());
         }
     }
 

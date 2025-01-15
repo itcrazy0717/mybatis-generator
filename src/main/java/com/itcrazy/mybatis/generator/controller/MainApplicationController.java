@@ -28,7 +28,7 @@ import com.itcrazy.mybatis.generator.model.MybatisGeneratorTemplate;
 import com.itcrazy.mybatis.generator.model.TableColumn;
 import com.itcrazy.mybatis.generator.util.DataBaseStringUtil;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
-import com.itcrazy.mybatis.generator.util.MessageTipsUtil;
+import com.itcrazy.mybatis.generator.util.ShowMessageUtil;
 import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateUtil;
 import com.itcrazy.mybatis.generator.util.SqliteUtil;
 import com.itcrazy.mybatis.generator.window.ShowProgressCallback;
@@ -207,7 +207,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                             SqliteUtil.deleteDatabaseConnectionConfig(selectedConfig);
                             this.loadDataBaseViewList();
                         } catch (Exception e) {
-                            MessageTipsUtil.showErrorInfo("Delete connection failed! Reason: " + e.getMessage());
+                            ShowMessageUtil.showErrorInfo("Delete connection failed! Reason: " + e.getMessage());
                         }
                     });
                     contextMenu.getItems().addAll(closeMenuItem, modifyMenuItem, deleteMenuItem);
@@ -235,10 +235,10 @@ public class MainApplicationController extends BaseFxmlPageController {
                             }
                         } catch (SQLRecoverableException e) {
                             LOGGER.error(e.getMessage(), e);
-                            MessageTipsUtil.showErrorInfo("数据库连接超时");
+                            ShowMessageUtil.showErrorInfo("数据库连接超时");
                         } catch (Exception e) {
                             LOGGER.error(e.getMessage(), e);
-                            MessageTipsUtil.showErrorInfo(e.getMessage());
+                            ShowMessageUtil.showErrorInfo(e.getMessage());
                         }
                     } else if (level == 2) { // left DB tree level3
                         String tableName = treeCell.getTreeItem().getValue();
@@ -275,7 +275,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             }
         } catch (Exception e) {
             LOGGER.error("connect db failed", e);
-            MessageTipsUtil.showErrorInfo(e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
+            ShowMessageUtil.showErrorInfo(e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
         }
     }
 
@@ -291,12 +291,12 @@ public class MainApplicationController extends BaseFxmlPageController {
     @FXML
     public void generateCode() {
         if (StringUtils.isBlank(tableName)) {
-            MessageTipsUtil.showWarnInfo("请先在左侧选择数据库表");
+            ShowMessageUtil.showWarnInfo("请先在左侧选择数据库表");
             return;
         }
         String validateResult = validateGeneratorTemplateValue(true);
         if (validateResult != null) {
-            MessageTipsUtil.showErrorInfo(validateResult);
+            ShowMessageUtil.showErrorInfo(validateResult);
             return;
         }
         MybatisGeneratorTemplate generatorConfig = buildGeneratorTemplateContent();
@@ -311,7 +311,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             MybatisCodeGenerateUtil.generateCode();
         } catch (Exception e) {
             LOGGER.error("generate code failed", e);
-            MessageTipsUtil.showErrorInfo(e.getMessage());
+            ShowMessageUtil.showErrorInfo(e.getMessage());
         }
     }
 
@@ -360,7 +360,7 @@ public class MainApplicationController extends BaseFxmlPageController {
     public void saveGenerateCodeTemplate() {
         String validateResult = validateGeneratorTemplateValue(false);
         if (validateResult != null) {
-            MessageTipsUtil.showErrorInfo(validateResult);
+            ShowMessageUtil.showErrorInfo(validateResult);
             return;
         }
         TextInputDialog dialog = new TextInputDialog("");
@@ -370,21 +370,21 @@ public class MainApplicationController extends BaseFxmlPageController {
         if (result.isPresent()) {
             String templateName = result.get();
             if (StringUtils.isBlank(templateName)) {
-                MessageTipsUtil.showErrorInfo("名称不能为空");
+                ShowMessageUtil.showErrorInfo("名称不能为空");
                 return;
             }
             templateName = templateName.trim();
             try {
                 boolean exist = SqliteUtil.existGeneratorTemplate(templateName);
                 if (exist) {
-                    MessageTipsUtil.showErrorInfo("已存在相同名称的配置");
+                    ShowMessageUtil.showErrorInfo("已存在相同名称的配置");
                     return;
                 }
                 MybatisGeneratorTemplate generatorTemplate = buildGeneratorTemplateContent();
                 generatorTemplate.setName(templateName);
                 SqliteUtil.saveGeneratorTemplate(generatorTemplate);
             } catch (Exception e) {
-                MessageTipsUtil.showErrorInfo("配置保存异常，请检查必填项是否完整");
+                ShowMessageUtil.showErrorInfo("配置保存异常，请检查必填项是否完整");
             }
         }
     }
@@ -429,7 +429,7 @@ public class MainApplicationController extends BaseFxmlPageController {
     @FXML
     public void openTableColumnCustomizationPage() {
         if (StringUtils.isBlank(tableName)) {
-            MessageTipsUtil.showWarnInfo("请先在左侧选择数据库表");
+            ShowMessageUtil.showWarnInfo("请先在左侧选择数据库表");
             return;
         }
         SelectTableColumnController controller = (SelectTableColumnController) loadFxmlPage("定制列", FxmlPageEnum.SELECT_TABLE_COLUMN, true);
@@ -446,7 +446,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             controller.showDialogStage();
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
-            MessageTipsUtil.showErrorInfo(e.getMessage());
+            ShowMessageUtil.showErrorInfo(e.getMessage());
         }
     }
 
@@ -487,7 +487,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                         }
                         return true;
                     } catch (Exception e) {
-                        MessageTipsUtil.showErrorInfo("创建目录失败，请检查目录是否是文件而非目录");
+                        ShowMessageUtil.showErrorInfo("创建目录失败，请检查目录是否是文件而非目录");
                     }
                 } else {
                     return false;
