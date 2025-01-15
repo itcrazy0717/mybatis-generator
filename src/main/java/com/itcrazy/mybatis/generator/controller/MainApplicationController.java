@@ -28,8 +28,8 @@ import com.itcrazy.mybatis.generator.model.MybatisGeneratorTemplate;
 import com.itcrazy.mybatis.generator.model.TableColumn;
 import com.itcrazy.mybatis.generator.util.DataBaseStringUtil;
 import com.itcrazy.mybatis.generator.util.DataBaseUtil;
-import com.itcrazy.mybatis.generator.util.ShowMessageUtil;
 import com.itcrazy.mybatis.generator.util.MybatisCodeGenerateUtil;
+import com.itcrazy.mybatis.generator.util.ShowMessageUtil;
 import com.itcrazy.mybatis.generator.util.SqliteUtil;
 import com.itcrazy.mybatis.generator.window.ShowProgressCallback;
 
@@ -299,7 +299,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             ShowMessageUtil.showErrorInfo(validateResult);
             return;
         }
-        MybatisGeneratorTemplate generatorConfig = buildGeneratorTemplateContent();
+        MybatisGeneratorTemplate generatorConfig = buildGeneratorTemplateContent(true);
         if (!checkDirs(generatorConfig)) {
             return;
         }
@@ -380,7 +380,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                     ShowMessageUtil.showErrorInfo("已存在相同名称的配置");
                     return;
                 }
-                MybatisGeneratorTemplate generatorTemplate = buildGeneratorTemplateContent();
+                MybatisGeneratorTemplate generatorTemplate = buildGeneratorTemplateContent(false);
                 generatorTemplate.setName(templateName);
                 SqliteUtil.saveGeneratorTemplate(generatorTemplate);
             } catch (Exception e) {
@@ -393,20 +393,23 @@ public class MainApplicationController extends BaseFxmlPageController {
      * 构建生成器模板内容
      * by itcrazy0717
      *
+     * @param generateCode 是否是生成代码 true-是 false-不是
      * @return
      */
-    public MybatisGeneratorTemplate buildGeneratorTemplateContent() {
+    public MybatisGeneratorTemplate buildGeneratorTemplateContent(boolean generateCode) {
         MybatisGeneratorTemplate template = new MybatisGeneratorTemplate();
         template.setProjectFolder(projectFolderField.getText());
-        template.setModelPackage(modelTargetPackage.getText());
         template.setModelAndDaoInterfacePackageTargetFolder(modelAndDaoInterfaceTargetProject.getText());
+        template.setModelPackage(modelTargetPackage.getText());
         template.setDaoPackage(daoTargetPackage.getText());
-        template.setMapperName(DataBaseStringUtil.tableNameToCamelStyle(tableName) + "DAO");
-        template.setMapperXMLPackage(mapperTargetPackage.getText());
         template.setMapperXMLTargetFolder(mappingTargetProject.getText());
-        template.setTableName(tableNameField.getText());
-        template.setDomainObjectName(buildDomainObjectName(domainObjectNameField.getText()));
+        template.setMapperXMLPackage(mapperTargetPackage.getText());
         template.setParamModelPackage(paramTargetPackage.getText());
+        if (generateCode) {
+            template.setTableName(tableNameField.getText());
+            template.setMapperName(DataBaseStringUtil.tableNameToCamelStyle(tableName) + "DAO");
+            template.setDomainObjectName(buildDomainObjectName(domainObjectNameField.getText()));
+        }
         return template;
     }
 
