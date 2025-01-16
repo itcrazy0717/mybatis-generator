@@ -182,6 +182,7 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
             List<MybatisGeneratorTemplate> configs = SqliteUtil.loadGeneratorTemplateList();
             codeGenerateView.setItems(FXCollections.observableList(configs));
         } catch (Exception e) {
+            LOGGER.error("refresh_table_view_error", e);
             ShowMessageUtil.showErrorInfo(e.getMessage());
         }
     }

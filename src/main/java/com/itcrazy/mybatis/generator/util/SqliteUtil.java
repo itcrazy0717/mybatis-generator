@@ -396,6 +396,7 @@ public class SqliteUtil {
             File file = getDataBaseDriverClassJarFile(dataType);
             return file.getCanonicalPath();
         } catch (Exception e) {
+            LOGGER.error("get_driver_path_error", e);
             throw new RuntimeException("找不到驱动文件，请联系开发者!");
         }
     }
@@ -426,6 +427,7 @@ public class SqliteUtil {
                       .forEach(e -> jarFilePathSets.add(e.getAbsolutePath()));
             }
         } catch (Exception e) {
+            LOGGER.error("get_driver_path_error", e);
             throw new RuntimeException("找不到驱动文件，请联系开发者");
         }
         return new ArrayList<>(jarFilePathSets);

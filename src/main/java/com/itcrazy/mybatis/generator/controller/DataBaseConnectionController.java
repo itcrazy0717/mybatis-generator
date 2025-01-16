@@ -112,7 +112,7 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
             getDialogStage().close();
             mainApplicationController.loadDataBaseViewList();
         } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.error("save_db_connection_error", e);
             ShowMessageUtil.showErrorInfo(e.getMessage());
         }
     }
@@ -131,7 +131,7 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
             DataBaseUtil.getConnection(connectionConfig);
             ShowMessageUtil.showNormalInfo("连接成功");
         } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.error("test_db_connection_error", e);
             ShowMessageUtil.showWarnInfo("数据连接失败");
         }
 
@@ -153,25 +153,19 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
      * @return
      */
     private DatabaseConnectionConfig buildDataBaseConnectionConfig() {
-        String name = nameField.getText();
-        String dbType = dbTypeChoice.getValue();
-        String host = hostField.getText();
-        String port = portField.getText();
-        String userName = userNameField.getText();
-        String password = passwordField.getText();
-        String schema = schemaField.getText();
-        String encoding = encodingChoice.getValue();
         DatabaseConnectionConfig connectionConfig = new DatabaseConnectionConfig();
-        connectionConfig.setName(name);
-        connectionConfig.setDataBaseType(dbType);
-        connectionConfig.setHostUrl(host);
-        connectionConfig.setPort(port);
-        connectionConfig.setUserName(userName);
-        connectionConfig.setPassword(password);
-        connectionConfig.setSchemaName(schema);
-        connectionConfig.setEncoding(encoding);
-        if (StringUtils.isAnyBlank(name, host, port, userName, encoding, dbType, schema)) {
-            ShowMessageUtil.showWarnInfo("密码以外其他字段必填");
+        connectionConfig.setName(nameField.getText());
+        connectionConfig.setDataBaseType(dbTypeChoice.getValue());
+        connectionConfig.setHostUrl(hostField.getText());
+        connectionConfig.setPort(portField.getText());
+        connectionConfig.setUserName(userNameField.getText());
+        connectionConfig.setPassword(passwordField.getText());
+        connectionConfig.setSchemaName(schemaField.getText());
+        connectionConfig.setEncoding(encodingChoice.getValue());
+        // 参数校验
+        String checkResult = checkParam(connectionConfig);
+        if (StringUtils.isNotBlank(checkResult)) {
+            ShowMessageUtil.showWarnInfo(checkResult);
             return null;
         }
         return connectionConfig;
@@ -195,6 +189,41 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
         encodingChoice.setValue(config.getEncoding());
         dbTypeChoice.setValue(config.getDataBaseType());
         schemaField.setText(config.getSchemaName());
+    }
+
+    /**
+     * 校验数据库连接参数
+     * by itcrazy0717
+     *
+     * @param connectionConfig
+     * @return
+     */
+    private String checkParam(DatabaseConnectionConfig connectionConfig) {
+        if (StringUtils.isBlank(connectionConfig.getName())) {
+            return "名称为空";
+        }
+        if (StringUtils.isBlank(connectionConfig.getDataBaseType())) {
+            return "数据库类型为空";
+        }
+        if (StringUtils.isBlank(connectionConfig.getHostUrl())) {
+            return "主机名或IP地址为空";
+        }
+        if (StringUtils.isBlank(connectionConfig.getPort())) {
+            return "端口号为空";
+        }
+        if (StringUtils.isBlank(connectionConfig.getUserName())) {
+            return "用户名为空";
+        }
+        if (StringUtils.isBlank(connectionConfig.getPassword())) {
+            return "密码为空";
+        }
+        if (StringUtils.isBlank(connectionConfig.getSchemaName())) {
+            return "数据库名称为空";
+        }
+        if (StringUtils.isBlank(connectionConfig.getEncoding())) {
+            return "编码类型为空";
+        }
+        return null;
     }
 
 }

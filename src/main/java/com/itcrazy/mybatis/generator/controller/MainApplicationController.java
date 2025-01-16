@@ -207,16 +207,18 @@ public class MainApplicationController extends BaseFxmlPageController {
                             SqliteUtil.deleteDatabaseConnectionConfig(selectedConfig);
                             this.loadDataBaseViewList();
                         } catch (Exception e) {
+                            LOGGER.error("delete_database_connection_error", e);
                             ShowMessageUtil.showErrorInfo("Delete connection failed! Reason: " + e.getMessage());
                         }
                     });
                     contextMenu.getItems().addAll(closeMenuItem, modifyMenuItem, deleteMenuItem);
                     cell.setContextMenu(contextMenu);
                 }
+                // 鼠标双击事件
                 if (event.getClickCount() == 2) {
                     treeItem.setExpanded(true);
                     if (level == 1) {
-                        System.out.println("index: " + dataBaseViewTree.getSelectionModel().getSelectedIndex());
+                        LOGGER.info("select_index: " + dataBaseViewTree.getSelectionModel().getSelectedIndex());
                         DatabaseConnectionConfig selectedConfig = (DatabaseConnectionConfig) treeItem.getGraphic().getUserData();
                         try {
                             List<String> tableNameList = DataBaseUtil.getTableNameList(selectedConfig);
@@ -234,13 +236,14 @@ public class MainApplicationController extends BaseFxmlPageController {
                                 }
                             }
                         } catch (SQLRecoverableException e) {
-                            LOGGER.error(e.getMessage(), e);
+                            LOGGER.error("get_db_table_error", e);
                             ShowMessageUtil.showErrorInfo("数据库连接超时");
                         } catch (Exception e) {
-                            LOGGER.error(e.getMessage(), e);
+                            LOGGER.error("get_db_table_error", e);
                             ShowMessageUtil.showErrorInfo(e.getMessage());
                         }
-                    } else if (level == 2) { // left DB tree level3
+                    } else if (level == 2) {
+                        // 点击具体表名事件
                         String tableName = treeCell.getTreeItem().getValue();
                         selectedDatabaseConfig = (DatabaseConnectionConfig) treeItem.getParent().getGraphic().getUserData();
                         this.tableName = tableName;
@@ -274,7 +277,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                 rootTreeItem.getChildren().add(treeItem);
             }
         } catch (Exception e) {
-            LOGGER.error("connect db failed", e);
+            LOGGER.error("connect_db_failed", e);
             ShowMessageUtil.showErrorInfo(e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
         }
     }
@@ -310,7 +313,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         try {
             MybatisCodeGenerateUtil.generateCode();
         } catch (Exception e) {
-            LOGGER.error("generate code failed", e);
+            LOGGER.error("generate_code_error", e);
             ShowMessageUtil.showErrorInfo(e.getMessage());
         }
     }
@@ -384,6 +387,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                 generatorTemplate.setName(templateName);
                 SqliteUtil.saveGeneratorTemplate(generatorTemplate);
             } catch (Exception e) {
+                LOGGER.error("save_generator_template_error", e);
                 ShowMessageUtil.showErrorInfo("配置保存异常，请检查必填项是否完整");
             }
         }
@@ -463,7 +467,9 @@ public class MainApplicationController extends BaseFxmlPageController {
 
     /**
      * 检查并创建不存在的文件夹
+     * by itcrazy0717
      *
+     * @param config
      * @return
      */
     private boolean checkDirs(MybatisGeneratorTemplate config) {
@@ -490,6 +496,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                         }
                         return true;
                     } catch (Exception e) {
+                        LOGGER.error("create_dir_error", e);
                         ShowMessageUtil.showErrorInfo("创建目录失败，请检查目录是否是文件而非目录");
                     }
                 } else {

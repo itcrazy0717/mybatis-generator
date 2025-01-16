@@ -31,10 +31,10 @@ public class DataBaseUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataBaseUtil.class);
 
-	/**
-	 * sqlite db 地址
-	 */
-	private static final String SQLITE_URL = "jdbc:sqlite:./config/sqlite3.db";
+    /**
+     * sqlite db 地址
+     */
+    private static final String SQLITE_URL = "jdbc:sqlite:./config/sqlite3.db";
 
     /**
      * 数据库连接超时时间
@@ -58,20 +58,21 @@ public class DataBaseUtil {
                 LOGGER.info("load driver class: {}", driver);
                 DATABASE_DRIVER_MAP.put(dataBaseType, driver);
             } catch (Exception e) {
-	            LOGGER.error("load driver error", e);
+                LOGGER.error("load_driver_error", e);
+                throw new RuntimeException("载入驱动文件异常，请联系开发者");
             }
         }
     }
 
-	/**
-	 * 获取数据库连接
-	 * by itcrazy0717
-	 *
-	 * @param config
-	 * @return
-	 * @throws ClassNotFoundException
-	 * @throws SQLException
-	 */
+    /**
+     * 获取数据库连接
+     * by itcrazy0717
+     *
+     * @param config
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public static Connection getConnection(DatabaseConnectionConfig config) throws ClassNotFoundException, SQLException {
         String url = buildConnectionUrlWithSchema(config);
         Properties props = new Properties();
@@ -126,41 +127,41 @@ public class DataBaseUtil {
         }
     }
 
-	/**
-	 * 获取数据表列
-	 * by itcrazy0717
-	 *
-	 * @param dbConfig
-	 * @param tableName
-	 * @return
-	 * @throws Exception
-	 */
+    /**
+     * 获取数据表列
+     * by itcrazy0717
+     *
+     * @param dbConfig
+     * @param tableName
+     * @return
+     * @throws Exception
+     */
     public static List<TableColumn> getTableColumns(DatabaseConnectionConfig dbConfig, String tableName) throws Exception {
         String url = buildConnectionUrlWithSchema(dbConfig);
         LOGGER.info("getTableColumns, connection url: {}", url);
-	    try (Connection conn = getConnection(dbConfig)) {
-		    DatabaseMetaData metaData = conn.getMetaData();
-		    ResultSet rs = metaData.getColumns(null, null, tableName, null);
-		    List<TableColumn> columns = new ArrayList<>();
-		    while (rs.next()) {
-			    TableColumn tableColumn = new TableColumn();
-			    String columnName = rs.getString("COLUMN_NAME");
-			    tableColumn.setColumnName(columnName);
-			    tableColumn.setJdbcType(rs.getString("TYPE_NAME"));
-			    columns.add(tableColumn);
-		    }
-		    return columns;
-	    }
+        try (Connection conn = getConnection(dbConfig)) {
+            DatabaseMetaData metaData = conn.getMetaData();
+            ResultSet rs = metaData.getColumns(null, null, tableName, null);
+            List<TableColumn> columns = new ArrayList<>();
+            while (rs.next()) {
+                TableColumn tableColumn = new TableColumn();
+                String columnName = rs.getString("COLUMN_NAME");
+                tableColumn.setColumnName(columnName);
+                tableColumn.setJdbcType(rs.getString("TYPE_NAME"));
+                columns.add(tableColumn);
+            }
+            return columns;
+        }
     }
 
-	/**
-	 * 构建数据库连接url
-	 * by itcrazy0717
-	 *
-	 * @param dbConfig
-	 * @return
-	 * @throws ClassNotFoundException
-	 */
+    /**
+     * 构建数据库连接url
+     * by itcrazy0717
+     *
+     * @param dbConfig
+     * @return
+     * @throws ClassNotFoundException
+     */
     public static String buildConnectionUrlWithSchema(DatabaseConnectionConfig dbConfig) throws ClassNotFoundException {
         DataBaseTypeEnum dataBaseType = DataBaseTypeEnum.valueOf(dbConfig.getDataBaseType());
         String connectionUrl = String.format(dataBaseType.getConnectionUrlPattern(), dbConfig.getHostUrl(), dbConfig.getPort(), dbConfig.getSchemaName(), dbConfig.getEncoding());
@@ -168,16 +169,16 @@ public class DataBaseUtil {
         return connectionUrl;
     }
 
-	/**
-	 * 获取 sqlite 连接
-	 * by itcrazy0717
-	 *
-	 * @return
-	 * @throws Exception
-	 */
-	public static Connection getSqLiteConnection() throws Exception {
-		Class.forName("org.sqlite.JDBC");
-		return DriverManager.getConnection(SQLITE_URL);
-	}
+    /**
+     * 获取 sqlite 连接
+     * by itcrazy0717
+     *
+     * @return
+     * @throws Exception
+     */
+    public static Connection getSqLiteConnection() throws Exception {
+        Class.forName("org.sqlite.JDBC");
+        return DriverManager.getConnection(SQLITE_URL);
+    }
 
 }
