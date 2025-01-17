@@ -411,9 +411,9 @@ public class SqliteUtil {
         Set<String> jarFilePathSets = new HashSet<>();
         try {
             File file = getDataBaseDriverClassJarFile(null);
-            LOGGER.info("driver jar path:{}", file.getCanonicalPath());
+            LOGGER.info("driver_jar_path:{}", file.getCanonicalPath());
             File[] jarFiles = file.listFiles();
-            LOGGER.info("driver jar file:{}", Arrays.toString(jarFiles));
+            LOGGER.info("driver_jar_file:{}", Arrays.toString(jarFiles));
             if (Objects.nonNull(jarFiles)) {
                 // 对驱动文件进行过滤
                 // 获取驱动文件名称
