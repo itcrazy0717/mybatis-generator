@@ -22,7 +22,7 @@
 ![img_3.png](src/main/resources/readmeimages/img_3.png)
 
 ##### 如何运行
-###### jdk版本要求>=1.8 但是jdk版本不能太高，超过11运行可能会出现问题，建议使用jdk1.8
+###### <font color=red>jdk版本要求>=1.8&&<=11 但是jdk版本不能太高，超过11运行可能会出现问题，建议使用jdk1.8</font>
 
 - 下载项目后，直接运行：com.itcrazy.mybatis.generator.MainApplication
 - 自行构建项目
