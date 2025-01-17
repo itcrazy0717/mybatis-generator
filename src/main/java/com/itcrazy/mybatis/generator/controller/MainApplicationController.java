@@ -386,6 +386,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                 MybatisGeneratorTemplate generatorTemplate = buildGeneratorTemplateContent(false);
                 generatorTemplate.setName(templateName);
                 SqliteUtil.saveGeneratorTemplate(generatorTemplate);
+                ShowMessageUtil.showNormalInfo("配置保存成功");
             } catch (Exception e) {
                 LOGGER.error("save_generator_template_error", e);
                 ShowMessageUtil.showErrorInfo("配置保存异常，请检查必填项是否完整");
