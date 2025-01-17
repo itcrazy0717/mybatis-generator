@@ -49,7 +49,7 @@ public class MainApplication extends Application {
 
         int jdkVersion = Integer.parseInt(version.substring(2, 3));
         // jdk版本限定
-        if (jdkVersion >= 8 && jdkVersion <= 10 && Integer.parseInt(version.substring(6)) >= 60) {
+        if (jdkVersion >= 8 && jdkVersion <= 11 && Integer.parseInt(version.substring(6)) >= 60) {
             launch(args);
         } else {
             JFrame frame = new JFrame("版本错误");
