@@ -193,10 +193,10 @@ public class MybatisCodeGenerateUtil {
 		context.addPluginConfiguration(toStringPlugin);
 		// 分页插件
 		if (DataBaseTypeEnum.MySQL.name().equals(selectedDatabaseConfig.getDataBaseType()) || DataBaseTypeEnum.PostgreSQL.name().equals(selectedDatabaseConfig.getDataBaseType())) {
-			PluginConfiguration pluginConfiguration = new PluginConfiguration();
-			pluginConfiguration.addProperty("", "com.itcrazy.mybatis.generator.plugins.PagePlugin");
-			pluginConfiguration.setConfigurationType("com.itcrazy.mybatis.generator.plugins.PagePlugin");
-			context.addPluginConfiguration(pluginConfiguration);
+			PluginConfiguration pagePlugin = new PluginConfiguration();
+			pagePlugin.addProperty("", "com.itcrazy.mybatis.generator.plugins.PagePlugin");
+			pagePlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.PagePlugin");
+			context.addPluginConfiguration(pagePlugin);
 		}
 		// 覆写xml文件插件
 		PluginConfiguration overWiriteXmlPlugin = new PluginConfiguration();
