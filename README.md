@@ -27,7 +27,7 @@
 - 下载项目后，直接运行：com.itcrazy.mybatis.generator.MainApplication
 - 自行构建项目
   ```html
-  git clone git@gitee.com:itcrazy0717/mybatis-generator.git
+  git clone https://github.com/itcrazy0717/mybatis-generator.git
   cd mybatis-generator
   mvn jfx:jar
   cd target/jfx/app/
