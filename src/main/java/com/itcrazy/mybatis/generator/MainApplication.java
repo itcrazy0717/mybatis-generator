@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import javax.swing.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,22 +47,40 @@ public class MainApplication extends Application {
 
     public static void main(String[] args) {
         String version = System.getProperty("java.version");
-
+        if (StringUtils.isBlank(version)) {
+            showMessageBox("无JDK运行环境", "请安装JDK1.8再运行此软件，该软件不支持过高的JDK版本，使用JDK1.8运行效果最佳");
+            return;
+        }
         int jdkVersion = Integer.parseInt(version.substring(2, 3));
-        // jdk版本限定
+        // jdk版本校验
         if (jdkVersion >= 8 && jdkVersion <= 11 && Integer.parseInt(version.substring(6)) >= 60) {
             launch(args);
         } else {
-            JFrame frame = new JFrame("版本错误");
-            frame.setSize(500, 100);
-            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            JPanel panel = new JPanel();
-            JLabel label = new JLabel("JDK的版本不能低于1.8.0.60，请升级至最近的JDK1.8再运行此软件，该软件不支持过高的JDK版本，使用JDK1.8最佳");
-            panel.add(label);
-            frame.add(panel);
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
+            showMessageBox("JDK版本错误", "JDK的版本不能低于1.8.0.60，请升级至最近的JDK1.8再运行此软件，该软件不支持过高的JDK版本，使用JDK1.8运行效果最佳");
         }
+    }
+
+    /**
+     * 显示提示信息
+     * by itcrazy0717
+     *
+     * @param title
+     * @param showText
+     */
+    private static void showMessageBox(String title, String showText) {
+        JFrame frame = new JFrame(title);
+        if (StringUtils.equals("无JDK运行环境", title)) {
+            frame.setSize(600, 100);
+        } else {
+            frame.setSize(800, 100);
+        }
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        JPanel panel = new JPanel();
+        JLabel label = new JLabel(showText);
+        panel.add(label);
+        frame.add(panel);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 
 }
