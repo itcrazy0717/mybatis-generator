@@ -20,7 +20,6 @@ import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
-import org.mybatis.generator.config.GeneratedKey;
 import org.mybatis.generator.config.MergeConstants;
 
 import static javax.swing.UIManager.getString;
@@ -89,36 +88,36 @@ public class BatchInsertPlugin extends PluginAdapter {
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
         List<IntrospectedColumn> columns = introspectedTable.getAllColumns();
-        // 获得要自增的列名
-        String incrementField = null;
-        String isGenerateKey = properties.getProperty("isGenerateKey");
-        if (Boolean.parseBoolean(isGenerateKey)) {
-            incrementField = properties.getProperty("generateKey");
-        }
+//        // 获得要自增的列名
+//        String incrementField = null;
+//        String isGenerateKey = properties.getProperty("isGenerateKey");
+//        if (Boolean.parseBoolean(isGenerateKey)) {
+//            incrementField = properties.getProperty("generateKey");
+//        }
 
         StringBuilder dbcolumnsName = new StringBuilder();
         StringBuilder javaPropertyAndDbType = new StringBuilder();
         for (IntrospectedColumn introspectedColumn : columns) {
             String columnName = introspectedColumn.getActualColumnName();
             // 不是自增字段的才会出现在批量插入中
-            if (!columnName.equalsIgnoreCase(incrementField)) {
-                dbcolumnsName.append(columnName).append(",");
-                javaPropertyAndDbType.append("#{item.").append(introspectedColumn.getJavaProperty()).append(",jdbcType=").append(introspectedColumn.getJdbcTypeName());
-                if (stringHasValue(introspectedColumn.getTypeHandler())) {
-                    javaPropertyAndDbType.append(",typeHandler=");
-                    javaPropertyAndDbType.append(introspectedColumn.getTypeHandler());
-                    javaPropertyAndDbType.append(",javaType=");
-                    javaPropertyAndDbType.append(introspectedColumn.getFullyQualifiedJavaType().getFullyQualifiedNameWithoutTypeParameters());
-                }
-                javaPropertyAndDbType.append("},");
+//            if (!columnName.equalsIgnoreCase(incrementField)) {
+            dbcolumnsName.append(columnName).append(",");
+            javaPropertyAndDbType.append("#{item.").append(introspectedColumn.getJavaProperty()).append(",jdbcType=").append(introspectedColumn.getJdbcTypeName());
+            if (stringHasValue(introspectedColumn.getTypeHandler())) {
+                javaPropertyAndDbType.append(",typeHandler=");
+                javaPropertyAndDbType.append(introspectedColumn.getTypeHandler());
+                javaPropertyAndDbType.append(",javaType=");
+                javaPropertyAndDbType.append(introspectedColumn.getFullyQualifiedJavaType().getFullyQualifiedNameWithoutTypeParameters());
             }
+            javaPropertyAndDbType.append("},");
+//            }
         }
 
         XmlElement insertBatchElement = new XmlElement("insert");
         insertBatchElement.addAttribute(new Attribute("id", "batchInsert"));
         insertBatchElement.addAttribute(new Attribute("parameterType", introspectedTable.getBaseRecordType()));
 
-        GeneratedKey gk = introspectedTable.getGeneratedKey();
+       /* GeneratedKey gk = introspectedTable.getGeneratedKey();
         if (gk != null) {
             IntrospectedColumn introspectedColumn = introspectedTable
                     .getColumn(gk.getColumn());
@@ -130,7 +129,7 @@ public class BatchInsertPlugin extends PluginAdapter {
                             "keyProperty", introspectedColumn.getJavaProperty()));
                 }
             }
-        }
+        }*/
 
         insertBatchElement.addElement(new TextElement("<!--"));
 
