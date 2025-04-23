@@ -26,6 +26,16 @@ public class MybatisGeneratorTemplate {
     private String projectFolder;
 
     /**
+     * 主键id字段
+     */
+    private String primaryKeyField;
+
+    /**
+     * insert方法是否返回主键id
+     */
+    private boolean insertReturnPrimaryKey;
+
+    /**
      * 实体类路径
      */
     private String modelPackage;

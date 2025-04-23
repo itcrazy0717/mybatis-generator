@@ -14,6 +14,7 @@ import org.mybatis.generator.config.ColumnOverride;
 import org.mybatis.generator.config.CommentGeneratorConfiguration;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.Context;
+import org.mybatis.generator.config.GeneratedKey;
 import org.mybatis.generator.config.IgnoredColumn;
 import org.mybatis.generator.config.JDBCConnectionConfiguration;
 import org.mybatis.generator.config.JavaClientGeneratorConfiguration;
@@ -79,7 +80,8 @@ public class MybatisCodeGenerateUtil {
         Context context = new Context(ModelType.CONDITIONAL);
         configuration.addContext(context);
         context.addProperty("javaFileEncoding", "UTF-8");
-        String driverJarPath = SqliteUtil.getDataBaseDriverJarPath(selectedDatabaseConfig.getDataBaseType());
+        String dataBaseType = selectedDatabaseConfig.getDataBaseType();
+        String driverJarPath = SqliteUtil.getDataBaseDriverJarPath(dataBaseType);
         LOGGER.info("driver_jar_path: {}", driverJarPath);
         configuration.addClasspathEntry(driverJarPath);
         // Table configuration
@@ -88,16 +90,27 @@ public class MybatisCodeGenerateUtil {
         tableConfig.setDomainObjectName(generateConfig.getDomainObjectName());
 
 		// 针对postgresql单独配置
-		if (StringUtils.equals(DataBaseTypeEnum.PostgreSQL.getDriverClass(), DataBaseTypeEnum.valueOf(selectedDatabaseConfig.getDataBaseType()).getDriverClass())) {
+		if (StringUtils.equals(DataBaseTypeEnum.PostgreSQL.getDriverClass(), DataBaseTypeEnum.valueOf(dataBaseType).getDriverClass())) {
 			tableConfig.setDelimitIdentifiers(true);
 		}
 
-       /*
-       // 添加GeneratedKey主键生成
-        if (StringUtils.isNoneEmpty(generatorConfig.getGenerateKeys())) {
-            tableConfig.setGeneratedKey(new GeneratedKey(generatorConfig.getGenerateKeys(), selectedDatabaseConfig.getDataBaseType(), true, null));
+        // 添加GeneratedKey主键生成，用于insert的时候返回主键
+		// 以上只在MySql下进行过测试
+		if (generateConfig.isInsertReturnPrimaryKey()
+			&& StringUtils.isNotBlank(generateConfig.getPrimaryKeyField())) {
+            String dbType = dataBaseType;
+            if (StringUtils.equals(DataBaseTypeEnum.MySQL.name(), dbType)) {
+                dbType = "JDBC";
+                // dbType为JDBC，且配置中开启useGeneratedKeys时，Mybatis会使用Jdbc3KeyGenerator,
+                // 使用该KeyGenerator的好处就是直接在一次INSERT 语句内，通过resultSet获取得到 生成的主键值，
+                // 并很好的支持设置了读写分离代理的数据库
+                // 例如阿里云RDS + 读写分离代理
+                // 无需指定主库
+                // 当使用SelectKey时，Mybatis会使用SelectKeyGenerator，INSERT之后，多发送一次查询语句，获得主键值
+                // 在上述读写分离被代理的情况下，会得不到正确的主键
+            }
+            tableConfig.setGeneratedKey(new GeneratedKey(generateConfig.getPrimaryKeyField(), dbType, true, null));
         }
-        */
 
 	    if (StringUtils.isNotBlank(generateConfig.getMapperName())) {
 		    tableConfig.setMapperName(generateConfig.getMapperName());
@@ -110,7 +123,7 @@ public class MybatisCodeGenerateUtil {
             columnOverrides.forEach(tableConfig::addColumnOverride);
         }
         JDBCConnectionConfiguration jdbcConfig = new JDBCConnectionConfiguration();
-        jdbcConfig.setDriverClass(DataBaseTypeEnum.valueOf(selectedDatabaseConfig.getDataBaseType()).getDriverClass());
+        jdbcConfig.setDriverClass(DataBaseTypeEnum.valueOf(dataBaseType).getDriverClass());
         jdbcConfig.setConnectionURL(DataBaseUtil.buildConnectionUrlWithSchema(selectedDatabaseConfig));
         jdbcConfig.setUserId(selectedDatabaseConfig.getUserName());
         jdbcConfig.setPassword(selectedDatabaseConfig.getPassword());

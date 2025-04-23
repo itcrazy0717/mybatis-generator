@@ -38,6 +38,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -98,6 +99,18 @@ public class MainApplicationController extends BaseFxmlPageController {
      */
     @FXML
     private TextField domainObjectNameField;
+
+    /**
+     * 主键id字段
+     */
+    @FXML
+    private TextField primaryKeyField;
+
+    /**
+     * insert方法时，返回主键id
+     */
+    @FXML
+    private CheckBox insertReturnPrimaryKeyCheckBox;
 
     /**
      * 项目所在目录
@@ -322,16 +335,22 @@ public class MainApplicationController extends BaseFxmlPageController {
      * 校验配置值
      * by itcrazy0717
      *
-     * @param generateCode 是否是生成代码 true-是 false-不是
+     * @param generateCode 是否是生成代码 true-生成代码 false-保存配置
      * @return
      */
     private String validateGeneratorTemplateValue(boolean generateCode) {
+        // 在保存配置时，如下配置是无需进行存储的，因为每张表的属性不同
         if (generateCode) {
             if (StringUtils.isBlank(tableNameField.getText())) {
                 return "请先在左侧选择数据库表";
             }
             if (StringUtils.isBlank(domainObjectNameField.getText())) {
                 return "实体类名为空";
+            }
+            // 选择了insert时返回主键id，则需要填写主键id值
+            if (insertReturnPrimaryKeyCheckBox.isSelected()
+                && StringUtils.isBlank(primaryKeyField.getText())) {
+                return "主键id为空";
             }
         }
         if (StringUtils.isBlank(projectFolderField.getText())) {
@@ -414,6 +433,8 @@ public class MainApplicationController extends BaseFxmlPageController {
             template.setTableName(tableNameField.getText());
             template.setMapperName(DataBaseStringUtil.tableNameToCamelStyle(tableName) + "DAO");
             template.setDomainObjectName(buildDomainObjectName(domainObjectNameField.getText()));
+            template.setPrimaryKeyField(primaryKeyField.getText());
+            template.setInsertReturnPrimaryKey(insertReturnPrimaryKeyCheckBox.isSelected());
         }
         return template;
     }

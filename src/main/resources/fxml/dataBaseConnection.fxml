@@ -39,9 +39,10 @@
                 <items>
                     <FXCollections fx:factory="observableArrayList">
                         <String fx:value="MySQL" />
-                        <String fx:value="Oracle" />
-                        <String fx:value="PostgreSQL" />
-                        <String fx:value="SQLServer" />
+                        <!-- 注释其他数据库类型，目前只在mysql数据库中进行了测试-->
+                        <!--                        <String fx:value="Oracle" />-->
+                        <!--                        <String fx:value="PostgreSQL" />-->
+                        <!--                        <String fx:value="SQLServer" />-->
                     </FXCollections>
                 </items>
             </ChoiceBox>
