@@ -323,6 +323,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         ShowProgressCallback progressCallback = new ShowProgressCallback(Alert.AlertType.INFORMATION);
         MybatisCodeGenerateUtil.loadConfig(generatorConfig, selectedDatabaseConfig, progressCallback, ignoredColumns, columnOverrides);
         progressCallback.show();
+        checkInsertReturnPrimayKeyInfo();
         try {
             MybatisCodeGenerateUtil.generateCode();
         } catch (Exception e) {
@@ -499,21 +500,23 @@ public class MainApplicationController extends BaseFxmlPageController {
         dirs.add(config.getProjectFolder());
         dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getModelAndDaoInterfacePackageTargetFolder())));
         dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getMapperXMLTargetFolder())));
-        boolean haveNotExistFolder = false;
+        // 不存在文件夹的集合
+        List<String> noExistDirList=new ArrayList<>();
         for (String dir : dirs) {
             File file = new File(dir);
             if (!file.exists()) {
-                haveNotExistFolder = true;
+                noExistDirList.add(dir);
             }
         }
-        if (haveNotExistFolder) {
+        // 不为空则进行创建
+        if (CollectionUtils.isNotEmpty(noExistDirList)) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setContentText(FOLDER_NO_EXIST);
             Optional<ButtonType> optional = alert.showAndWait();
             if (optional.isPresent()) {
                 if (ButtonType.OK == optional.get()) {
                     try {
-                        for (String dir : dirs) {
+                        for (String dir : noExistDirList) {
                             FileUtils.forceMkdir(new File(dir));
                         }
                         return true;
@@ -548,5 +551,17 @@ public class MainApplicationController extends BaseFxmlPageController {
             return domainObjecName + "DO";
         }
         return domainObjecName;
+    }
+
+    /**
+     * 检查insert方法返回主键id的完整度
+     * by itcrazy0717
+     */
+    private void checkInsertReturnPrimayKeyInfo() {
+        // 填写了主键id，但未勾选【insert方法返回主键id】进行提示
+        if (StringUtils.isNotBlank(primaryKeyField.getText())
+            && !insertReturnPrimaryKeyCheckBox.isSelected()) {
+            ShowMessageUtil.showNormalInfo("未勾选【insert方法返回主键id】选项，insert方法不会返回主键id");
+        }
     }
 }
