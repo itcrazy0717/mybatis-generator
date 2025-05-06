@@ -200,7 +200,7 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
      */
     private String checkParam(DatabaseConnectionConfig connectionConfig) {
         if (StringUtils.isBlank(connectionConfig.getName())) {
-            return "名称为空";
+            return "保存名称为空";
         }
         if (StringUtils.isBlank(connectionConfig.getDataBaseType())) {
             return "数据库类型为空";
