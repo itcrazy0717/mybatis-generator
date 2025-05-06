@@ -59,18 +59,19 @@
                   <CheckBox fx:id="savePwdCheckBox" mnemonicParsing="false" text="Save password" visible="false" />
                </children>
             </HBox>
-            <Label text="编码" GridPane.rowIndex="7" />
+             <Label text="Schema/数据库" GridPane.rowIndex="6" />
             <TextField fx:id="schemaField" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+            <Label text="编码" GridPane.rowIndex="7" />
             <ChoiceBox fx:id="encodingChoice" maxWidth="1.7976931348623157E308" prefWidth="150.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="7">
                 <items>
                     <FXCollections fx:factory="observableArrayList">
                         <String fx:value="utf8" />
-                        <String fx:value="gb2312" />
-                        <String fx:value="gbk" />
+                        <!-- 暂时注释其他编码方式-->
+                        <!--                        <String fx:value="gb2312" />-->
+                        <!--                        <String fx:value="gbk" />-->
                     </FXCollections>
                 </items>
              </ChoiceBox>
-            <Label text="Schema/数据库" GridPane.rowIndex="6" />
          </children>
       </GridPane>
       <AnchorPane layoutY="340.0" prefHeight="0.0" prefWidth="570.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
