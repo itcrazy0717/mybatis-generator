@@ -33,4 +33,4 @@
   cd target/jfx/app/
   java -jar mybatis-generator-gui.jar
   ```
-  通过该方式可对命令创建快捷运行指令，启动非常方便
+  通过该方式可对使用sh脚本来创建快捷运行指令，启动非常方便
