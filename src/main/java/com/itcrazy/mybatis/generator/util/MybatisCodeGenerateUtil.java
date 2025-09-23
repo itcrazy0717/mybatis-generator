@@ -88,6 +88,7 @@ public class MybatisCodeGenerateUtil {
         TableConfiguration tableConfig = new TableConfiguration(context);
         tableConfig.setTableName(generateConfig.getTableName());
         tableConfig.setDomainObjectName(generateConfig.getDomainObjectName());
+        tableConfig.setCatalog(selectedDatabaseConfig.getSchemaName());
 
 		// 针对postgresql单独配置
 		if (StringUtils.equals(DataBaseTypeEnum.PostgreSQL.getDriverClass(), DataBaseTypeEnum.valueOf(dataBaseType).getDriverClass())) {
