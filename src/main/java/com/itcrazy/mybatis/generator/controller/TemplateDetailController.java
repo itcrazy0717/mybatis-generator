@@ -9,8 +9,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
 /**
- * @author: dengxin.chen
- * @version: $ TemplateDetailController.java,v0.1 2025-01-09 10:42 dengxin.chen Exp $
+ * @author: itcrazy0717
+ * @version: $ TemplateDetailController.java,v0.1 2025-01-09 10:42 itcrazy0717 Exp $
  * @description:
  */
 public class TemplateDetailController extends BaseFxmlPageController {

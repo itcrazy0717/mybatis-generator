@@ -1,8 +1,8 @@
 package com.itcrazy.mybatis.generator.constant;
 
 /**
- * @author: dengxin.chen
- * @version: $ IconConstants.java,v0.1 2024-10-15 11:08 dengxin.chen Exp $
+ * @author: itcrazy0717
+ * @version: $ IconConstants.java,v0.1 2024-10-15 11:08 itcrazy0717 Exp $
  * @description:
  */
 public class IconConstants {

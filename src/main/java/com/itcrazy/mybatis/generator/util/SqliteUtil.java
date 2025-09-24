@@ -59,18 +59,18 @@ public class SqliteUtil {
         }
         File cofigSqliteFile = new File(LOCAL_CONFIG_DATABASE_DIR + SQLITE_FILE);
         if (!cofigSqliteFile.exists()) {
-            createSqliteDB(cofigSqliteFile);
+            createSqliteDBFile(cofigSqliteFile);
         }
     }
 
     /**
-     * 生成sqlite
+     * 生成sqliteDB文件
      * by itcrazy0717
      *
      * @param file
      * @throws IOException
      */
-    public static void createSqliteDB(File file) throws IOException {
+    public static void createSqliteDBFile(File file) throws IOException {
         InputStream fis = null;
         FileOutputStream fos = null;
         try {
@@ -79,18 +79,13 @@ public class SqliteUtil {
                 throw new RuntimeException("默认配置数据库不存在");
             }
             fos = new FileOutputStream(file);
-            byte[] buffer = new byte[1024];
+            byte[] bufferByte = new byte[1024];
             int byteRead;
-            while ((byteRead = fis.read(buffer)) != -1) {
-                fos.write(buffer, 0, byteRead);
+            while ((byteRead = fis.read(bufferByte)) != -1) {
+                fos.write(bufferByte, 0, byteRead);
             }
         } finally {
-            if (Objects.nonNull(fis)) {
-                fis.close();
-            }
-            if (Objects.nonNull(fos)) {
-                fos.close();
-            }
+            closeResources(fis, fos);
         }
     }
 
@@ -119,15 +114,7 @@ public class SqliteUtil {
             }
             return dbConnectionConfigList;
         } finally {
-            if (Objects.nonNull(resultSet)) {
-                resultSet.close();
-            }
-            if (Objects.nonNull(statement)) {
-                statement.close();
-            }
-            if (Objects.nonNull(connection)) {
-                connection.close();
-            }
+            closeResources(resultSet, statement, connection);
         }
     }
 
@@ -163,12 +150,7 @@ public class SqliteUtil {
             LOGGER.info("save_database_connection_config_execute_sql:{}", executeSql);
             statement.executeUpdate(executeSql);
         } finally {
-            if (Objects.nonNull(statement)) {
-                statement.close();
-            }
-            if (Objects.nonNull(connection)) {
-                connection.close();
-            }
+            closeResources(null, statement, connection);
         }
     }
 
@@ -189,12 +171,7 @@ public class SqliteUtil {
             LOGGER.info("delete_database_connection_config_execute_sql:{}", executeSql);
             statement.executeUpdate(executeSql);
         } finally {
-            if (Objects.nonNull(statement)) {
-                statement.close();
-            }
-            if (Objects.nonNull(connection)) {
-                connection.close();
-            }
+            closeResources(null, statement, connection);
         }
     }
 
@@ -218,12 +195,7 @@ public class SqliteUtil {
             }
             return false;
         } finally {
-            if (Objects.nonNull(statement)) {
-                statement.close();
-            }
-            if (Objects.nonNull(connection)) {
-                connection.close();
-            }
+            closeResources(null, statement, connection);
         }
     }
 
@@ -247,12 +219,7 @@ public class SqliteUtil {
             LOGGER.info("save_generator_template_execute_sql:{}", executeSql);
             statement.executeUpdate(executeSql);
         } finally {
-            if (Objects.nonNull(statement)) {
-                statement.close();
-            }
-            if (Objects.nonNull(connection)) {
-                connection.close();
-            }
+            closeResources(null, statement, connection);
         }
     }
 
@@ -281,15 +248,7 @@ public class SqliteUtil {
             }
             return generatorConfig;
         } finally {
-            if (Objects.nonNull(resultSet)) {
-                resultSet.close();
-            }
-            if (Objects.nonNull(statement)) {
-                statement.close();
-            }
-            if (Objects.nonNull(connection)) {
-                connection.close();
-            }
+            closeResources(resultSet, statement, connection);
         }
     }
 
@@ -318,15 +277,7 @@ public class SqliteUtil {
             }
             return templateList;
         } finally {
-            if (Objects.nonNull(resultSet)) {
-                resultSet.close();
-            }
-            if (Objects.nonNull(statement)) {
-                statement.close();
-            }
-            if (Objects.nonNull(connection)) {
-                connection.close();
-            }
+            closeResources(resultSet, statement, connection);
         }
     }
 
@@ -338,21 +289,16 @@ public class SqliteUtil {
      * @throws Exception
      */
     public static void deleteGeneratorTemplateByName(String templateName) throws Exception {
-        Connection conn = null;
-        Statement stat = null;
+        Connection connection = null;
+        Statement statement = null;
         try {
-            conn = DataBaseUtil.getSqLiteConnection();
-            stat = conn.createStatement();
+            connection = DataBaseUtil.getSqLiteConnection();
+            statement = connection.createStatement();
             String executeSql = String.format("DELETE FROM code_generator_template where name='%s'", templateName);
             LOGGER.info("delet_egenerator_template_by_name_execute_sql:{}", executeSql);
-            stat.executeUpdate(executeSql);
+            statement.executeUpdate(executeSql);
         } finally {
-            if (Objects.nonNull(stat)) {
-                stat.close();
-            }
-            if (Objects.nonNull(conn)) {
-                conn.close();
-            }
+            closeResources(null, statement, connection);
         }
     }
 
@@ -365,21 +311,16 @@ public class SqliteUtil {
      * @throws Exception
      */
     public static void updateGeneratorTemplateName(String newTemplateName, String originalTemplateName) throws Exception {
-        Connection conn = null;
-        Statement stat = null;
+        Connection connection = null;
+        Statement statement = null;
         try {
-            conn = DataBaseUtil.getSqLiteConnection();
-            stat = conn.createStatement();
+            connection = DataBaseUtil.getSqLiteConnection();
+            statement = connection.createStatement();
             String executeSql = String.format("UPDATE code_generator_template SET name='%s' where name='%s'", newTemplateName, originalTemplateName);
             LOGGER.info("update_generator_template_name_execute_sql:{}", executeSql);
-            stat.executeUpdate(executeSql);
+            statement.executeUpdate(executeSql);
         } finally {
-            if (Objects.nonNull(stat)) {
-                stat.close();
-            }
-            if (Objects.nonNull(conn)) {
-                conn.close();
-            }
+            closeResources(null, statement, connection);
         }
     }
 
@@ -449,7 +390,7 @@ public class SqliteUtil {
         }
         // 生成jfx app时，路径中会存在.jar文件，因此需重新设置路径
         if (url.getPath().contains(SqliteConstants.DATABASE_DRIVER_JAR_SUFFIX)) {
-            path = SqliteConstants.DATABASE_DRIVER_JAR_PATH_SUFFIX;
+            path = SqliteConstants.DATABASE_DRIVER_JAR_PATH_PREFIX;
         } else {
             path = SqliteConstants.DATABASE_DRIVER_JAR_PATH;
         }
@@ -467,6 +408,42 @@ public class SqliteUtil {
             }
         }
         return new File(path);
+    }
+
+    /**
+     * 关闭资源
+     * by itcrazy0717
+     *
+     * @param resultSet
+     * @param statement
+     * @param connection
+     */
+    private static void closeResources(ResultSet resultSet, Statement statement, Connection connection) throws Exception {
+        if (Objects.nonNull(resultSet)) {
+            resultSet.close();
+        }
+        if (Objects.nonNull(statement)) {
+            statement.close();
+        }
+        if (Objects.nonNull(connection)) {
+            connection.close();
+        }
+    }
+
+    /**
+     * 关闭资源
+     * itcrazy0717
+     *
+     * @param fis
+     * @param fos
+     */
+    private static void closeResources(InputStream fis, FileOutputStream fos) throws IOException {
+        if (Objects.nonNull(fis)) {
+            fis.close();
+        }
+        if (Objects.nonNull(fos)) {
+            fos.close();
+        }
     }
 
 }

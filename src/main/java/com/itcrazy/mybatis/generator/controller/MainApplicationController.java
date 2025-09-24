@@ -323,18 +323,18 @@ public class MainApplicationController extends BaseFxmlPageController {
             ShowMessageUtil.showWarnInfo("请先在左侧选择数据库表");
             return;
         }
-        String validateResult = validateGeneratorTemplateValue(true);
-        if (validateResult != null) {
+        String validateResult = validateTemplateValue(true);
+        if (StringUtils.isNotBlank(validateResult)) {
             ShowMessageUtil.showErrorInfo(validateResult);
             return;
         }
-        MybatisGeneratorTemplate generatorConfig = buildGeneratorTemplateContent(true);
-        if (!checkDirs(generatorConfig)) {
+        MybatisGeneratorTemplate template = buildTemplateContent(true);
+        if (!checkBaseDir(template)) {
             return;
         }
 
         ShowProgressCallback progressCallback = new ShowProgressCallback(Alert.AlertType.INFORMATION);
-        MybatisCodeGenerateUtil.loadConfig(generatorConfig, selectedDatabaseConfig, progressCallback, ignoredColumns, columnOverrides);
+        MybatisCodeGenerateUtil.loadConfig(template, selectedDatabaseConfig, progressCallback, ignoredColumns, columnOverrides);
         progressCallback.show();
         checkInsertReturnPrimayKeyInfo();
         try {
@@ -349,12 +349,12 @@ public class MainApplicationController extends BaseFxmlPageController {
      * 校验配置值
      * by itcrazy0717
      *
-     * @param generateCode 是否是生成代码 true-生成代码 false-保存配置
+     * @param generateCodeOrSaveTemplate 生成代码或者保存配置 true-生成代码 false-保存配置
      * @return
      */
-    private String validateGeneratorTemplateValue(boolean generateCode) {
+    private String validateTemplateValue(boolean generateCodeOrSaveTemplate) {
         // 在保存配置时，如下配置是无需进行存储的，因为每张表的属性不同
-        if (generateCode) {
+        if (generateCodeOrSaveTemplate) {
             if (StringUtils.isBlank(tableNameField.getText())) {
                 return "请先在左侧选择数据库表";
             }
@@ -394,8 +394,8 @@ public class MainApplicationController extends BaseFxmlPageController {
      */
     @FXML
     public void saveGenerateCodeTemplate() {
-        String validateResult = validateGeneratorTemplateValue(false);
-        if (validateResult != null) {
+        String validateResult = validateTemplateValue(false);
+        if (StringUtils.isNotBlank(validateResult)) {
             ShowMessageUtil.showErrorInfo(validateResult);
             return;
         }
@@ -416,7 +416,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                     ShowMessageUtil.showErrorInfo("已存在相同名称的配置");
                     return;
                 }
-                MybatisGeneratorTemplate generatorTemplate = buildGeneratorTemplateContent(false);
+                MybatisGeneratorTemplate generatorTemplate = buildTemplateContent(false);
                 generatorTemplate.setName(templateName);
                 SqliteUtil.saveGeneratorTemplate(generatorTemplate);
                 ShowMessageUtil.showNormalInfo("配置保存成功");
@@ -431,10 +431,10 @@ public class MainApplicationController extends BaseFxmlPageController {
      * 构建生成器模板内容
      * by itcrazy0717
      *
-     * @param generateCode 是否是生成代码 true-是 false-不是
+     * @param generateCodeOrSaveTemplate 生成代码或者保存配置 true-生成代码 false-保存配置
      * @return
      */
-    public MybatisGeneratorTemplate buildGeneratorTemplateContent(boolean generateCode) {
+    public MybatisGeneratorTemplate buildTemplateContent(boolean generateCodeOrSaveTemplate) {
         MybatisGeneratorTemplate template = new MybatisGeneratorTemplate();
         template.setProjectFolder(projectFolderField.getText());
         template.setModelAndDaoInterfacePackageTargetFolder(modelAndDaoInterfaceTargetProject.getText());
@@ -443,7 +443,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         template.setMapperXMLTargetFolder(mappingTargetProject.getText());
         template.setMapperXMLPackage(mapperTargetPackage.getText());
         template.setParamModelPackage(paramTargetPackage.getText());
-        if (generateCode) {
+        if (generateCodeOrSaveTemplate) {
             template.setTableName(tableNameField.getText());
             template.setMapperName(DataBaseStringUtil.tableNameToCamelStyle(tableName) + "DAO");
             template.setDomainObjectName(buildDomainObjectName(domainObjectNameField.getText()));
@@ -505,16 +505,16 @@ public class MainApplicationController extends BaseFxmlPageController {
      * 检查并创建不存在的文件夹
      * by itcrazy0717
      *
-     * @param config
+     * @param template
      * @return
      */
-    private boolean checkDirs(MybatisGeneratorTemplate config) {
+    private boolean checkBaseDir(MybatisGeneratorTemplate template) {
         List<String> dirs = new ArrayList<>();
-        dirs.add(config.getProjectFolder());
-        dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getModelAndDaoInterfacePackageTargetFolder())));
-        dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getMapperXMLTargetFolder())));
+        dirs.add(template.getProjectFolder());
+        dirs.add(FilenameUtils.normalize(template.getProjectFolder().concat("/").concat(template.getModelAndDaoInterfacePackageTargetFolder())));
+        dirs.add(FilenameUtils.normalize(template.getProjectFolder().concat("/").concat(template.getMapperXMLTargetFolder())));
         // 不存在文件夹的集合
-        List<String> noExistDirList=new ArrayList<>();
+        List<String> noExistDirList = new ArrayList<>();
         for (String dir : dirs) {
             File file = new File(dir);
             if (!file.exists()) {
@@ -535,7 +535,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                         return true;
                     } catch (Exception e) {
                         LOGGER.error("create_dir_error", e);
-                        ShowMessageUtil.showErrorInfo("创建目录失败，请检查目录是否是文件而非目录");
+                        ShowMessageUtil.showErrorInfo("创建目录失败，请检查目录是否设置正确");
                     }
                 } else {
                     return false;

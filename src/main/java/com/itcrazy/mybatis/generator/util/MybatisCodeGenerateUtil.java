@@ -103,7 +103,7 @@ public class MybatisCodeGenerateUtil {
             if (StringUtils.equals(DataBaseTypeEnum.MySQL.name(), dbType)) {
                 dbType = "JDBC";
                 // dbType为JDBC，且配置中开启useGeneratedKeys时，Mybatis会使用Jdbc3KeyGenerator,
-                // 使用该KeyGenerator的好处就是直接在一次INSERT 语句内，通过resultSet获取得到 生成的主键值，
+                // 使用该KeyGenerator的好处就是直接在一次INSERT语句内，通过resultSet获取得到生成的主键值，
                 // 并很好的支持设置了读写分离代理的数据库
                 // 例如阿里云RDS + 读写分离代理
                 // 无需指定主库
