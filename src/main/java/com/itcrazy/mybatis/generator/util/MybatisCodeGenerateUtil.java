@@ -179,6 +179,7 @@ public class MybatisCodeGenerateUtil {
         ShellCallback shellCallback = new DefaultShellCallback(true);
         MyBatisGenerator myBatisGenerator = new MyBatisGenerator(configuration, shellCallback, warnings);
         myBatisGenerator.generate(progressCallback, contexts, fullyqualifiedTables);
+        // 修复xml文件内容表名双点问题
         FixTableNameUtil.fixTableName(buildXmlFile(), selectedDatabaseConfig.getSchemaName(), generateConfig.getTableName());
     }
 
