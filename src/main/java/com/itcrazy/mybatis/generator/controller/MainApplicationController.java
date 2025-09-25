@@ -102,10 +102,10 @@ public class MainApplicationController extends BaseFxmlPageController {
     private TextField domainObjectName;
 
     /**
-     * 主键id字段
+     * 主键id
      */
     @FXML
-    private TextField primaryKeyField;
+    private TextField primaryKey;
 
     /**
      * insert方法时，返回主键id
@@ -363,7 +363,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             }
             // 选择了insert时返回主键id，则需要填写主键id值
             if (insertReturnPrimaryKeyCheckBox.isSelected()
-                && StringUtils.isBlank(primaryKeyField.getText())) {
+                && StringUtils.isBlank(primaryKey.getText())) {
                 return "主键id为空";
             }
         }
@@ -447,7 +447,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             template.setTableName(tableName.getText());
             template.setMapperName(DataBaseStringUtil.tableNameToCamelStyle(tableName.getText()) + "DAO");
             template.setDomainObjectName(buildDomainObjectName(domainObjectName.getText()));
-            template.setPrimaryKey(primaryKeyField.getText());
+            template.setPrimaryKey(primaryKey.getText());
             template.setInsertReturnPrimaryKey(insertReturnPrimaryKeyCheckBox.isSelected());
         }
         return template;
@@ -572,7 +572,7 @@ public class MainApplicationController extends BaseFxmlPageController {
      */
     private void checkInsertReturnPrimayKeyInfo() {
         // 填写了主键id，但未勾选【insert方法返回主键id】进行提示
-        if (StringUtils.isNotBlank(primaryKeyField.getText())
+        if (StringUtils.isNotBlank(primaryKey.getText())
             && !insertReturnPrimaryKeyCheckBox.isSelected()) {
             ShowMessageUtil.showNormalInfo("未勾选【insert方法返回主键id】选项，insert方法不会返回主键id");
         }
