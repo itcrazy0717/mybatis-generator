@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FixTableNameUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MybatisCodeGenerateUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FixTableNameUtil.class);
 
     /**
      * 修复数据表名双点问题

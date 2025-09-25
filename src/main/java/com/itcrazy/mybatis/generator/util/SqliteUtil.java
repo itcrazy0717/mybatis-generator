@@ -103,7 +103,7 @@ public class SqliteUtil {
         try {
             connection = DataBaseUtil.getSqLiteConnection();
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM database_connection_config");
+            resultSet = statement.executeQuery("select * from database_connection_config");
             List<DatabaseConnectionConfig> dbConnectionConfigList = new ArrayList<>();
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
@@ -135,7 +135,7 @@ public class SqliteUtil {
             connection = DataBaseUtil.getSqLiteConnection();
             statement = connection.createStatement();
             if (!update) {
-                ResultSet resultSet = statement.executeQuery("SELECT * from database_connection_config where name = '" + connectionName + "'");
+                ResultSet resultSet = statement.executeQuery("select * from database_connection_config where name = '" + connectionName + "'");
                 if (resultSet.next()) {
                     throw new RuntimeException("已存在相同名称的配置");
                 }
@@ -143,9 +143,9 @@ public class SqliteUtil {
             String dbConnectConfigJsonValue = JSON.toJSONString(dbConnectConfig);
             String executeSql;
             if (update) {
-                executeSql = String.format("UPDATE database_connection_config SET name = '%s', value = '%s' where id = %d", connectionName, dbConnectConfigJsonValue, primaryKey);
+                executeSql = String.format("update database_connection_config set name = '%s', value = '%s' where id = %d", connectionName, dbConnectConfigJsonValue, primaryKey);
             } else {
-                executeSql = String.format("INSERT INTO database_connection_config (name, value) values('%s', '%s')", connectionName, dbConnectConfigJsonValue);
+                executeSql = String.format("insert into database_connection_config (name, value) values('%s', '%s')", connectionName, dbConnectConfigJsonValue);
             }
             LOGGER.info("save_database_connection_config_execute_sql:{}", executeSql);
             statement.executeUpdate(executeSql);
@@ -189,7 +189,7 @@ public class SqliteUtil {
         try {
             connection = DataBaseUtil.getSqLiteConnection();
             statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT count(*) from code_generator_template where name = '" + templateName + "'");
+            ResultSet resultSet = statement.executeQuery("select count(*) from code_generator_template where name = '" + templateName + "'");
             if (resultSet.next()) {
                 return resultSet.getInt(1) > 0;
             }
@@ -203,20 +203,45 @@ public class SqliteUtil {
      * 保存生成器模板
      * by itcrazy0717
      *
-     * @param generatorTemplate
+     * @param template
      * @throws Exception
      */
-    public static void saveGeneratorTemplate(MybatisGeneratorTemplate generatorTemplate) throws Exception {
+    public static void saveGeneratorTemplate(MybatisGeneratorTemplate template) throws Exception {
         Connection connection = null;
         Statement statement = null;
         try {
             connection = DataBaseUtil.getSqLiteConnection();
             statement = connection.createStatement();
-            String templateName = generatorTemplate.getName();
-            generatorTemplate.setName(null);
-            String templateJsonValue = JSON.toJSONString(generatorTemplate);
-            String executeSql = String.format("INSERT INTO code_generator_template values('%s', '%s')", templateName, templateJsonValue);
+            String templateName = template.getName();
+            template.setName(null);
+            String templateJsonValue = JSON.toJSONString(template);
+            String executeSql = String.format("insert into code_generator_template values('%s', '%s')", templateName, templateJsonValue);
             LOGGER.info("save_generator_template_execute_sql:{}", executeSql);
+            statement.executeUpdate(executeSql);
+        } finally {
+            closeResources(null, statement, connection);
+        }
+    }
+
+    /**
+     * 更新生成器模板
+     * by itcrazy0717
+     *
+     * @param template
+     * @param originalTemplateName
+     * @throws Exception
+     */
+    public static void updateGeneratorTemplate(MybatisGeneratorTemplate template, String originalTemplateName) throws Exception {
+        Connection connection = null;
+        Statement statement = null;
+        try {
+            connection = DataBaseUtil.getSqLiteConnection();
+            statement = connection.createStatement();
+            String templateName = template.getName();
+            template.setName(null);
+            String templateJsonValue = JSON.toJSONString(template);
+            String executeSql = String.format("update code_generator_template set name='%s',value='%s' where name='%s'", templateName, templateJsonValue, originalTemplateName);
+            LOGGER.info("update_generator_template_execute_sql:{}", executeSql);
             statement.executeUpdate(executeSql);
         } finally {
             closeResources(null, statement, connection);
@@ -238,13 +263,14 @@ public class SqliteUtil {
         try {
             connection = DataBaseUtil.getSqLiteConnection();
             statement = connection.createStatement();
-            String executeSql = String.format("SELECT * FROM code_generator_template where name='%s'", templateName);
+            String executeSql = String.format("select * from code_generator_template where name='%s'", templateName);
             LOGGER.info("load_generator_template_by_name_sql:{}", executeSql);
             resultSet = statement.executeQuery(executeSql);
             MybatisGeneratorTemplate generatorConfig = null;
             if (resultSet.next()) {
                 String value = resultSet.getString("value");
                 generatorConfig = JSON.parseObject(value, MybatisGeneratorTemplate.class);
+                generatorConfig.setName(templateName);
             }
             return generatorConfig;
         } finally {
@@ -266,7 +292,7 @@ public class SqliteUtil {
         try {
             connection = DataBaseUtil.getSqLiteConnection();
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM code_generator_template");
+            resultSet = statement.executeQuery("select * from code_generator_template");
             List<MybatisGeneratorTemplate> templateList = new ArrayList<>();
             while (resultSet.next()) {
                 String templateName = resultSet.getString("name");
@@ -294,30 +320,8 @@ public class SqliteUtil {
         try {
             connection = DataBaseUtil.getSqLiteConnection();
             statement = connection.createStatement();
-            String executeSql = String.format("DELETE FROM code_generator_template where name='%s'", templateName);
+            String executeSql = String.format("delete from code_generator_template where name='%s'", templateName);
             LOGGER.info("delet_egenerator_template_by_name_execute_sql:{}", executeSql);
-            statement.executeUpdate(executeSql);
-        } finally {
-            closeResources(null, statement, connection);
-        }
-    }
-
-    /**
-     * 更新模板名称
-     * by itcrazy0717
-     *
-     * @param newTemplateName
-     * @param originalTemplateName
-     * @throws Exception
-     */
-    public static void updateGeneratorTemplateName(String newTemplateName, String originalTemplateName) throws Exception {
-        Connection connection = null;
-        Statement statement = null;
-        try {
-            connection = DataBaseUtil.getSqLiteConnection();
-            statement = connection.createStatement();
-            String executeSql = String.format("UPDATE code_generator_template SET name='%s' where name='%s'", newTemplateName, originalTemplateName);
-            LOGGER.info("update_generator_template_name_execute_sql:{}", executeSql);
             statement.executeUpdate(executeSql);
         } finally {
             closeResources(null, statement, connection);

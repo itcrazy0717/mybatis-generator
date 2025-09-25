@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -13,8 +15,8 @@
         <GridPane alignment="CENTER_RIGHT" layoutX="10.0" layoutY="30.0" vgap="5.0" AnchorPane.leftAnchor="10.0"
                   AnchorPane.rightAnchor="10.0">
             <children>
-                <Label text="项目所在目录" GridPane.rowIndex="1"/>
-                <TextField fx:id="projectFolderField" prefHeight="27.0" editable="false"
+                <Label text="配置名称" GridPane.rowIndex="1"/>
+                <TextField fx:id="templateName" prefHeight="27.0" focusTraversable="false"
                            prefWidth="348.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <HBox.margin>
                         <Insets right="5.0"/>
@@ -24,10 +26,9 @@
                     </GridPane.margin>
                 </TextField>
 
-                <Label text="实体与接口对象存放目录" GridPane.rowIndex="2"/>
-                <TextField fx:id="modelAndDaoInterfaceTargetProject" prefHeight="27.0" prefWidth="152.0"
-                           editable="false"
-                           GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <Label text="项目所在目录" GridPane.rowIndex="2"/>
+                <TextField fx:id="projectFolder" prefHeight="27.0" focusTraversable="false"
+                           prefWidth="348.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                     <HBox.margin>
                         <Insets right="5.0"/>
                     </HBox.margin>
@@ -36,9 +37,9 @@
                     </GridPane.margin>
                 </TextField>
 
-                <Label text="实体包全名" GridPane.rowIndex="3"/>
-                <TextField fx:id="modelTargetPackage" prefHeight="27.0" prefWidth="152.0"
-                           editable="false"
+                <Label text="实体与接口对象存放目录" GridPane.rowIndex="3"/>
+                <TextField fx:id="modelAndDaoInterfaceTargetProject" focusTraversable="false"
+                           prefHeight="27.0" prefWidth="152.0"
                            GridPane.columnIndex="1" GridPane.rowIndex="3">
                     <HBox.margin>
                         <Insets right="5.0"/>
@@ -48,10 +49,9 @@
                     </GridPane.margin>
                 </TextField>
 
-                <Label text="DAO接口包全名" GridPane.rowIndex="4"/>
-                <TextField fx:id="daoTargetPackage" prefHeight="27.0" prefWidth="152.0"
-                           editable="false" GridPane.columnIndex="1"
-                           GridPane.rowIndex="4">
+                <Label text="实体包全名" GridPane.rowIndex="4"/>
+                <TextField fx:id="modelTargetPackage" prefHeight="27.0" prefWidth="152.0" focusTraversable="false"
+                           GridPane.columnIndex="1" GridPane.rowIndex="4">
                     <HBox.margin>
                         <Insets right="5.0"/>
                     </HBox.margin>
@@ -60,9 +60,8 @@
                     </GridPane.margin>
                 </TextField>
 
-                <Label text="查询参数包全名(Param)" GridPane.rowIndex="5"/>
-                <TextField fx:id="paramTargetPackage" prefHeight="27.0" prefWidth="152.0"
-                           editable="false"
+                <Label text="DAO接口包全名" GridPane.rowIndex="5"/>
+                <TextField fx:id="daoTargetPackage" prefHeight="27.0" prefWidth="152.0" focusTraversable="false"
                            GridPane.columnIndex="1"
                            GridPane.rowIndex="5">
                     <HBox.margin>
@@ -73,10 +72,10 @@
                     </GridPane.margin>
                 </TextField>
 
-                <Label text="XML文件存放目录" GridPane.rowIndex="6"/>
-                <TextField fx:id="mappingTargetProject" prefHeight="27.0" prefWidth="152.0"
-                           editable="false"
-                           GridPane.columnIndex="1" GridPane.rowIndex="6">
+                <Label text="查询参数包全名(Param)" GridPane.rowIndex="6"/>
+                <TextField fx:id="paramTargetPackage" prefHeight="27.0" prefWidth="152.0" focusTraversable="false"
+                           GridPane.columnIndex="1"
+                           GridPane.rowIndex="6">
                     <HBox.margin>
                         <Insets right="5.0"/>
                     </HBox.margin>
@@ -85,9 +84,8 @@
                     </GridPane.margin>
                 </TextField>
 
-                <Label text="XML文件包全名" GridPane.rowIndex="7"/>
-                <TextField fx:id="mapperTargetPackage" prefHeight="27.0" prefWidth="152.0"
-                           editable="false"
+                <Label text="XML文件存放目录" GridPane.rowIndex="7"/>
+                <TextField fx:id="mappingTargetProject" prefHeight="27.0" prefWidth="152.0" focusTraversable="false"
                            GridPane.columnIndex="1"
                            GridPane.rowIndex="7">
                     <HBox.margin>
@@ -97,6 +95,32 @@
                         <Insets left="5.0" right="5.0"/>
                     </GridPane.margin>
                 </TextField>
+
+                <Label text="XML文件包全名" GridPane.rowIndex="8"/>
+                <TextField fx:id="mapperTargetPackage" prefHeight="27.0" prefWidth="152.0" focusTraversable="false"
+                           GridPane.columnIndex="1"
+                           GridPane.rowIndex="8">
+                    <HBox.margin>
+                        <Insets right="5.0"/>
+                    </HBox.margin>
+                    <GridPane.margin>
+                        <Insets left="5.0" right="5.0"/>
+                    </GridPane.margin>
+                </TextField>
+
+                <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0"
+                      spacing="40.0" GridPane.columnIndex="1" GridPane.columnSpan="3"
+                      GridPane.rowIndex="9">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#updateTemplate"
+                                text="修改配置">
+                            <styleClass>
+                                <String fx:value="btn-success"/>
+                                <String fx:value="btn"/>
+                            </styleClass>
+                        </Button>
+                    </children>
+                </HBox>
             </children>
         </GridPane>
     </children>

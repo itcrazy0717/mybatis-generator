@@ -328,7 +328,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             ShowMessageUtil.showErrorInfo(validateResult);
             return;
         }
-        MybatisGeneratorTemplate template = buildTemplateContent(true);
+        MybatisGeneratorTemplate template = buildTemplate(true);
         if (!checkBaseDir(template)) {
             return;
         }
@@ -416,9 +416,9 @@ public class MainApplicationController extends BaseFxmlPageController {
                     ShowMessageUtil.showErrorInfo("已存在相同名称的配置");
                     return;
                 }
-                MybatisGeneratorTemplate generatorTemplate = buildTemplateContent(false);
-                generatorTemplate.setName(templateName);
-                SqliteUtil.saveGeneratorTemplate(generatorTemplate);
+                MybatisGeneratorTemplate template = buildTemplate(false);
+                template.setName(templateName);
+                SqliteUtil.saveGeneratorTemplate(template);
                 ShowMessageUtil.showNormalInfo("配置保存成功");
             } catch (Exception e) {
                 LOGGER.error("save_generator_template_error", e);
@@ -428,13 +428,13 @@ public class MainApplicationController extends BaseFxmlPageController {
     }
 
     /**
-     * 构建生成器模板内容
+     * 构建生成器模板
      * by itcrazy0717
      *
      * @param generateCodeOrSaveTemplate 生成代码或者保存配置 true-生成代码 false-保存配置
      * @return
      */
-    public MybatisGeneratorTemplate buildTemplateContent(boolean generateCodeOrSaveTemplate) {
+    public MybatisGeneratorTemplate buildTemplate(boolean generateCodeOrSaveTemplate) {
         MybatisGeneratorTemplate template = new MybatisGeneratorTemplate();
         template.setProjectFolder(projectFolderField.getText());
         template.setModelAndDaoInterfacePackageTargetFolder(modelAndDaoInterfaceTargetProject.getText());
