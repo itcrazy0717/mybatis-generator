@@ -92,7 +92,7 @@
                                     </rowConstraints>
                                     <children>
                                         <Label text="表名"/>
-                                        <TextField fx:id="tableNameField" disable="true" editable="false"
+                                        <TextField fx:id="tableName" disable="true" editable="false"
                                                    prefHeight="27.0" prefWidth="40.0" promptText="test" maxWidth="200.0"
                                                    GridPane.columnIndex="1" GridPane.rowSpan="1">
                                             <GridPane.margin>
@@ -107,7 +107,7 @@
                                         <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.columnSpan="3"
                                               GridPane.rowIndex="1" GridPane.valignment="CENTER">
                                             <children>
-                                                <TextField fx:id="domainObjectNameField" prefHeight="27.0"
+                                                <TextField fx:id="domainObjectName" prefHeight="27.0"
                                                            prefWidth="200.0" promptText="TestDO"
                                                            GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                     <GridPane.margin>
@@ -143,7 +143,7 @@
                                         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0"
                                               GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="3">
                                             <children>
-                                                <TextField fx:id="projectFolderField" prefHeight="27.0"
+                                                <TextField fx:id="projectFolder" prefHeight="27.0"
                                                            prefWidth="348.0" promptText="D:\workspace\example">
                                                     <HBox.margin>
                                                         <Insets left="5.0" right="5.0"/>

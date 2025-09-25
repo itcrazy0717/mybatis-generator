@@ -28,7 +28,7 @@ public class MybatisGeneratorTemplate {
     /**
      * 主键id字段
      */
-    private String primaryKeyField;
+    private String primaryKey;
 
     /**
      * insert方法是否返回主键id

@@ -117,7 +117,7 @@ public class MybatisCodeGenerateUtil {
         // 添加GeneratedKey主键生成，用于insert的时候返回主键
         // 以上只在MySql下进行过测试
         if (generateConfig.isInsertReturnPrimaryKey()
-            && StringUtils.isNotBlank(generateConfig.getPrimaryKeyField())) {
+            && StringUtils.isNotBlank(generateConfig.getPrimaryKey())) {
             String dbType = dataBaseType;
             if (StringUtils.equals(DataBaseTypeEnum.MySQL.name(), dbType)) {
                 dbType = "JDBC";
@@ -129,7 +129,7 @@ public class MybatisCodeGenerateUtil {
                 // 当使用SelectKey时，Mybatis会使用SelectKeyGenerator，INSERT之后，多发送一次查询语句，获得主键值
                 // 在上述读写分离被代理的情况下，会得不到正确的主键
             }
-            tableConfig.setGeneratedKey(new GeneratedKey(generateConfig.getPrimaryKeyField(), dbType, true, null));
+            tableConfig.setGeneratedKey(new GeneratedKey(generateConfig.getPrimaryKey(), dbType, true, null));
         }
 
         if (StringUtils.isNotBlank(generateConfig.getMapperName())) {

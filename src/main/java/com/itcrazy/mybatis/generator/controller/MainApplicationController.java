@@ -79,9 +79,9 @@ public class MainApplicationController extends BaseFxmlPageController {
     private Label generatorTemplateLabel;
 
     /**
-     * 当前选择的表名
+     * 当前选中的表名
      */
-    private String tableName;
+    private String selectedTableName;
 
     /**
      * 数据库树
@@ -93,13 +93,13 @@ public class MainApplicationController extends BaseFxmlPageController {
      * 表名
      */
     @FXML
-    private TextField tableNameField;
+    private TextField tableName;
 
     /**
      * 实体类名(xxxDO)
      */
     @FXML
-    private TextField domainObjectNameField;
+    private TextField domainObjectName;
 
     /**
      * 主键id字段
@@ -117,7 +117,7 @@ public class MainApplicationController extends BaseFxmlPageController {
      * 项目所在目录
      */
     @FXML
-    private TextField projectFolderField;
+    private TextField projectFolder;
 
     /**
      * 实体与接口对象存放目录
@@ -272,9 +272,9 @@ public class MainApplicationController extends BaseFxmlPageController {
                         // 点击具体表名事件
                         String tableName = treeCell.getTreeItem().getValue();
                         selectedDatabaseConfig = (DatabaseConnectionConfig) treeItem.getParent().getGraphic().getUserData();
-                        this.tableName = tableName;
-                        tableNameField.setText(tableName);
-                        domainObjectNameField.setText(DataBaseStringUtil.tableNameToCamelStyle(tableName) + "DO");
+                        this.selectedTableName = tableName;
+                        this.tableName.setText(tableName);
+                        domainObjectName.setText(DataBaseStringUtil.tableNameToCamelStyle(tableName) + "DO");
                     }
                 }
             });
@@ -313,13 +313,13 @@ public class MainApplicationController extends BaseFxmlPageController {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         File selectedFolder = directoryChooser.showDialog(getMainStage());
         if (selectedFolder != null) {
-            projectFolderField.setText(selectedFolder.getAbsolutePath());
+            projectFolder.setText(selectedFolder.getAbsolutePath());
         }
     }
 
     @FXML
     public void generateCode() {
-        if (StringUtils.isBlank(tableName)) {
+        if (StringUtils.isBlank(selectedTableName)) {
             ShowMessageUtil.showWarnInfo("请先在左侧选择数据库表");
             return;
         }
@@ -355,10 +355,10 @@ public class MainApplicationController extends BaseFxmlPageController {
     private String validateTemplateValue(boolean generateCodeOrSaveTemplate) {
         // 在保存配置时，如下配置是无需进行存储的，因为每张表的属性不同
         if (generateCodeOrSaveTemplate) {
-            if (StringUtils.isBlank(tableNameField.getText())) {
+            if (StringUtils.isBlank(tableName.getText())) {
                 return "请先在左侧选择数据库表";
             }
-            if (StringUtils.isBlank(domainObjectNameField.getText())) {
+            if (StringUtils.isBlank(domainObjectName.getText())) {
                 return "实体类名为空";
             }
             // 选择了insert时返回主键id，则需要填写主键id值
@@ -367,7 +367,7 @@ public class MainApplicationController extends BaseFxmlPageController {
                 return "主键id为空";
             }
         }
-        if (StringUtils.isBlank(projectFolderField.getText())) {
+        if (StringUtils.isBlank(projectFolder.getText())) {
             return "项目所在目录为空";
         }
         if (StringUtils.isBlank(modelAndDaoInterfaceTargetProject.getText())) {
@@ -436,7 +436,7 @@ public class MainApplicationController extends BaseFxmlPageController {
      */
     public MybatisGeneratorTemplate buildTemplate(boolean generateCodeOrSaveTemplate) {
         MybatisGeneratorTemplate template = new MybatisGeneratorTemplate();
-        template.setProjectFolder(projectFolderField.getText());
+        template.setProjectFolder(projectFolder.getText());
         template.setModelAndDaoInterfacePackageTargetFolder(modelAndDaoInterfaceTargetProject.getText());
         template.setModelPackage(modelTargetPackage.getText());
         template.setDaoPackage(daoTargetPackage.getText());
@@ -444,10 +444,10 @@ public class MainApplicationController extends BaseFxmlPageController {
         template.setMapperXMLPackage(mapperTargetPackage.getText());
         template.setParamModelPackage(paramTargetPackage.getText());
         if (generateCodeOrSaveTemplate) {
-            template.setTableName(tableNameField.getText());
-            template.setMapperName(DataBaseStringUtil.tableNameToCamelStyle(tableName) + "DAO");
-            template.setDomainObjectName(buildDomainObjectName(domainObjectNameField.getText()));
-            template.setPrimaryKeyField(primaryKeyField.getText());
+            template.setTableName(tableName.getText());
+            template.setMapperName(DataBaseStringUtil.tableNameToCamelStyle(tableName.getText()) + "DAO");
+            template.setDomainObjectName(buildDomainObjectName(domainObjectName.getText()));
+            template.setPrimaryKey(primaryKeyField.getText());
             template.setInsertReturnPrimaryKey(insertReturnPrimaryKeyCheckBox.isSelected());
         }
         return template;
@@ -460,7 +460,7 @@ public class MainApplicationController extends BaseFxmlPageController {
      * @param template
      */
     public void assembleGeneratorTemplate(MybatisGeneratorTemplate template) {
-        projectFolderField.setText(template.getProjectFolder());
+        projectFolder.setText(template.getProjectFolder());
         modelTargetPackage.setText(template.getModelPackage());
         modelAndDaoInterfaceTargetProject.setText(template.getModelAndDaoInterfacePackageTargetFolder());
         daoTargetPackage.setText(template.getDaoPackage());
@@ -471,7 +471,7 @@ public class MainApplicationController extends BaseFxmlPageController {
 
     @FXML
     public void openTableColumnCustomizationPage() {
-        if (StringUtils.isBlank(tableName)) {
+        if (StringUtils.isBlank(selectedTableName)) {
             ShowMessageUtil.showWarnInfo("请先在左侧选择数据库表");
             return;
         }
@@ -481,10 +481,10 @@ public class MainApplicationController extends BaseFxmlPageController {
         controller.setMainApplicationController(this);
         try {
             // If select same schema and another table, update table data
-            if (!tableName.equals(controller.getTableName())) {
-                List<TableColumn> tableColumns = DataBaseUtil.getTableColumns(selectedDatabaseConfig, tableName);
+            if (!selectedTableName.equals(controller.getTableName())) {
+                List<TableColumn> tableColumns = DataBaseUtil.getTableColumns(selectedDatabaseConfig, selectedTableName);
                 controller.setColumnList(FXCollections.observableList(tableColumns));
-                controller.setTableName(tableName);
+                controller.setTableName(selectedTableName);
             }
             controller.showDialogStage();
         } catch (Exception e) {
