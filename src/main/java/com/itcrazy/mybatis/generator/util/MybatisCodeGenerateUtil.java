@@ -26,13 +26,20 @@ import org.mybatis.generator.config.PluginConfiguration;
 import org.mybatis.generator.config.SqlMapGeneratorConfiguration;
 import org.mybatis.generator.config.TableConfiguration;
 import org.mybatis.generator.internal.DefaultShellCallback;
+import org.mybatis.generator.plugins.ToStringPlugin;
+import org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
 import com.itcrazy.mybatis.generator.model.DatabaseConnectionConfig;
 import com.itcrazy.mybatis.generator.model.MybatisGeneratorTemplate;
+import com.itcrazy.mybatis.generator.plugins.AddMethodCommentPlugin;
+import com.itcrazy.mybatis.generator.plugins.BatchInsertPlugin;
 import com.itcrazy.mybatis.generator.plugins.CustomCommentGenerator;
+import com.itcrazy.mybatis.generator.plugins.PagePlugin;
+import com.itcrazy.mybatis.generator.plugins.ReplaceExampleContentPlugin;
+import com.itcrazy.mybatis.generator.plugins.SortPlugin;
 import com.itcrazy.mybatis.generator.typeresolver.TinyIntTypeResolver;
 
 
@@ -74,6 +81,11 @@ public class MybatisCodeGenerateUtil {
      * param对象包路径
      */
     private static String paramPackage;
+
+    /**
+     * 属性值名称
+     */
+    private final static String PROPERTY_NAME = "type";
 
     /**
      * 生成代码
@@ -200,35 +212,36 @@ public class MybatisCodeGenerateUtil {
         JavaTypeResolverConfiguration typeResolverConfiguration = new JavaTypeResolverConfiguration();
         typeResolverConfiguration.setConfigurationType(TinyIntTypeResolver.class.getName());
         context.setJavaTypeResolverConfiguration(typeResolverConfiguration);
+
         /**
          // 序列化插件
          PluginConfiguration serializablePlugin = new PluginConfiguration();
-         serializablePlugin.addProperty("type", "org.mybatis.generator.plugins.SerializablePlugin");
-         serializablePlugin.setConfigurationType("org.mybatis.generator.plugins.SerializablePlugin");
+         serializablePlugin.addProperty(PROPERTY_NAME, SerializablePlugin.class.getName());
+         serializablePlugin.setConfigurationType(SerializablePlugin.class.getName());
          context.addPluginConfiguration(serializablePlugin);
          */
 
         // toString插件
         PluginConfiguration toStringPlugin = new PluginConfiguration();
-        toStringPlugin.addProperty("type", "org.mybatis.generator.plugins.ToStringPlugin");
-        toStringPlugin.setConfigurationType("org.mybatis.generator.plugins.ToStringPlugin");
+        toStringPlugin.addProperty(PROPERTY_NAME, ToStringPlugin.class.getName());
+        toStringPlugin.setConfigurationType(ToStringPlugin.class.getName());
         context.addPluginConfiguration(toStringPlugin);
         // 分页插件
         if (DataBaseTypeEnum.MySQL.name().equals(selectedDatabaseConfig.getDataBaseType()) || DataBaseTypeEnum.PostgreSQL.name().equals(selectedDatabaseConfig.getDataBaseType())) {
             PluginConfiguration pagePlugin = new PluginConfiguration();
-            pagePlugin.addProperty("", "com.itcrazy.mybatis.generator.plugins.PagePlugin");
-            pagePlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.PagePlugin");
+            pagePlugin.addProperty(PROPERTY_NAME, PagePlugin.class.getName());
+            pagePlugin.setConfigurationType(PagePlugin.class.getName());
             context.addPluginConfiguration(pagePlugin);
         }
         // 覆写xml文件插件
         PluginConfiguration overWiriteXmlPlugin = new PluginConfiguration();
-        overWiriteXmlPlugin.addProperty("type", "org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin");
-        overWiriteXmlPlugin.setConfigurationType("org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin");
+        overWiriteXmlPlugin.addProperty(PROPERTY_NAME, UnmergeableXmlMappersPlugin.class.getName());
+        overWiriteXmlPlugin.setConfigurationType(UnmergeableXmlMappersPlugin.class.getName());
         context.addPluginConfiguration(overWiriteXmlPlugin);
         // 替换example内容插件
         PluginConfiguration replaeceExampleContentPlugin = new PluginConfiguration();
-        replaeceExampleContentPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.ReplaceExampleContentPlugin");
-        replaeceExampleContentPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.ReplaceExampleContentPlugin");
+        replaeceExampleContentPlugin.addProperty(PROPERTY_NAME, ReplaceExampleContentPlugin.class.getName());
+        replaeceExampleContentPlugin.setConfigurationType(ReplaceExampleContentPlugin.class.getName());
         replaeceExampleContentPlugin.addProperty("searchString", "Example");
         replaeceExampleContentPlugin.addProperty("replaceString", "Param");
         replaeceExampleContentPlugin.addProperty("simpleMethod", "True");
@@ -236,18 +249,18 @@ public class MybatisCodeGenerateUtil {
         context.addPluginConfiguration(replaeceExampleContentPlugin);
         // 方法注释插件
         PluginConfiguration addMethodComentPlugin = new PluginConfiguration();
-        addMethodComentPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.AddMethodCommentPlugin");
-        addMethodComentPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.AddMethodCommentPlugin");
+        addMethodComentPlugin.addProperty(PROPERTY_NAME, AddMethodCommentPlugin.class.getName());
+        addMethodComentPlugin.setConfigurationType(AddMethodCommentPlugin.class.getName());
         context.addPluginConfiguration(addMethodComentPlugin);
         // 批量插入插件
         PluginConfiguration batchInsertPlugin = new PluginConfiguration();
-        batchInsertPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.BatchInsertPlugin");
-        batchInsertPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.BatchInsertPlugin");
+        batchInsertPlugin.addProperty(PROPERTY_NAME, BatchInsertPlugin.class.getName());
+        batchInsertPlugin.setConfigurationType(BatchInsertPlugin.class.getName());
         context.addPluginConfiguration(batchInsertPlugin);
         // 排序插件
         PluginConfiguration sortPlugin = new PluginConfiguration();
-        sortPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.SortPlugin");
-        sortPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.SortPlugin");
+        sortPlugin.addProperty(PROPERTY_NAME, SortPlugin.class.getName());
+        sortPlugin.setConfigurationType(SortPlugin.class.getName());
         context.addPluginConfiguration(sortPlugin);
     }
 
