@@ -319,7 +319,7 @@ public class MainApplicationController extends BaseFxmlPageController {
 
     @FXML
     public void generateCode() {
-        if (StringUtils.isBlank(selectedTableName)) {
+        if (StringUtils.isBlank(tableName.getText())) {
             ShowMessageUtil.showWarnInfo("请先在左侧选择数据库表");
             return;
         }
@@ -471,7 +471,7 @@ public class MainApplicationController extends BaseFxmlPageController {
 
     @FXML
     public void openTableColumnCustomizationPage() {
-        if (StringUtils.isBlank(selectedTableName)) {
+        if (StringUtils.isBlank(tableName.getText())) {
             ShowMessageUtil.showWarnInfo("请先在左侧选择数据库表");
             return;
         }
