@@ -71,6 +71,11 @@ public class MybatisCodeGenerateUtil {
     private static List<ColumnOverride> columnOverrides;
 
     /**
+     * param对象包路径
+     */
+    private static String paramPackage;
+
+    /**
      * 生成代码
      * by itcrazy0717
      *
@@ -89,6 +94,7 @@ public class MybatisCodeGenerateUtil {
         TableConfiguration tableConfig = new TableConfiguration(context);
         tableConfig.setTableName(generateConfig.getTableName());
         tableConfig.setDomainObjectName(generateConfig.getDomainObjectName());
+        // 设置catalog，避免跨库扫表问题
         tableConfig.setCatalog(selectedDatabaseConfig.getSchemaName());
 
         // 针对postgresql单独配置
@@ -147,7 +153,7 @@ public class MybatisCodeGenerateUtil {
         mapperConfig.setTargetProject(generateConfig.getProjectFolder() + "/" + generateConfig.getMapperXMLTargetFolder());
 
         // 设置param对象包路径，单独命名为xxx.parm,便于管理
-        String paramPackage = generateConfig.getParamModelPackage();
+        paramPackage = generateConfig.getParamModelPackage();
         if (StringUtils.isBlank(paramPackage)) {
             // 未自定义param包路径，则默认使用实体包路径，兜底
             String modelPackage = modelConfig.getTargetPackage();
@@ -169,7 +175,7 @@ public class MybatisCodeGenerateUtil {
         context.setCommentGeneratorConfiguration(commentConfig);
 
         // 增加自定义插件
-        addCustomPlugins(context, paramPackage);
+        addCustomPlugins(context);
 
         context.setTargetRuntime("MyBatis3");
 
@@ -188,9 +194,8 @@ public class MybatisCodeGenerateUtil {
      * by itcrazy0717
      *
      * @param context
-     * @param paramPackage parm参数包路径
      */
-    private static void addCustomPlugins(Context context, String paramPackage) {
+    private static void addCustomPlugins(Context context) {
         // 默认设置TINYINT->Boolean类型
         JavaTypeResolverConfiguration typeResolverConfiguration = new JavaTypeResolverConfiguration();
         typeResolverConfiguration.setConfigurationType(TinyIntTypeResolver.class.getName());
@@ -244,7 +249,6 @@ public class MybatisCodeGenerateUtil {
         sortPlugin.addProperty("type", "com.itcrazy.mybatis.generator.plugins.SortPlugin");
         sortPlugin.setConfigurationType("com.itcrazy.mybatis.generator.plugins.SortPlugin");
         context.addPluginConfiguration(sortPlugin);
-
     }
 
     /**
@@ -274,7 +278,7 @@ public class MybatisCodeGenerateUtil {
      * @return
      */
     private static File buildXmlFile() {
-        // 构建目录路径
+        // 构建xml目录路径
         String dirPath = generateConfig.getProjectFolder() + "/" + generateConfig.getMapperXMLTargetFolder() + "/" + generateConfig.getMapperXMLPackage().replace(".", "/");
         File directory = new File(dirPath);
         String fileName = generateConfig.getMapperName() + ".xml";

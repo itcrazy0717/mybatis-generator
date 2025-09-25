@@ -94,7 +94,7 @@ public class FixTableNameUtil {
         if (StringUtils.isBlank(xmlContent)) {
             return null;
         }
-        String target = catalogName + ".." + tableName;
-        return xmlContent.replaceAll(target, tableName);
+        String replaceTarget = catalogName + ".." + tableName;
+        return xmlContent.replaceAll(replaceTarget, tableName);
     }
 }
