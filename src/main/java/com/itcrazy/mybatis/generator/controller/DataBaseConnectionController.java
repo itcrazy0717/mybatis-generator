@@ -30,7 +30,7 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
      * 保存名称
      */
     @FXML
-    private TextField nameField;
+    private TextField name;
 
     /**
      * 数据库类型
@@ -154,7 +154,7 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
      */
     private DatabaseConnectionConfig buildDataBaseConnectionConfig() {
         DatabaseConnectionConfig connectionConfig = new DatabaseConnectionConfig();
-        connectionConfig.setName(nameField.getText());
+        connectionConfig.setName(name.getText());
         connectionConfig.setDataBaseType(dbTypeChoice.getValue());
         connectionConfig.setHostUrl(hostField.getText());
         connectionConfig.setPort(portField.getText());
@@ -181,7 +181,7 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
         // 调用该函数时，确定为编辑操作
         update = true;
         primayKey = config.getId();
-        nameField.setText(config.getName());
+        name.setText(config.getName());
         hostField.setText(config.getHostUrl());
         portField.setText(config.getPort());
         userNameField.setText(config.getUserName());
