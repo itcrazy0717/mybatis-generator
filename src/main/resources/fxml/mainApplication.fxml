@@ -52,7 +52,8 @@
             <items>
                 <AnchorPane maxWidth="500.0" minWidth="100.0" prefHeight="618.0" prefWidth="200.0">
                     <children>
-                        <TreeView fx:id="dataBaseViewTree" layoutX="-14.0" maxWidth="0.0" prefHeight="545.0" prefWidth="126.0"
+                        <TreeView fx:id="dataBaseViewTree" layoutX="-14.0" maxWidth="0.0" prefHeight="545.0"
+                                  prefWidth="126.0"
                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                   AnchorPane.topAnchor="0.0"/>
                     </children>
@@ -80,15 +81,24 @@
                                                            prefWidth="95.0"/>
                                     </columnConstraints>
                                     <rowConstraints>
-                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0"
+                                                        vgrow="SOMETIMES"/>
                                     </rowConstraints>
                                     <children>
                                         <Label text="表名"/>
@@ -122,22 +132,26 @@
                                                 <Insets left="5.0"/>
                                             </GridPane.margin>
                                         </HBox>
-                                        <Label text="主键(选填)" GridPane.rowIndex="2" />
-                                        <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.valignment="CENTER">
-                                        <children>
-                                            <TextField fx:id="primaryKey" prefHeight="27.0" prefWidth="200.0" promptText="主键id，如id" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                                                <GridPane.margin>
-                                                    <Insets left="5.0" right="5.0" />
-                                                </GridPane.margin>
-                                                <HBox.margin>
-                                                    <Insets right="5.0" />
-                                                </HBox.margin>
-                                            </TextField>
-                                            <CheckBox fx:id="insertReturnPrimaryKeyCheckBox" mnemonicParsing="false" text="insert方法返回主键id" />
-                                        </children>
-                                        <GridPane.margin>
-                                            <Insets left="5.0" />
-                                        </GridPane.margin>
+                                        <Label text="主键(选填)" GridPane.rowIndex="2"/>
+                                        <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.columnSpan="3"
+                                              GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                            <children>
+                                                <TextField fx:id="primaryKey" prefHeight="27.0" prefWidth="200.0"
+                                                           promptText="主键id，如id" GridPane.columnIndex="1"
+                                                           GridPane.rowIndex="3">
+                                                    <GridPane.margin>
+                                                        <Insets left="5.0" right="5.0"/>
+                                                    </GridPane.margin>
+                                                    <HBox.margin>
+                                                        <Insets right="5.0"/>
+                                                    </HBox.margin>
+                                                </TextField>
+                                                <CheckBox fx:id="insertReturnPrimaryKeyCheckBox" mnemonicParsing="false"
+                                                          text="insert方法返回主键id"/>
+                                            </children>
+                                            <GridPane.margin>
+                                                <Insets left="5.0"/>
+                                            </GridPane.margin>
                                         </HBox>
                                         <Label text="项目所在目录" GridPane.rowIndex="3"/>
                                         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0"
@@ -160,7 +174,8 @@
                                         </HBox>
 
                                         <Label text="实体与接口对象存放目录" GridPane.rowIndex="4"/>
-                                        <TextField fx:id="modelAndDaoInterfaceTargetProject" prefHeight="27.0" prefWidth="152.0"
+                                        <TextField fx:id="modelAndDaoInterfaceTargetProject" prefHeight="27.0"
+                                                   prefWidth="152.0"
                                                    promptText="src/main/java" text="src/main/java"
                                                    GridPane.columnIndex="1" GridPane.rowIndex="4">
                                             <HBox.margin>
