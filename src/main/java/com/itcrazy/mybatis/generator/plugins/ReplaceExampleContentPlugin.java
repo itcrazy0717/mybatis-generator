@@ -27,27 +27,27 @@ import static org.mybatis.generator.internal.util.messages.Messages.getString;
  */
 public class ReplaceExampleContentPlugin extends PluginAdapter {
 
-	/**
-	 * 需要替换的内容
-	 */
-	private String searchString;
+    /**
+     * 需要替换的内容
+     */
+    private String searchString;
 
-	/**
-	 * 替换后的内容
-	 */
-	private String replaceString;
+    /**
+     * 替换后的内容
+     */
+    private String replaceString;
 
-	/**
-	 * 是否使用简单方法
-	 */
-	private Boolean simpleMethod;
+    /**
+     * 是否使用简单方法
+     */
+    private Boolean simpleMethod;
 
-	/**
-	 * 替换正则
-	 */
-	private Pattern pattern;
+    /**
+     * 替换正则
+     */
+    private Pattern pattern;
 
-	@Override
+    @Override
     public boolean validate(List<String> warnings) {
         searchString = properties.getProperty("searchString");
         replaceString = properties.getProperty("replaceString");
@@ -253,6 +253,7 @@ public class ReplaceExampleContentPlugin extends PluginAdapter {
 
     /**
      * 修改模型类里的example
+     * by itcrazy0717
      *
      * @param topLevelClass
      * @param introspectedTable
