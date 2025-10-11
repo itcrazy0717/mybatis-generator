@@ -160,6 +160,11 @@ public class MainApplicationController extends BaseFxmlPageController {
      */
     private DatabaseConnectionConfig selectedDatabaseConfig;
 
+    /**
+     * 实体类名结尾正则表达式
+     */
+    private final static Pattern DO_PATTERN = Pattern.compile("DO$");
+
     private List<IgnoredColumn> ignoredColumns;
 
     private List<ColumnOverride> columnOverrides;
@@ -336,7 +341,7 @@ public class MainApplicationController extends BaseFxmlPageController {
         ShowProgressCallback progressCallback = new ShowProgressCallback(Alert.AlertType.INFORMATION);
         MybatisCodeGenerateUtil.loadConfig(template, selectedDatabaseConfig, progressCallback, ignoredColumns, columnOverrides);
         progressCallback.show();
-        checkInsertReturnPrimayKeyInfo();
+        checkInsertReturnPrimayKey();
         try {
             MybatisCodeGenerateUtil.generateCode();
         } catch (Exception e) {
@@ -558,8 +563,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             throw new RuntimeException("实体类名称为空");
         }
         // 判断实体类名是否以DO结尾，如果不是则补齐
-        Pattern pattern = Pattern.compile("DO$");
-        Matcher matcher = pattern.matcher(domainObjecName);
+        Matcher matcher = DO_PATTERN.matcher(domainObjecName);
         if (!matcher.find()) {
             return domainObjecName + "DO";
         }
@@ -570,7 +574,7 @@ public class MainApplicationController extends BaseFxmlPageController {
      * 检查insert方法返回主键id的完整度
      * by itcrazy0717
      */
-    private void checkInsertReturnPrimayKeyInfo() {
+    private void checkInsertReturnPrimayKey() {
         // 填写了主键id，但未勾选【insert方法返回主键id】进行提示
         if (StringUtils.isNotBlank(primaryKey.getText())
             && !insertReturnPrimaryKeyCheckBox.isSelected()) {
