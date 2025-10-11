@@ -51,7 +51,7 @@ public class FixTableNameUtil {
      *
      * @param file
      * @return
-     * @throws IOException
+     * @throws Exception
      */
     private static String readXmlContent(File file) throws Exception {
         if (!file.exists()) {
@@ -73,7 +73,7 @@ public class FixTableNameUtil {
      *
      * @param file
      * @param content
-     * @throws IOException
+     * @throws Exception
      */
     private static void writeXmlContent(File file, String content) throws Exception {
         try (FileWriter writer = new FileWriter(file)) {
