@@ -292,6 +292,8 @@ public class MainApplicationController extends BaseFxmlPageController {
             return cell;
         });
         loadDataBaseViewList();
+        tinyInt2BooleanCheckBox.setStyle("-fx-text-fill: red;");
+        insertReturnPrimaryKeyCheckBox.setStyle("-fx-text-fill: red;");
     }
 
     /**
