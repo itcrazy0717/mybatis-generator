@@ -146,16 +146,27 @@
                                                         <Insets right="5.0"/>
                                                     </HBox.margin>
                                                 </TextField>
-                                                <CheckBox fx:id="insertReturnPrimaryKeyCheckBox" mnemonicParsing="false"
-                                                          text="insert方法返回主键id"/>
+                                                <CheckBox fx:id="insertReturnPrimaryKeyCheckBox"
+                                                          text="insert方法返回自增主键id"/>
                                             </children>
                                             <GridPane.margin>
                                                 <Insets left="5.0"/>
                                             </GridPane.margin>
                                         </HBox>
-                                        <Label text="项目所在目录" GridPane.rowIndex="3"/>
+                                        <Label text="TINYINT转换成Boolean" GridPane.rowIndex="3"/>
+                                        <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.columnSpan="3"
+                                              GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                                            <children>
+                                                <CheckBox fx:id="tinyInt2BooleanCheckBox" selected="true"
+                                                          text="勾选后生效，否则转换成Integer"/>
+                                            </children>
+                                            <GridPane.margin>
+                                                <Insets left="5.0"/>
+                                            </GridPane.margin>
+                                        </HBox>
+                                        <Label text="项目所在目录" GridPane.rowIndex="4"/>
                                         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0"
-                                              GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="3">
+                                              GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="4">
                                             <children>
                                                 <TextField fx:id="projectFolder" prefHeight="27.0"
                                                            prefWidth="348.0" promptText="D:\workspace\example">
@@ -173,11 +184,11 @@
                                             </children>
                                         </HBox>
 
-                                        <Label text="实体与接口对象存放目录" GridPane.rowIndex="4"/>
+                                        <Label text="实体与接口对象存放目录" GridPane.rowIndex="5"/>
                                         <TextField fx:id="modelAndDaoInterfaceTargetProject" prefHeight="27.0"
                                                    prefWidth="152.0"
                                                    promptText="src/main/java" text="src/main/java"
-                                                   GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                                   GridPane.columnIndex="1" GridPane.rowIndex="5">
                                             <HBox.margin>
                                                 <Insets right="5.0"/>
                                             </HBox.margin>
@@ -186,21 +197,9 @@
                                             </GridPane.margin>
                                         </TextField>
 
-                                        <Label text="实体包全名" GridPane.rowIndex="5"/>
+                                        <Label text="实体包全名" GridPane.rowIndex="6"/>
                                         <TextField fx:id="modelTargetPackage" prefHeight="27.0" prefWidth="152.0"
                                                    promptText="com.example.dataobject" GridPane.columnIndex="1"
-                                                   GridPane.rowIndex="5">
-                                            <HBox.margin>
-                                                <Insets right="5.0"/>
-                                            </HBox.margin>
-                                            <GridPane.margin>
-                                                <Insets left="5.0" right="5.0"/>
-                                            </GridPane.margin>
-                                        </TextField>
-
-                                        <Label text="DAO接口包全名" GridPane.rowIndex="6"/>
-                                        <TextField fx:id="daoTargetPackage" prefHeight="27.0" prefWidth="152.0"
-                                                   promptText="com.example.dao" GridPane.columnIndex="1"
                                                    GridPane.rowIndex="6">
                                             <HBox.margin>
                                                 <Insets right="5.0"/>
@@ -210,10 +209,9 @@
                                             </GridPane.margin>
                                         </TextField>
 
-                                        <Label text="查询参数包全名(Param)" GridPane.rowIndex="7"/>
-                                        <TextField fx:id="paramTargetPackage" prefHeight="27.0" prefWidth="152.0"
-                                                   promptText="com.example.param(非必填)，默认为实体类主路径.param"
-                                                   GridPane.columnIndex="1"
+                                        <Label text="DAO接口包全名" GridPane.rowIndex="7"/>
+                                        <TextField fx:id="daoTargetPackage" prefHeight="27.0" prefWidth="152.0"
+                                                   promptText="com.example.dao" GridPane.columnIndex="1"
                                                    GridPane.rowIndex="7">
                                             <HBox.margin>
                                                 <Insets right="5.0"/>
@@ -223,10 +221,11 @@
                                             </GridPane.margin>
                                         </TextField>
 
-                                        <Label text="XML文件存放目录" GridPane.rowIndex="8"/>
-                                        <TextField fx:id="mappingTargetProject" prefHeight="27.0" prefWidth="152.0"
-                                                   promptText="src/main/resources" text="src/main/resources"
-                                                   GridPane.columnIndex="1" GridPane.rowIndex="8">
+                                        <Label text="查询参数包全名(Param)" GridPane.rowIndex="8"/>
+                                        <TextField fx:id="paramTargetPackage" prefHeight="27.0" prefWidth="152.0"
+                                                   promptText="com.example.param(非必填)，默认为实体类主路径.param"
+                                                   GridPane.columnIndex="1"
+                                                   GridPane.rowIndex="8">
                                             <HBox.margin>
                                                 <Insets right="5.0"/>
                                             </HBox.margin>
@@ -235,11 +234,23 @@
                                             </GridPane.margin>
                                         </TextField>
 
-                                        <Label text="XML文件包全名" GridPane.rowIndex="9"/>
+                                        <Label text="XML文件存放目录" GridPane.rowIndex="9"/>
+                                        <TextField fx:id="mappingTargetProject" prefHeight="27.0" prefWidth="152.0"
+                                                   promptText="src/main/resources" text="src/main/resources"
+                                                   GridPane.columnIndex="1" GridPane.rowIndex="9">
+                                            <HBox.margin>
+                                                <Insets right="5.0"/>
+                                            </HBox.margin>
+                                            <GridPane.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </GridPane.margin>
+                                        </TextField>
+
+                                        <Label text="XML文件包全名" GridPane.rowIndex="10"/>
                                         <TextField fx:id="mapperTargetPackage" prefHeight="27.0" prefWidth="152.0"
                                                    promptText="mybatis.mappers.auto" text="mybatis.mappers.auto"
                                                    GridPane.columnIndex="1"
-                                                   GridPane.rowIndex="9">
+                                                   GridPane.rowIndex="10">
                                             <HBox.margin>
                                                 <Insets right="5.0"/>
                                             </HBox.margin>
@@ -250,7 +261,7 @@
 
                                         <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0"
                                               spacing="40.0" GridPane.columnIndex="1" GridPane.columnSpan="3"
-                                              GridPane.rowIndex="10">
+                                              GridPane.rowIndex="11">
                                             <children>
                                                 <Button mnemonicParsing="false" onAction="#generateCode"
                                                         text="生成代码">

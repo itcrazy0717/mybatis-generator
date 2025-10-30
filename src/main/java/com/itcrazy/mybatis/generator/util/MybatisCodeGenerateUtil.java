@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.ProgressCallback;
@@ -40,7 +41,8 @@ import com.itcrazy.mybatis.generator.plugins.CustomCommentGenerator;
 import com.itcrazy.mybatis.generator.plugins.PagePlugin;
 import com.itcrazy.mybatis.generator.plugins.ReplaceExampleContentPlugin;
 import com.itcrazy.mybatis.generator.plugins.SortPlugin;
-import com.itcrazy.mybatis.generator.typeresolver.TinyIntTypeResolver;
+import com.itcrazy.mybatis.generator.typeresolver.TinyIntToBooleanTypeResolver;
+import com.itcrazy.mybatis.generator.typeresolver.TinyIntToIntegerResolver;
 
 
 /**
@@ -116,7 +118,7 @@ public class MybatisCodeGenerateUtil {
 
         // 添加GeneratedKey主键生成，用于insert的时候返回主键
         // 以上只在MySql下进行过测试
-        if (generateConfig.isInsertReturnPrimaryKey()
+        if (BooleanUtils.isTrue(generateConfig.getInsertReturnPrimaryKey())
             && StringUtils.isNotBlank(generateConfig.getPrimaryKey())) {
             String dbType = dataBaseType;
             if (StringUtils.equals(DataBaseTypeEnum.MySQL.name(), dbType)) {
@@ -208,9 +210,14 @@ public class MybatisCodeGenerateUtil {
      * @param context
      */
     private static void addCustomPlugins(Context context) {
-        // 默认设置TINYINT->Boolean类型
         JavaTypeResolverConfiguration typeResolverConfiguration = new JavaTypeResolverConfiguration();
-        typeResolverConfiguration.setConfigurationType(TinyIntTypeResolver.class.getName());
+        // 根据选项设置TINYINT->Boolean类型
+        if (BooleanUtils.isTrue(generateConfig.getTinyInt2Boolean())) {
+            typeResolverConfiguration.setConfigurationType(TinyIntToBooleanTypeResolver.class.getName());
+        } else {
+            // 不勾选时，转换成Integer类型
+            typeResolverConfiguration.setConfigurationType(TinyIntToIntegerResolver.class.getName());
+        }
         context.setJavaTypeResolverConfiguration(typeResolverConfiguration);
 
         /**

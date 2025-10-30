@@ -114,6 +114,12 @@ public class MainApplicationController extends BaseFxmlPageController {
     private CheckBox insertReturnPrimaryKeyCheckBox;
 
     /**
+     * tinyint->boolean
+     */
+    @FXML
+    private CheckBox tinyInt2BooleanCheckBox;
+
+    /**
      * 项目所在目录
      */
     @FXML
@@ -454,6 +460,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             template.setDomainObjectName(buildDomainObjectName(domainObjectName.getText()));
             template.setPrimaryKey(primaryKey.getText());
             template.setInsertReturnPrimaryKey(insertReturnPrimaryKeyCheckBox.isSelected());
+            template.setTinyInt2Boolean(tinyInt2BooleanCheckBox.isSelected());
         }
         return template;
     }

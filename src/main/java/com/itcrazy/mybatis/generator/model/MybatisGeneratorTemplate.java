@@ -33,7 +33,14 @@ public class MybatisGeneratorTemplate {
     /**
      * insert方法是否返回主键id
      */
-    private boolean insertReturnPrimaryKey;
+    private Boolean insertReturnPrimaryKey;
+
+    /**
+     * tinyint是否转转成Boolean
+     * true-是  false-否
+     * 默认是
+     */
+    private Boolean tinyInt2Boolean;
 
     /**
      * 实体类路径
