@@ -1,7 +1,9 @@
 # mybatis-generator
 
 #### 简介
+
 该工具基于mybatis-generator-gui项目进行重构，调整原工具配置界面，并根据自己实际开发习惯进行相应调整，主要修改点如下：
+
 - 升级mybatis-generator-core版本到1.3.7
 - 升级MySQL驱动文件版本到8.4.0，兼容MySQL8.0以下版本，已满足绝大部分生产需求
 - 重构配置界面，优化配置项，使其语义更加明确
@@ -12,7 +14,9 @@
 - 原项目地址: https://github.com/zouzg/mybatis-generator-gui ,感谢原作者的无私奉献！
 
 #### 相关说明
+
 ##### 工具运行相关界面
+
 ![img.png](src/main/resources/readmeimages/img.png)
 ![img.png](src/main/resources/readmeimages/img_1.png)
 ![img_2.png](src/main/resources/readmeimages/img_2.png)
@@ -21,6 +25,7 @@
 ![img_3.png](src/main/resources/readmeimages/img_3.png)
 
 ##### 如何运行
+
 ###### <font color=red>jdk版本要求：1.8<=jdk-version<=11，jdk版本不能太高，超过11运行可能会出现问题，建议使用jdk1.8</font>
 
 - 1.下载项目后，直接运行：com.itcrazy.mybatis.generator.MainApplication
@@ -35,7 +40,8 @@
   通过该方式可对使用sh脚本来创建快捷运行指令，启动非常方便
 
 #### 更新点 ！！！！！！
-- 生成代码配置列表：选项可查看、删除和修改，增强灵活性
+
+- 增强生成代码配置列表操作功能：选项可查看、删除和修改，增强灵活性
 - 修复MySQL账号权限过大，导致跨库扫表问题
 - 修复TINYINT(1)字段映射异常问题，增加TINYINT转Boolean类型选项，增强字段映射可控性（有时TINYINT并不代表true或false，此时不需要转换成Boolean类型）
 - 升级MySQL驱动文件到8.4.0版本
