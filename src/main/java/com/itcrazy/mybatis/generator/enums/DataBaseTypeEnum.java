@@ -13,7 +13,7 @@ public enum DataBaseTypeEnum {
     /**
      * MySQL数据库
      */
-    MySQL("com.mysql.cj.jdbc.Driver", "jdbc:mysql://%s:%s/%s?useUnicode=true&useSSL=false&tinyInt1isBit=false&characterEncoding=%s", "mysql-connector-java-8.0.30.jar"),
+    MySQL("com.mysql.cj.jdbc.Driver", "jdbc:mysql://%s:%s/%s?useUnicode=true&useSSL=false&tinyInt1isBit=false&characterEncoding=%s", "mysql-connector-j-8.4.0.jar"),
 
     /**
      * Oracle数据库
@@ -30,20 +30,20 @@ public enum DataBaseTypeEnum {
      */
     SQLServer("com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://%s:%s;databaseName=%s", "sqljdbc4-4.0.jar");
 
-	/**
-	 * 驱动类
-	 */
-	private final String driverClass;
+    /**
+     * 驱动类
+     */
+    private final String driverClass;
 
-	/**
-	 * 数据连接url
-	 */
-	private final String connectionUrlPattern;
+    /**
+     * 数据连接url
+     */
+    private final String connectionUrlPattern;
 
-	/**
-	 * 驱动jar文件
-	 */
-	private final String driverJar;
+    /**
+     * 驱动jar文件
+     */
+    private final String driverJar;
 
     DataBaseTypeEnum(String driverClass, String connectionUrlPattern, String driverJar) {
         this.driverClass = driverClass;
