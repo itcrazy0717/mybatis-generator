@@ -147,7 +147,7 @@
                                                     </HBox.margin>
                                                 </TextField>
                                                 <CheckBox fx:id="insertReturnPrimaryKeyCheckBox"
-                                                          text="insert方法返回自增主键id"/>
+                                                          text="insert方法返回自增主键id" styleClass="red-text"/>
                                             </children>
                                             <GridPane.margin>
                                                 <Insets left="5.0"/>
@@ -158,7 +158,7 @@
                                               GridPane.rowIndex="3" GridPane.valignment="CENTER">
                                             <children>
                                                 <CheckBox fx:id="tinyInt2BooleanCheckBox" selected="true"
-                                                          text="勾选后生效，否则转换成Integer"/>
+                                                          text="勾选后生效，否则转换成Integer" styleClass="red-text"/>
                                             </children>
                                             <GridPane.margin>
                                                 <Insets left="5.0"/>

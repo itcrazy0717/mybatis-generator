@@ -56,3 +56,7 @@
 
 .consoleTextArea:focused {
 }
+
+.red-text {
+    -fx-text-fill: red;
+}
