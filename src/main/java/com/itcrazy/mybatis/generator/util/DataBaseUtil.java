@@ -73,7 +73,7 @@ public class DataBaseUtil {
      * @throws ClassNotFoundException
      * @throws SQLException
      */
-    public static Connection getConnection(DatabaseConnectionConfig config) throws ClassNotFoundException, SQLException {
+    public static Connection getConnection(DatabaseConnectionConfig config) throws Exception {
         String url = buildConnectionUrlWithSchema(config);
         Properties props = new Properties();
 
@@ -162,7 +162,7 @@ public class DataBaseUtil {
      * @return
      * @throws ClassNotFoundException
      */
-    public static String buildConnectionUrlWithSchema(DatabaseConnectionConfig dbConfig) throws ClassNotFoundException {
+    public static String buildConnectionUrlWithSchema(DatabaseConnectionConfig dbConfig) throws Exception {
         DataBaseTypeEnum dataBaseType = DataBaseTypeEnum.valueOf(dbConfig.getDataBaseType());
         String connectionUrl = String.format(dataBaseType.getConnectionUrlPattern(), dbConfig.getHostUrl(), dbConfig.getPort(), dbConfig.getSchemaName(), dbConfig.getEncoding());
         LOGGER.info("get_connection_url_with_schema, connection url: {}", connectionUrl);

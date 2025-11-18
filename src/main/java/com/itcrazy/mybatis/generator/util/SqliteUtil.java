@@ -70,7 +70,7 @@ public class SqliteUtil {
      * @param file
      * @throws IOException
      */
-    public static void createSqliteDBFile(File file) throws IOException {
+    public static void createSqliteDBFile(File file) throws Exception {
         InputStream fis = null;
         FileOutputStream fos = null;
         try {
