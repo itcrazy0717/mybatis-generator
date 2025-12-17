@@ -15,6 +15,5 @@ public class TinyIntToBooleanTypeResolver extends JavaTypeResolverDefaultImpl {
     public TinyIntToBooleanTypeResolver() {
         super();
         this.typeMap.put(Types.TINYINT, new JdbcTypeInformation("TINYINT", new FullyQualifiedJavaType(Boolean.class.getName())));
-
     }
 }
