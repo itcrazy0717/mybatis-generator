@@ -48,15 +48,19 @@ public class MainApplication extends Application {
     public static void main(String[] args) {
         String version = System.getProperty("java.version");
         if (StringUtils.isBlank(version)) {
-            showMessageBox("无JDK运行环境", "请安装JDK1.8再运行此软件，该软件不支持过高的JDK版本，使用JDK1.8运行效果最佳");
+            showMessageBox("无JDK运行环境", "请使用小于等于jdk1.8.0_231的jdk版本运行此软件，高版本jdk不再内置javaFx，需自行下载配置");
             return;
         }
+        // jdk主版本号
         int jdkVersion = Integer.parseInt(version.substring(2, 3));
+        // jdk更新版本号
+        int jdkUpdateVersion = Integer.parseInt(version.substring(6));
         // jdk版本校验
-        if (jdkVersion >= 8 && jdkVersion <= 11 && Integer.parseInt(version.substring(6)) >= 60) {
+        // jdk8 小于231的版本才内置javaFx否则需要手动下载javaFx
+        if (jdkVersion == 8 && jdkUpdateVersion <= 231) {
             launch(args);
         } else {
-            showMessageBox("JDK版本错误", "JDK的版本不能低于1.8.0.60，请升级至最近的JDK1.8再运行此软件，该软件不支持过高的JDK版本，使用JDK1.8运行效果最佳");
+            showMessageBox("JDK版本错误", "请使用小于等于jdk1.8.0_231的jdk版本运行此软件，高版本jdk不再内置javaFx，需自行下载配置");
         }
     }
 
