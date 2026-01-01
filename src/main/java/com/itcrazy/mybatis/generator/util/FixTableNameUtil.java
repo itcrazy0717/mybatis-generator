@@ -13,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author: dengxin.chen
- * @version: $ FixTableNameUtil.java,v0.1 2025-09-24 17:02 dengxin.chen Exp $
+ * @author: itcrazy0717
+ * @version: $ FixTableNameUtil.java,v0.1 2025-09-24 17:02 itcrazy0717 Exp $
  * @description:
  */
 public class FixTableNameUtil {
