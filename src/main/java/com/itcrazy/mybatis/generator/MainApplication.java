@@ -57,7 +57,7 @@ public class MainApplication extends Application {
         int jdkUpdateVersion = Integer.parseInt(version.substring(6));
         // jdk版本校验
         // jdk8 小于451的版本才内置javaFx否则需要手动下载javaFx
-        // https://www.oracle.com/java/technologies/javase/8u451-relnotes.html#JDK-8341994
+        // https://www.oracle.com/javase/javafx/?f_link_type=f_linkinlinenote&flow_extra=eyJpbmxpbmVfZGlzcGxheV9wb3NpdGlvbiI6MCwiZG9jX3Bvc2l0aW9uIjowLCJkb2NfaWQiOiIxMWZmZjlkMmM4YTUzZWExLTQxY2ZmOGU4Yjc3NDYwOWIifQ%3D%3D
         if (jdkVersion == 8 && jdkUpdateVersion < 451) {
             launch(args);
         } else {
