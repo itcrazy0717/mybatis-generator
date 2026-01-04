@@ -48,7 +48,7 @@ public class MainApplication extends Application {
     public static void main(String[] args) {
         String version = System.getProperty("java.version");
         if (StringUtils.isBlank(version)) {
-            showMessageBox("无JDK运行环境", "请使用小于等于jdk1.8.0_451的jdk版本运行此软件，高版本jdk不再内置javaFx，需自行下载配置");
+            showMessageBox("无JDK运行环境", "请使用小于jdk1.8.0_451的jdk版本运行此软件，高版本jdk不再内置javaFx，需自行下载配置");
             return;
         }
         // jdk主版本号
@@ -56,12 +56,12 @@ public class MainApplication extends Application {
         // jdk更新版本号
         int jdkUpdateVersion = Integer.parseInt(version.substring(6));
         // jdk版本校验
-        // jdk8 小于等于451的版本才内置javaFx否则需要手动下载javaFx
+        // jdk8 小于451的版本才内置javaFx否则需要手动下载javaFx
         // https://www.oracle.com/java/technologies/javase/8u451-relnotes.html#JDK-8341994
-        if (jdkVersion == 8 && jdkUpdateVersion <= 451) {
+        if (jdkVersion == 8 && jdkUpdateVersion < 451) {
             launch(args);
         } else {
-            showMessageBox("JDK版本错误", "请使用小于等于jdk1.8.0_451的jdk版本运行此软件，高版本jdk不再内置javaFx，需自行下载配置");
+            showMessageBox("JDK版本错误", "请使用小于jdk1.8.0_451的jdk版本运行此软件，高版本jdk不再内置javaFx，需自行下载配置");
         }
     }
 
