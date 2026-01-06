@@ -26,7 +26,7 @@
 
 ##### 如何运行
 
-##### <font color=red>jdk版本要求：请使用小于等于jdk1.8.0_231的jdk版本运行此软件，高版本jdk不再内置javaFx，需自行下载配置</font>
+##### <font color=red>jdk版本要求：jdk8效果最佳，且请使用小于jdk1.8.0_451的jdk版本运行此软件，高版本jdk不再内置javaFx，需自行下载配置</font>
 
 - 1.下载项目后，直接运行：com.itcrazy.mybatis.generator.MainApplication
 - 2.自行构建项目
