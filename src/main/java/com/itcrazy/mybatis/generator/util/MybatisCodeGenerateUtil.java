@@ -234,12 +234,12 @@ public class MybatisCodeGenerateUtil {
         toStringPlugin.setConfigurationType(ToStringPlugin.class.getName());
         context.addPluginConfiguration(toStringPlugin);
         // 分页插件
-        if (DataBaseTypeEnum.MySQL.name().equals(selectedDatabaseConfig.getDataBaseType()) || DataBaseTypeEnum.PostgreSQL.name().equals(selectedDatabaseConfig.getDataBaseType())) {
-            PluginConfiguration pagePlugin = new PluginConfiguration();
-            pagePlugin.addProperty(PROPERTY_NAME, PagePlugin.class.getName());
-            pagePlugin.setConfigurationType(PagePlugin.class.getName());
-            context.addPluginConfiguration(pagePlugin);
-        }
+        PluginConfiguration pagePlugin = new PluginConfiguration();
+        pagePlugin.addProperty("dataType", selectedDatabaseConfig.getDataBaseType());
+        pagePlugin.addProperty(PROPERTY_NAME, PagePlugin.class.getName());
+        pagePlugin.setConfigurationType(PagePlugin.class.getName());
+        context.addPluginConfiguration(pagePlugin);
+
         // 覆写xml文件插件
         PluginConfiguration overWiriteXmlPlugin = new PluginConfiguration();
         overWiriteXmlPlugin.addProperty(PROPERTY_NAME, UnmergeableXmlMappersPlugin.class.getName());

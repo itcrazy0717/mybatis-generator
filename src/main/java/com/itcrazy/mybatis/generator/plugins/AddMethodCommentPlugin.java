@@ -45,7 +45,7 @@ public class AddMethodCommentPlugin extends PluginAdapter {
     @Override
     public boolean clientInsertMethodGenerated(Method method, Interface interfaze,
                                                IntrospectedTable introspectedTable) {
-        CommentUtil.addMethodComment(method, " * 插件单条记录");
+        CommentUtil.addMethodComment(method, " * 插入单条记录");
         return super.clientInsertMethodGenerated(method, interfaze, introspectedTable);
     }
 

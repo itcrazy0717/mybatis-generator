@@ -14,6 +14,7 @@ import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
+import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
 import com.itcrazy.mybatis.generator.util.CommentUtil;
 
 /**
@@ -23,8 +24,14 @@ import com.itcrazy.mybatis.generator.util.CommentUtil;
  */
 public class PagePlugin extends PluginAdapter {
 
+    /**
+     * 数据库类型
+     */
+    private String dataType;
+
     @Override
     public boolean validate(List<String> list) {
+        dataType = properties.getProperty("dataType");
         return true;
     }
 
@@ -87,7 +94,11 @@ public class PagePlugin extends PluginAdapter {
     public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
         XmlElement ifPageXmlElement = new XmlElement("if");
         ifPageXmlElement.addAttribute(new Attribute("test", "page"));
-        ifPageXmlElement.addElement(new TextElement("limit #{pageIndex}, #{pageSize}"));
+        if (DataBaseTypeEnum.MySQL.name().equals(dataType)) {
+            ifPageXmlElement.addElement(new TextElement("limit #{pageIndex}, #{pageSize}"));
+        } else if (DataBaseTypeEnum.DM8.name().equals(dataType)) {
+            ifPageXmlElement.addElement(new TextElement("limit #{pageSize} offset #{pageIndex}"));
+        }
         element.addElement(ifPageXmlElement);
         return true;
     }

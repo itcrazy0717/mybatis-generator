@@ -28,7 +28,14 @@ public enum DataBaseTypeEnum {
     /**
      * SQLServer数据库
      */
-    SQLServer("com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://%s:%s;databaseName=%s", "sqljdbc4-4.0.jar");
+    SQLServer("com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://%s:%s;databaseName=%s", "sqljdbc4-4.0.jar"),
+
+    /**
+     * 达梦8数据库
+     */
+    DM8("dm.jdbc.driver.DmDriver", "jdbc:dm://%s:%s/%s", "DmJdbcDriver8.jar"),
+
+    ;
 
     /**
      * 驱动类
