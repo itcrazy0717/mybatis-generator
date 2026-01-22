@@ -93,10 +93,10 @@ public class BatchInsertPlugin extends PluginAdapter {
         StringBuilder javaPropertyAndDbType = new StringBuilder();
         for (IntrospectedColumn introspectedColumn : columns) {
             String columnName = introspectedColumn.getActualColumnName();
+            // 不是自增字段的才会出现在批量插入中
             if (introspectedColumn.isAutoIncrement()) {
                 continue;
             }
-            // 不是自增字段的才会出现在批量插入中
             dbcolumnsName.append(columnName).append(",");
             javaPropertyAndDbType.append("#{item.").append(introspectedColumn.getJavaProperty()).append(",jdbcType=").append(introspectedColumn.getJdbcTypeName());
             if (stringHasValue(introspectedColumn.getTypeHandler())) {
