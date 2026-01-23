@@ -45,4 +45,4 @@
 - 修复MySQL账号权限过大，跨库扫表问题
 - 修复TINYINT(1)字段映射异常问题，增加TINYINT转Boolean类型选项（有时TINYINT并不代表true或false，此时不需要转换成Boolean类型）
 - 升级MySQL驱动文件到8.4.0版本
-- 适配达梦8 2026.01.23
+- 适配达梦8 -2026.01.23
