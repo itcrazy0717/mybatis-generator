@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.itcrazy.mybatis.generator.constant.IconConstants;
 import com.itcrazy.mybatis.generator.controller.MainApplicationController;
 import com.itcrazy.mybatis.generator.util.SqliteUtil;
 
@@ -19,6 +18,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+
+import static com.itcrazy.mybatis.generator.constant.CommonConstants.MAIN_ICON_URL;
 
 /**
  * @author: itcrazy0717
@@ -36,7 +37,7 @@ public class MainApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(url);
         Parent root = fxmlLoader.load();
         // 调整窗口ico
-        primaryStage.getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(IconConstants.MAIN_ICON_URL))));
+        primaryStage.getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(MAIN_ICON_URL))));
         primaryStage.setResizable(true);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();

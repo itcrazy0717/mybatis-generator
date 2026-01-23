@@ -8,7 +8,6 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.itcrazy.mybatis.generator.constant.IconConstants;
 import com.itcrazy.mybatis.generator.enums.FxmlPageEnum;
 import com.itcrazy.mybatis.generator.model.MybatisGeneratorTemplate;
 import com.itcrazy.mybatis.generator.util.ShowMessageUtil;
@@ -27,6 +26,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+
+import static com.itcrazy.mybatis.generator.constant.CommonConstants.CONFIG_ICON_URL;
 
 /**
  * @author: itcrazy0717
@@ -98,7 +99,7 @@ public class GenerateCodeTemplateController extends BaseFxmlPageController {
                                 detailController.assembleGeneratorTemplate(template);
                                 detailController.setCodeGenerateView(codeGenerateView);
                                 // 为窗口增加ico图标
-                                detailController.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(IconConstants.CONFIG_ICON_URL))));
+                                detailController.getDialogStage().getIcons().add(new Image(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_ICON_URL))));
                                 detailController.showDialogStage();
                             } catch (Exception e) {
                                 LOGGER.error("detail_code_template_error", e);
