@@ -45,6 +45,7 @@ import com.itcrazy.mybatis.generator.plugins.SortPlugin;
 import com.itcrazy.mybatis.generator.typeresolver.TinyIntToBooleanTypeResolver;
 import com.itcrazy.mybatis.generator.typeresolver.TinyIntToIntegerResolver;
 
+import static com.itcrazy.mybatis.generator.constant.CommonConstants.APPLICABLE_DATABASE_TYPE_SETS;
 import static com.itcrazy.mybatis.generator.constant.CommonConstants.PROPERTY_DATABASE_TYPE;
 import static com.itcrazy.mybatis.generator.constant.CommonConstants.PROPERTY_NAME;
 
@@ -116,11 +117,11 @@ public class MybatisCodeGenerateUtil {
         }
 
         // 添加GeneratedKey主键生成，用于insert的时候返回主键
-        // 以上只在MySql下进行过测试，后续补充其他数据库类型的相关操作
+        // 以下在MySql与DM8下已进行测试，后续补充其他数据库类型的相关操作
         if (BooleanUtils.isTrue(generateConfig.getInsertReturnPrimaryKey())
             && StringUtils.isNotBlank(generateConfig.getPrimaryKey())) {
             String dbType = dataBaseType;
-            if (StringUtils.equals(DataBaseTypeEnum.MySQL.name(), dbType)) {
+            if (APPLICABLE_DATABASE_TYPE_SETS.contains(dbType)) {
                 dbType = "JDBC";
                 // dbType为JDBC，且配置中开启useGeneratedKeys时，Mybatis会使用Jdbc3KeyGenerator,
                 // 使用该KeyGenerator的好处就是直接在一次INSERT语句内，通过resultSet获取得到生成的主键值，

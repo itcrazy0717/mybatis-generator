@@ -1,5 +1,10 @@
 package com.itcrazy.mybatis.generator.constant;
 
+import java.util.Set;
+
+import com.google.common.collect.Sets;
+import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
+
 /**
  * @author: itcrazy0717
  * @version: $ CommonConstants.java,v0.1 2026-01-23 11:17 itcrazy0717 Exp $
@@ -40,7 +45,7 @@ public class CommonConstants {
     /**
      * 数据库驱动文件路径前缀
      */
-    public static final String DATABASE_DRIVER_JAR_PATH_PREFIX ="lib/";
+    public static final String DATABASE_DRIVER_JAR_PATH_PREFIX = "lib/";
 
     /**
      * 属性值名称
@@ -51,4 +56,9 @@ public class CommonConstants {
      * 数据库类型
      */
     public final static String PROPERTY_DATABASE_TYPE = "dataBaseType";
+
+    /**
+     * 适用的数据库类型集合
+     */
+    public final static Set<String> APPLICABLE_DATABASE_TYPE_SETS = Sets.newHashSet(DataBaseTypeEnum.MySQL.name(), DataBaseTypeEnum.DM8.name());
 }
