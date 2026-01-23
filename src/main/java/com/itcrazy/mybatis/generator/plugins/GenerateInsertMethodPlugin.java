@@ -33,7 +33,7 @@ public class GenerateInsertMethodPlugin extends PluginAdapter {
     @Override
     public boolean clientInsertMethodGenerated(Method method, Interface interfaze,
                                                IntrospectedTable introspectedTable) {
-        // 达梦数的自增字段，如果在sql语句中出现，但不进行赋值，在插入的时候会报错
+        // 达梦数据库的自增字段，如果在sql语句中出现，但不进行赋值，在插入的时候会报错
         // 因此进行判断，若果是达梦则不生成普通insert方法
         return !DataBaseTypeEnum.DM8.name().equals(dataBaseType);
     }
