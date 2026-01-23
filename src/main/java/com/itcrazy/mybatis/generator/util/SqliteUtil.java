@@ -22,10 +22,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
-import com.itcrazy.mybatis.generator.constant.SqliteConstants;
 import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
 import com.itcrazy.mybatis.generator.model.DatabaseConnectionConfig;
 import com.itcrazy.mybatis.generator.model.MybatisGeneratorTemplate;
+
+import static com.itcrazy.mybatis.generator.constant.CommonConstants.DATABASE_DRIVER_JAR_PATH;
+import static com.itcrazy.mybatis.generator.constant.CommonConstants.DATABASE_DRIVER_JAR_PATH_PREFIX;
+import static com.itcrazy.mybatis.generator.constant.CommonConstants.DATABASE_DRIVER_JAR_SUFFIX;
 
 /**
  * @author: itcrazy0717
@@ -367,7 +370,7 @@ public class SqliteUtil {
                                                         .collect(Collectors.toSet());
                 Stream.of(jarFiles)
                       .filter(Objects::nonNull)
-                      .filter(e -> e.isFile() && e.getAbsolutePath().endsWith(SqliteConstants.DATABASE_DRIVER_JAR_SUFFIX))
+                      .filter(e -> e.isFile() && e.getAbsolutePath().endsWith(DATABASE_DRIVER_JAR_SUFFIX))
                       .filter(e -> driverClassNameSets.contains(e.getName()))
                       .forEach(e -> jarFilePathSets.add(e.getAbsolutePath()));
             }
@@ -393,10 +396,10 @@ public class SqliteUtil {
             throw new RuntimeException("本地配置基础数据文件不存在");
         }
         // 生成jfx app时，路径中会存在.jar文件，因此需重新设置路径
-        if (url.getPath().contains(SqliteConstants.DATABASE_DRIVER_JAR_SUFFIX)) {
-            path = SqliteConstants.DATABASE_DRIVER_JAR_PATH_PREFIX;
+        if (url.getPath().contains(DATABASE_DRIVER_JAR_SUFFIX)) {
+            path = DATABASE_DRIVER_JAR_PATH_PREFIX;
         } else {
-            path = SqliteConstants.DATABASE_DRIVER_JAR_PATH;
+            path = DATABASE_DRIVER_JAR_PATH;
         }
         if (Objects.nonNull(dataType) && StringUtils.isNotBlank(dataType.getDriverJar())) {
             path = path + dataType.getDriverJar();

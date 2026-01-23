@@ -14,7 +14,10 @@ import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
+import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
 import com.itcrazy.mybatis.generator.util.CommentUtil;
+
+import static com.itcrazy.mybatis.generator.constant.CommonConstants.PROPERTY_DATABASE_TYPE;
 
 /**
  * @author: itcrazy0717
@@ -23,8 +26,14 @@ import com.itcrazy.mybatis.generator.util.CommentUtil;
  */
 public class PagePlugin extends PluginAdapter {
 
+    /**
+     * 数据库类型
+     */
+    private String dataBaseType;
+
     @Override
     public boolean validate(List<String> list) {
+        dataBaseType = properties.getProperty(PROPERTY_DATABASE_TYPE);
         return true;
     }
 
@@ -87,7 +96,11 @@ public class PagePlugin extends PluginAdapter {
     public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
         XmlElement ifPageXmlElement = new XmlElement("if");
         ifPageXmlElement.addAttribute(new Attribute("test", "page"));
-        ifPageXmlElement.addElement(new TextElement("limit #{pageIndex}, #{pageSize}"));
+        if (DataBaseTypeEnum.MySQL.name().equals(dataBaseType)) {
+            ifPageXmlElement.addElement(new TextElement("limit #{pageIndex}, #{pageSize}"));
+        } else if (DataBaseTypeEnum.DM8.name().equals(dataBaseType)) {
+            ifPageXmlElement.addElement(new TextElement("limit #{pageSize} offset #{pageIndex}"));
+        }
         element.addElement(ifPageXmlElement);
         return true;
     }

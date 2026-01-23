@@ -38,11 +38,16 @@ import com.itcrazy.mybatis.generator.model.MybatisGeneratorTemplate;
 import com.itcrazy.mybatis.generator.plugins.AddMethodCommentPlugin;
 import com.itcrazy.mybatis.generator.plugins.BatchInsertPlugin;
 import com.itcrazy.mybatis.generator.plugins.CustomCommentGenerator;
+import com.itcrazy.mybatis.generator.plugins.GenerateInsertMethodPlugin;
 import com.itcrazy.mybatis.generator.plugins.PagePlugin;
 import com.itcrazy.mybatis.generator.plugins.ReplaceExampleContentPlugin;
 import com.itcrazy.mybatis.generator.plugins.SortPlugin;
 import com.itcrazy.mybatis.generator.typeresolver.TinyIntToBooleanTypeResolver;
 import com.itcrazy.mybatis.generator.typeresolver.TinyIntToIntegerResolver;
+
+import static com.itcrazy.mybatis.generator.constant.CommonConstants.APPLICABLE_DATABASE_TYPE_SETS;
+import static com.itcrazy.mybatis.generator.constant.CommonConstants.PROPERTY_DATABASE_TYPE;
+import static com.itcrazy.mybatis.generator.constant.CommonConstants.PROPERTY_NAME;
 
 
 /**
@@ -85,11 +90,6 @@ public class MybatisCodeGenerateUtil {
     private static String paramPackage;
 
     /**
-     * 属性值名称
-     */
-    private final static String PROPERTY_NAME = "type";
-
-    /**
      * 生成代码
      * by itcrazy0717
      *
@@ -117,11 +117,11 @@ public class MybatisCodeGenerateUtil {
         }
 
         // 添加GeneratedKey主键生成，用于insert的时候返回主键
-        // 以上只在MySql下进行过测试
+        // 以下在MySql与DM8下已进行测试，后续补充其他数据库类型的相关操作
         if (BooleanUtils.isTrue(generateConfig.getInsertReturnPrimaryKey())
             && StringUtils.isNotBlank(generateConfig.getPrimaryKey())) {
             String dbType = dataBaseType;
-            if (StringUtils.equals(DataBaseTypeEnum.MySQL.name(), dbType)) {
+            if (APPLICABLE_DATABASE_TYPE_SETS.contains(dbType)) {
                 dbType = "JDBC";
                 // dbType为JDBC，且配置中开启useGeneratedKeys时，Mybatis会使用Jdbc3KeyGenerator,
                 // 使用该KeyGenerator的好处就是直接在一次INSERT语句内，通过resultSet获取得到生成的主键值，
@@ -233,18 +233,20 @@ public class MybatisCodeGenerateUtil {
         toStringPlugin.addProperty(PROPERTY_NAME, ToStringPlugin.class.getName());
         toStringPlugin.setConfigurationType(ToStringPlugin.class.getName());
         context.addPluginConfiguration(toStringPlugin);
+
         // 分页插件
-        if (DataBaseTypeEnum.MySQL.name().equals(selectedDatabaseConfig.getDataBaseType()) || DataBaseTypeEnum.PostgreSQL.name().equals(selectedDatabaseConfig.getDataBaseType())) {
-            PluginConfiguration pagePlugin = new PluginConfiguration();
-            pagePlugin.addProperty(PROPERTY_NAME, PagePlugin.class.getName());
-            pagePlugin.setConfigurationType(PagePlugin.class.getName());
-            context.addPluginConfiguration(pagePlugin);
-        }
+        PluginConfiguration pagePlugin = new PluginConfiguration();
+        pagePlugin.addProperty(PROPERTY_DATABASE_TYPE, selectedDatabaseConfig.getDataBaseType());
+        pagePlugin.addProperty(PROPERTY_NAME, PagePlugin.class.getName());
+        pagePlugin.setConfigurationType(PagePlugin.class.getName());
+        context.addPluginConfiguration(pagePlugin);
+
         // 覆写xml文件插件
         PluginConfiguration overWiriteXmlPlugin = new PluginConfiguration();
         overWiriteXmlPlugin.addProperty(PROPERTY_NAME, UnmergeableXmlMappersPlugin.class.getName());
         overWiriteXmlPlugin.setConfigurationType(UnmergeableXmlMappersPlugin.class.getName());
         context.addPluginConfiguration(overWiriteXmlPlugin);
+
         // 替换example内容插件
         PluginConfiguration replaeceExampleContentPlugin = new PluginConfiguration();
         replaeceExampleContentPlugin.addProperty(PROPERTY_NAME, ReplaceExampleContentPlugin.class.getName());
@@ -254,21 +256,31 @@ public class MybatisCodeGenerateUtil {
         replaeceExampleContentPlugin.addProperty("simpleMethod", "True");
         replaeceExampleContentPlugin.addProperty("paramPackage", paramPackage);
         context.addPluginConfiguration(replaeceExampleContentPlugin);
+
         // 方法注释插件
         PluginConfiguration addMethodComentPlugin = new PluginConfiguration();
         addMethodComentPlugin.addProperty(PROPERTY_NAME, AddMethodCommentPlugin.class.getName());
         addMethodComentPlugin.setConfigurationType(AddMethodCommentPlugin.class.getName());
         context.addPluginConfiguration(addMethodComentPlugin);
+
         // 批量插入插件
         PluginConfiguration batchInsertPlugin = new PluginConfiguration();
         batchInsertPlugin.addProperty(PROPERTY_NAME, BatchInsertPlugin.class.getName());
         batchInsertPlugin.setConfigurationType(BatchInsertPlugin.class.getName());
         context.addPluginConfiguration(batchInsertPlugin);
+
         // 排序插件
         PluginConfiguration sortPlugin = new PluginConfiguration();
         sortPlugin.addProperty(PROPERTY_NAME, SortPlugin.class.getName());
         sortPlugin.setConfigurationType(SortPlugin.class.getName());
         context.addPluginConfiguration(sortPlugin);
+
+        // insert方法生成插件
+        PluginConfiguration generateInsertPlugin = new PluginConfiguration();
+        generateInsertPlugin.addProperty(PROPERTY_DATABASE_TYPE, selectedDatabaseConfig.getDataBaseType());
+        generateInsertPlugin.addProperty(PROPERTY_NAME, GenerateInsertMethodPlugin.class.getName());
+        generateInsertPlugin.setConfigurationType(GenerateInsertMethodPlugin.class.getName());
+        context.addPluginConfiguration(generateInsertPlugin);
     }
 
     /**
