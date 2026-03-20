@@ -1,8 +1,5 @@
 package com.itcrazy.mybatis.generator.plugins;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -21,9 +18,7 @@ import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
-import org.mybatis.generator.config.MergeConstants;
 
-import static java.sql.JDBCType.VARCHAR;
 import static javax.swing.UIManager.getString;
 import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 
@@ -91,112 +86,99 @@ public class BatchInsertPlugin extends PluginAdapter {
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
         List<IntrospectedColumn> columns = introspectedTable.getAllColumns();
 
-        // 构建字段名的trim标签（带if判空）
-        XmlElement trimColumNameElement = new XmlElement("trim");
-        trimColumNameElement.addAttribute(new Attribute("prefix", "("));
-        trimColumNameElement.addAttribute(new Attribute("suffix", ")"));
-        trimColumNameElement.addAttribute(new Attribute("suffixOverrides", ","));
+        // ========== 1. 构建固定字段名（外层trim） ==========
+        XmlElement trimFieldsElement = new XmlElement("trim");
+        trimFieldsElement.addAttribute(new Attribute("prefix", "("));
+        trimFieldsElement.addAttribute(new Attribute("suffix", ")"));
+        trimFieldsElement.addAttribute(new Attribute("suffixOverrides", ","));
 
-        // 构建字段值的trim标签（带if判空）
-        XmlElement trimColumValueElement = new XmlElement("trim");
-        trimColumValueElement.addAttribute(new Attribute("suffixOverrides", ","));
-
-        // 遍历所有字段，逐个生成带判空的if标签
-        for (IntrospectedColumn introspectedColumn : columns) {
-            String columnName = introspectedColumn.getActualColumnName();
-            // 跳过自增字段（自增字段不参与插入）
-            if (introspectedColumn.isAutoIncrement()) {
+        StringBuilder fieldSb = new StringBuilder();
+        for (IntrospectedColumn col : columns) {
+            // 跳过自增字段
+            if (col.isAutoIncrement()) {
                 continue;
             }
-            String javaProperty = introspectedColumn.getJavaProperty();
-            String jdbcTypeName = introspectedColumn.getJdbcTypeName();
+            fieldSb.append(col.getActualColumnName()).append(",");
+        }
+        trimFieldsElement.addElement(new TextElement(fieldSb.toString()));
 
-            // ========== 1. 生成字段名的if判空标签 ==========
-            XmlElement columnIfElement = new XmlElement("if");
-            // 拼接判空条件：VARCHAR类型需额外判断空字符串
-            String columnTestCondition = buildTestCondition(javaProperty, jdbcTypeName);
-            columnIfElement.addAttribute(new Attribute("test", columnTestCondition));
-            columnIfElement.addElement(new TextElement(columnName + ","));
-            trimColumNameElement.addElement(columnIfElement);
+        // ========== 2. 构建字段值（foreach内部，按规则处理null） ==========
+        XmlElement trimValuesElement = new XmlElement("trim");
+        trimValuesElement.addAttribute(new Attribute("suffixOverrides", ","));
 
-            // ========== 2. 生成字段值的if判空标签 ==========
-            XmlElement valueIfElement = new XmlElement("if");
-            valueIfElement.addAttribute(new Attribute("test", columnTestCondition));
-            // 拼接赋值语句：#{item.字段,jdbcType=XXX,...}
-            StringBuilder valueSb = new StringBuilder();
-            valueSb.append("#{item.").append(javaProperty).append(",jdbcType=").append(jdbcTypeName);
-
-            // 追加类型处理器（若有）
-            if (stringHasValue(introspectedColumn.getTypeHandler())) {
-                valueSb.append(",typeHandler=");
-                valueSb.append(introspectedColumn.getTypeHandler());
-                valueSb.append(",javaType=");
-                valueSb.append(introspectedColumn.getFullyQualifiedJavaType().getFullyQualifiedNameWithoutTypeParameters());
+        for (IntrospectedColumn col : columns) {
+            if (col.isAutoIncrement()) {
+                continue;
             }
-            valueSb.append("},");
-            valueIfElement.addElement(new TextElement(valueSb.toString()));
-            trimColumValueElement.addElement(valueIfElement);
+
+            String javaProp = col.getJavaProperty();
+            String jdbcType = col.getJdbcTypeName();
+            // 是否有数据库默认值
+            boolean hasDefaultValue = stringHasValue(col.getDefaultValue());
+
+            // -------------- 规则1：字段有默认值 --------------
+            if (hasDefaultValue) {
+                // 规则：属性为null → 用default关键字（触发数据库默认值）
+                XmlElement ifNullElement = new XmlElement("if");
+                ifNullElement.addAttribute(new Attribute("test", "item." + javaProp + " == null"));
+                ifNullElement.addElement(new TextElement("default,")); // MySQL关键字，使用字段默认值
+                trimValuesElement.addElement(ifNullElement);
+
+                // 规则：属性不为null → 正常传值
+                XmlElement ifNotNullElement = new XmlElement("if");
+                ifNotNullElement.addAttribute(new Attribute("test", "item." + javaProp + " != null"));
+                StringBuilder valSb = new StringBuilder();
+                valSb.append("#{item.").append(javaProp).append(",jdbcType=").append(jdbcType);
+                if (stringHasValue(col.getTypeHandler())) {
+                    valSb.append(",typeHandler=").append(col.getTypeHandler());
+                }
+                valSb.append("},");
+                ifNotNullElement.addElement(new TextElement(valSb.toString()));
+                trimValuesElement.addElement(ifNotNullElement);
+            }
+            // -------------- 规则2：字段无默认值 --------------
+            else {
+                // 规则：属性为null → 传null；属性不为null → 正常传值
+                StringBuilder valSb = new StringBuilder();
+                valSb.append("#{item.").append(javaProp).append(",jdbcType=").append(jdbcType);
+                if (stringHasValue(col.getTypeHandler())) {
+                    valSb.append(",typeHandler=").append(col.getTypeHandler());
+                }
+                valSb.append("},");
+                trimValuesElement.addElement(new TextElement(valSb.toString()));
+            }
         }
 
-        // ========== 构建批量插入的XML节点 ==========
-        XmlElement insertBatchElement = new XmlElement("insert");
-        insertBatchElement.addAttribute(new Attribute("id", "batchInsert"));
-        insertBatchElement.addAttribute(new Attribute("parameterType", introspectedTable.getBaseRecordType()));
+        // ========== 3. 组装批量插入XML节点 ==========
+        XmlElement batchInsertElement = new XmlElement("insert");
+        batchInsertElement.addAttribute(new Attribute("id", "batchInsert"));
+        batchInsertElement.addAttribute(new Attribute("parameterType", introspectedTable.getBaseRecordType()));
 
-        // 生成注释
-        insertBatchElement.addElement(new TextElement("<!--"));
-        StringBuilder sb = new StringBuilder();
-        sb.append("  WARNING - ");
-        sb.append(MergeConstants.NEW_ELEMENT_TAG);
-        insertBatchElement.addElement(new TextElement(sb.toString()));
-        insertBatchElement.addElement(new TextElement("  This element is automatically generated by MyBatis Generator, do not modify."));
-
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String nowTimeString = df.format(new Date());
-        sb.setLength(0);
-        sb.append("  This element was generated on ");
-        sb.append(nowTimeString);
-        sb.append('.');
-        insertBatchElement.addElement(new TextElement(sb.toString()));
-        insertBatchElement.addElement(new TextElement("-->"));
+        // 注释
+        batchInsertElement.addElement(new TextElement("<!-- 批量插入规则："));
+        batchInsertElement.addElement(new TextElement("   1. 字段有默认值：属性为null → 用默认值；属性非null → 正常传值"));
+        batchInsertElement.addElement(new TextElement("   2. 字段无默认值：根据字段具体内容传值即可 -->"));
 
         // 拼接INSERT INTO语句
-        insertBatchElement.addElement(new TextElement("insert into " + introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime()));
-        insertBatchElement.addElement(trimColumNameElement); // 添加字段名的trim标签
-        insertBatchElement.addElement(new TextElement("values"));
+        batchInsertElement.addElement(new TextElement("insert into " + introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime()));
+        // 固定字段名
+        batchInsertElement.addElement(trimFieldsElement);
+        batchInsertElement.addElement(new TextElement("values"));
 
-        // 构建foreach循环节点
+        // 构建foreach循环
         XmlElement foreachElement = new XmlElement("foreach");
         foreachElement.addAttribute(new Attribute("collection", "list"));
         foreachElement.addAttribute(new Attribute("index", "index"));
         foreachElement.addAttribute(new Attribute("item", "item"));
         foreachElement.addAttribute(new Attribute("separator", ","));
         foreachElement.addElement(new TextElement("("));
-        foreachElement.addElement(trimColumValueElement); // 添加字段值的trim标签
+        // 按规则处理的字段值
+        foreachElement.addElement(trimValuesElement);
         foreachElement.addElement(new TextElement(")"));
-        insertBatchElement.addElement(foreachElement);
 
-        // 将批量插入节点添加到XML根节点
-        document.getRootElement().addElement(insertBatchElement);
+        batchInsertElement.addElement(foreachElement);
+        document.getRootElement().addElement(batchInsertElement);
+
         return super.sqlMapDocumentGenerated(document, introspectedTable);
-    }
-
-    /**
-     * 构建判空条件：
-     * - VARCHAR类型：item.字段 != null and item.字段 != ''
-     * - 非VARCHAR类型：item.字段 != null
-     * by itcrazy0717
-     *
-     * @param javaProperty
-     * @param jdbcTypeName
-     * @return
-     */
-    private String buildTestCondition(String javaProperty, String jdbcTypeName) {
-        StringBuilder condition = new StringBuilder("item.").append(javaProperty).append(" != null");
-        // 针对VARCHAR类型，额外添加空字符串判断
-        if (VARCHAR.name().equalsIgnoreCase(jdbcTypeName)) {
-            condition.append(" and item.").append(javaProperty).append(" != ''");
-        }
-        return condition.toString();
     }
 }
