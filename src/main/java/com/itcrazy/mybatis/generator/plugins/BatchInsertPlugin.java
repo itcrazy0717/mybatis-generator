@@ -121,7 +121,7 @@ public class BatchInsertPlugin extends PluginAdapter {
                 // 规则：属性为null → 用default关键字（触发数据库默认值）
                 XmlElement ifNullElement = new XmlElement("if");
                 ifNullElement.addAttribute(new Attribute("test", "item." + javaProp + " == null"));
-                ifNullElement.addElement(new TextElement("default,")); // MySQL关键字，使用字段默认值
+                ifNullElement.addElement(new TextElement("default,"));
                 trimValuesElement.addElement(ifNullElement);
 
                 // 规则：属性不为null → 正常传值
