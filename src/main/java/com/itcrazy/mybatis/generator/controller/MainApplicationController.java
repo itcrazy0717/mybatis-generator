@@ -568,12 +568,11 @@ public class MainApplicationController extends BaseFxmlPageController {
      * @return
      */
     private String buildDomainObjectName(String domainObjecName) {
-        String result = DataBaseStringUtil.tableNameToCamelStyle(domainObjecName);
-        if (StringUtils.isBlank(result)) {
+        if (StringUtils.isBlank(domainObjecName)) {
             throw new RuntimeException("实体类名称为空");
         }
         // 判断实体类名是否以DO结尾，如果不是则补齐
-        Matcher matcher = DO_PATTERN.matcher(result);
+        Matcher matcher = DO_PATTERN.matcher(domainObjecName);
         if (!matcher.find()) {
             return domainObjecName + "DO";
         }
