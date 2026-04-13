@@ -573,7 +573,7 @@ public class MainApplicationController extends BaseFxmlPageController {
             throw new RuntimeException("实体类名称为空");
         }
         // 判断实体类名是否以DO结尾，如果不是则补齐
-        Matcher matcher = DO_PATTERN.matcher(domainObjecName);
+        Matcher matcher = DO_PATTERN.matcher(result);
         if (!matcher.find()) {
             return domainObjecName + "DO";
         }
