@@ -119,8 +119,11 @@ public class BatchInsertPlugin extends PluginAdapter {
         XmlElement trimValuesElement = new XmlElement("trim");
         trimValuesElement.addAttribute(new Attribute("suffixOverrides", ","));
 
+        // 主键key对应的java对象字段
+        String primaryKeyProperty = primaryKey;
         for (IntrospectedColumn col : columns) {
             if (col.isAutoIncrement()) {
+                primaryKeyProperty = col.getJavaProperty();
                 continue;
             }
 
@@ -169,7 +172,7 @@ public class BatchInsertPlugin extends PluginAdapter {
         // 勾选插入返回主键id，则插入数据时，返回主键id
         if (BooleanUtils.isTrue(insertReturnPrimaryKey) && StringUtils.isNotBlank(primaryKey)) {
             batchInsertElement.addAttribute(new Attribute("useGeneratedKeys", "true"));
-            batchInsertElement.addAttribute(new Attribute("keyProperty", primaryKey));
+            batchInsertElement.addAttribute(new Attribute("keyProperty", primaryKeyProperty));
             batchInsertElement.addAttribute(new Attribute("keyColumn", primaryKey));
         }
 
