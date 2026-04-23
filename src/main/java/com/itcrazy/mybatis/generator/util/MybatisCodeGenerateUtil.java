@@ -266,6 +266,8 @@ public class MybatisCodeGenerateUtil {
         // 批量插入插件
         PluginConfiguration batchInsertPlugin = new PluginConfiguration();
         batchInsertPlugin.addProperty(PROPERTY_NAME, BatchInsertPlugin.class.getName());
+        batchInsertPlugin.addProperty("insertReturnPrimaryKey", String.valueOf(generateConfig.getInsertReturnPrimaryKey()));
+        batchInsertPlugin.addProperty("primaryKey", String.valueOf(generateConfig.getPrimaryKey()));
         batchInsertPlugin.setConfigurationType(BatchInsertPlugin.class.getName());
         context.addPluginConfiguration(batchInsertPlugin);
 

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -29,8 +30,20 @@ import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
  */
 public class BatchInsertPlugin extends PluginAdapter {
 
+    /**
+     * 主键id字段
+     */
+    private String primaryKey;
+
+    /**
+     * insert方法是否返回主键id
+     */
+    private Boolean insertReturnPrimaryKey;
+
     @Override
     public boolean validate(List<String> warnings) {
+        primaryKey = properties.getProperty("primaryKey");
+        insertReturnPrimaryKey = BooleanUtils.toBoolean(properties.getProperty("insertReturnPrimaryKey"));
         return true;
     }
 
@@ -153,6 +166,12 @@ public class BatchInsertPlugin extends PluginAdapter {
         XmlElement batchInsertElement = new XmlElement("insert");
         batchInsertElement.addAttribute(new Attribute("id", "batchInsert"));
         batchInsertElement.addAttribute(new Attribute("parameterType", introspectedTable.getBaseRecordType()));
+        // 勾选插入返回主键id，则插入数据时，返回主键id
+        if (BooleanUtils.isTrue(insertReturnPrimaryKey) && StringUtils.isNotBlank(primaryKey)) {
+            batchInsertElement.addAttribute(new Attribute("useGeneratedKeys", "true"));
+            batchInsertElement.addAttribute(new Attribute("keyProperty", primaryKey));
+            batchInsertElement.addAttribute(new Attribute("keyColumn", primaryKey));
+        }
 
         // 注释
         batchInsertElement.addElement(new TextElement("<!-- 批量插入规则："));
