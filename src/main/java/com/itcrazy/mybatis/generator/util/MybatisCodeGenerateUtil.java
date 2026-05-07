@@ -38,6 +38,7 @@ import com.itcrazy.mybatis.generator.model.MybatisGeneratorTemplate;
 import com.itcrazy.mybatis.generator.plugins.AddMethodCommentPlugin;
 import com.itcrazy.mybatis.generator.plugins.BatchInsertPlugin;
 import com.itcrazy.mybatis.generator.plugins.CustomCommentGenerator;
+import com.itcrazy.mybatis.generator.plugins.DMLikePlugin;
 import com.itcrazy.mybatis.generator.plugins.GenerateInsertMethodPlugin;
 import com.itcrazy.mybatis.generator.plugins.PagePlugin;
 import com.itcrazy.mybatis.generator.plugins.ReplaceExampleContentPlugin;
@@ -256,6 +257,13 @@ public class MybatisCodeGenerateUtil {
         replaeceExampleContentPlugin.addProperty("simpleMethod", "True");
         replaeceExampleContentPlugin.addProperty("paramPackage", paramPackage);
         context.addPluginConfiguration(replaeceExampleContentPlugin);
+
+        // 达梦like插件 解决转义问题
+        PluginConfiguration dmLikePlugin = new PluginConfiguration();
+        dmLikePlugin.addProperty(PROPERTY_NAME, DMLikePlugin.class.getName());
+        dmLikePlugin.setConfigurationType(DMLikePlugin.class.getName());
+        dmLikePlugin.addProperty(PROPERTY_DATABASE_TYPE, selectedDatabaseConfig.getDataBaseType());
+        context.addPluginConfiguration(dmLikePlugin);
 
         // 方法注释插件
         PluginConfiguration addMethodComentPlugin = new PluginConfiguration();
