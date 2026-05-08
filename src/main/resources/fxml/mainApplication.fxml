@@ -157,7 +157,7 @@
                                         <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.columnSpan="3"
                                               GridPane.rowIndex="3" GridPane.valignment="CENTER">
                                             <children>
-                                                <CheckBox fx:id="tinyInt2BooleanCheckBox" selected="true"
+                                                <CheckBox fx:id="tinyInt2BooleanCheckBox"
                                                           text="勾选后生效，否则转换成Integer" styleClass="red-text"/>
                                             </children>
                                             <GridPane.margin>
