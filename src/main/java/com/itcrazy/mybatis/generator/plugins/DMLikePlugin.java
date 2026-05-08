@@ -85,8 +85,8 @@ public class DMLikePlugin extends PluginAdapter {
         // 2. 方法注释
         method.addJavaDocLine("/**");
         method.addJavaDocLine(" * LIKE 模糊查询，使用 ESCAPE '\\\\' 转义");
-        method.addJavaDocLine(" *");
         method.addJavaDocLine(" * @param value 已拼接好%的模糊匹配值（例：%abc\\_def%）");
+        method.addJavaDocLine(" *");
         method.addJavaDocLine(" * @mbg.generated");
         method.addJavaDocLine(" */");
 
