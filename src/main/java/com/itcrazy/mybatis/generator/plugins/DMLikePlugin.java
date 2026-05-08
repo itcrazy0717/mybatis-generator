@@ -1,6 +1,7 @@
 package com.itcrazy.mybatis.generator.plugins;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -18,10 +19,11 @@ import static com.itcrazy.mybatis.generator.constant.CommonConstants.PROPERTY_DA
 
 /**
  * @author: by itcrazy0717
- * @version: $ DMLikePlugin.java,v0.1 2026-05-07 11:43 dengxin.chen Exp $
+ * @version: $ DMLikePlugin.java,v0.1 2026-05-07 11:43 itcrazy0717 Exp $
  * @description: 达梦数据库的LIKE查询插件
  */
 public class DMLikePlugin extends PluginAdapter {
+
     /**
      * 数据库类型
      */
@@ -47,7 +49,9 @@ public class DMLikePlugin extends PluginAdapter {
                 break;
             }
         }
-        if (criteriaClass == null) return true;
+        if (Objects.isNull(criteriaClass)) {
+            return true;
+        }
 
         // 遍历所有字符串字段，生成方法
         for (IntrospectedColumn column : introspectedTable.getAllColumns()) {
@@ -70,11 +74,10 @@ public class DMLikePlugin extends PluginAdapter {
         String columnName = column.getActualColumnName();
 
         // 方法名：andUserNameLikeWithEscape
-        String methodName = javaProperty.substring(0, 1).toUpperCase() + javaProperty.substring(1);
-        String fullMethodName = "and" + methodName + "LikeWithEscape";
+        String methodName = buildMethodName(javaProperty);
 
         // 1. 定义方法：public Criteria andXxxLikeWithEscape(String value)
-        Method method = new Method(fullMethodName);
+        Method method = new Method(methodName);
         method.setVisibility(JavaVisibility.PUBLIC);
         method.setReturnType(FullyQualifiedJavaType.getCriteriaInstance());
         method.addParameter(new Parameter(FullyQualifiedJavaType.getStringInstance(), "value"));
@@ -93,5 +96,18 @@ public class DMLikePlugin extends PluginAdapter {
 
         // 4. 添加到Criteria
         criteriaClass.addMethod(method);
+    }
+
+    /**
+     * 构建方法名
+     * by itcrazy0717
+     *
+     * @param javaProperty
+     * @return
+     */
+    private String buildMethodName(String javaProperty) {
+        // 属性的首字母大写
+        String javaPropertyName = javaProperty.substring(0, 1).toUpperCase() + javaProperty.substring(1);
+        return "and" + javaPropertyName + "LikeWithEscape";
     }
 }

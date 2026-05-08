@@ -461,7 +461,7 @@ public class ReplaceExampleContentPlugin extends PluginAdapter {
      * @return
      */
     private String firstLetterLowerCase(String inputString) {
-        if (StringUtils.isBlank(inputString) || inputString.length() < 1) {
+        if (StringUtils.isBlank(inputString)) {
             return inputString;
         }
         StringBuilder sb = new StringBuilder();
