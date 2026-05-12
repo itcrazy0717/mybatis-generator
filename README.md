@@ -48,4 +48,8 @@
   cd target/jfx/app/
   java -jar mybatis-generator-gui.jar
   ```
-  通过该方式可对使用sh脚本来创建快捷运行指令，启动非常方便
+- 3.可根据步骤2中生成的jar包，自定义sh脚本的方式来实现快速启动，如下示例（根据具体路径修改即可)
+  ```
+  #!/bin/bash
+  cd /Users/itcrazy/devsoft/mybatis-generator;
+  /Library/Java/JavaVirtualMachines/jdk-1.8.jdk/Contents/Home/bin/java -jar mybatis-generator-ui.jar
