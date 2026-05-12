@@ -48,7 +48,7 @@
   cd target/jfx/app/
   java -jar mybatis-generator-gui.jar
   ```
-- 3.可根据步骤2中生成的相关文件自定义sh脚本的方式来实现快速启动，如下示例（根据实际情况修改相应路径即可)
+- 3.可根据步骤2中生成的相关文件，自定义sh脚本的方式来实现快速启动，如下示例（根据实际情况修改相应路径即可)
   ```
   #!/bin/bash
   cd /Users/itcrazy/devsoft/mybatis-generator;
