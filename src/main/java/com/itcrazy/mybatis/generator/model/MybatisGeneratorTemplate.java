@@ -38,7 +38,7 @@ public class MybatisGeneratorTemplate {
     /**
      * tinyint是否转转成Boolean
      * true-是  false-否
-     * 默认否 默认为勾选，则为false
+     * 默认否 默认不勾选，则为false
      */
     private Boolean tinyInt2Boolean;
 
