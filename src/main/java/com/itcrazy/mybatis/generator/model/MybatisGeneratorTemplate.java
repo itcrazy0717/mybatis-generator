@@ -36,13 +36,6 @@ public class MybatisGeneratorTemplate {
     private Boolean insertReturnPrimaryKey;
 
     /**
-     * tinyint是否转转成Boolean
-     * true-是  false-否
-     * 默认否 默认不勾选，则为false
-     */
-    private Boolean tinyInt2Boolean;
-
-    /**
      * 实体类路径
      */
     private String modelPackage;

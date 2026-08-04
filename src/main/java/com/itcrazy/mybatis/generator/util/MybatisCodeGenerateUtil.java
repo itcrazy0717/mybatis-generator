@@ -43,7 +43,6 @@ import com.itcrazy.mybatis.generator.plugins.GenerateInsertMethodPlugin;
 import com.itcrazy.mybatis.generator.plugins.PagePlugin;
 import com.itcrazy.mybatis.generator.plugins.ReplaceExampleContentPlugin;
 import com.itcrazy.mybatis.generator.plugins.SortPlugin;
-import com.itcrazy.mybatis.generator.typeresolver.TinyIntToBooleanTypeResolver;
 import com.itcrazy.mybatis.generator.typeresolver.TinyIntToIntegerResolver;
 
 import static com.itcrazy.mybatis.generator.constant.CommonConstants.APPLICABLE_DATABASE_TYPE_SETS;
@@ -218,15 +217,10 @@ public class MybatisCodeGenerateUtil {
      * @param context
      */
     private static void addCustomPlugins(Context context) {
-        JavaTypeResolverConfiguration typeResolverConfiguration = new JavaTypeResolverConfiguration();
-        // 根据选项设置TINYINT->Boolean类型
-        if (BooleanUtils.isTrue(generateConfig.getTinyInt2Boolean())) {
-            typeResolverConfiguration.setConfigurationType(TinyIntToBooleanTypeResolver.class.getName());
-        } else {
-            // 不勾选时，转换成Integer类型
-            typeResolverConfiguration.setConfigurationType(TinyIntToIntegerResolver.class.getName());
-        }
-        context.setJavaTypeResolverConfiguration(typeResolverConfiguration);
+        // tinyint默认转换成integer
+        JavaTypeResolverConfiguration tinyIntResolverConfiguration = new JavaTypeResolverConfiguration();
+        tinyIntResolverConfiguration.setConfigurationType(TinyIntToIntegerResolver.class.getName());
+        context.setJavaTypeResolverConfiguration(tinyIntResolverConfiguration);
 
         /**
          // 序列化插件
