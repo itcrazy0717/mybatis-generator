@@ -110,7 +110,14 @@ public class MybatisCodeGenerateUtil {
         tableConfig.setTableName(generateConfig.getTableName());
         tableConfig.setDomainObjectName(generateConfig.getDomainObjectName());
         // 设置catalog，避免跨库扫表问题
-        tableConfig.setCatalog(selectedDatabaseConfig.getSchemaName());
+        // MySQL:库名 = Catalog，不用 Schema
+        // 达梦/Oracle:模式 = Schema，不用 Catalog
+        if (StringUtils.equals(DataBaseTypeEnum.MySQL.name(), dataBaseType)) {
+            tableConfig.setCatalog(selectedDatabaseConfig.getSchemaName());
+        }
+        if (StringUtils.equals(DataBaseTypeEnum.DM8.name(), dataBaseType)) {
+            tableConfig.setSchema(selectedDatabaseConfig.getSchemaName());
+        }
 
         // 针对postgresql单独配置
         if (StringUtils.equals(DataBaseTypeEnum.PostgreSQL.getDriverClass(), DataBaseTypeEnum.valueOf(dataBaseType).getDriverClass())) {
