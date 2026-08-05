@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
@@ -94,7 +93,10 @@ public class FixTableNameUtil {
         if (StringUtils.isBlank(xmlContent)) {
             return null;
         }
-        String replaceTarget = catalogName + ".." + tableName;
-        return xmlContent.replaceAll(replaceTarget, tableName);
+        // 替换单双点，解决达梦和MySQL跨库问题
+        // MySQL双点 达梦单点
+        String replaceTargetSingleDot = catalogName + "." + tableName;
+        String replaceTargetDoubleDot = catalogName + ".." + tableName;
+        return xmlContent.replaceAll(replaceTargetDoubleDot, tableName).replaceAll(replaceTargetSingleDot, tableName);
     }
 }
