@@ -43,6 +43,10 @@ public class PagePlugin extends PluginAdapter {
      */
     @Override
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+        // Oracle 11g 本轮不做分页适配，不生成分页相关字段与setPagination方法
+        if (DataBaseTypeEnum.Oracle11g.name().equals(dataBaseType)) {
+            return true;
+        }
         FullyQualifiedJavaType intType = new FullyQualifiedJavaType("int");
         // page字段
         Field page = new Field();
@@ -94,14 +98,18 @@ public class PagePlugin extends PluginAdapter {
      */
     @Override
     public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
-        XmlElement ifPageXmlElement = new XmlElement("if");
-        ifPageXmlElement.addAttribute(new Attribute("test", "page"));
+        // Oracle 11g 本轮不做分页适配，不生成分页片段
         if (DataBaseTypeEnum.MySQL.name().equals(dataBaseType)) {
+            XmlElement ifPageXmlElement = new XmlElement("if");
+            ifPageXmlElement.addAttribute(new Attribute("test", "page"));
             ifPageXmlElement.addElement(new TextElement("limit #{pageIndex}, #{pageSize}"));
+            element.addElement(ifPageXmlElement);
         } else if (DataBaseTypeEnum.DM8.name().equals(dataBaseType)) {
+            XmlElement ifPageXmlElement = new XmlElement("if");
+            ifPageXmlElement.addAttribute(new Attribute("test", "page"));
             ifPageXmlElement.addElement(new TextElement("limit #{pageSize} offset #{pageIndex}"));
+            element.addElement(ifPageXmlElement);
         }
-        element.addElement(ifPageXmlElement);
         return true;
     }
 }

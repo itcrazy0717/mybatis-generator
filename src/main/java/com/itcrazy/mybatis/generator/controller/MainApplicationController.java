@@ -21,6 +21,7 @@ import org.mybatis.generator.config.IgnoredColumn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
 import com.itcrazy.mybatis.generator.enums.FxmlPageEnum;
 import com.itcrazy.mybatis.generator.model.DatabaseConnectionConfig;
 import com.itcrazy.mybatis.generator.model.MybatisGeneratorTemplate;
@@ -283,6 +284,13 @@ public class MainApplicationController extends BaseFxmlPageController {
                         this.selectedTableName = tableName;
                         this.tableName.setText(tableName);
                         domainObjectName.setText(DataBaseStringUtil.tableNameToCamelStyle(tableName) + "DO");
+                        // Oracle 11g不支持自增主键回填，主键id与返回主键选项一起禁用；切回其他库类型时自动恢复
+                        boolean oracleFlag = StringUtils.equals(DataBaseTypeEnum.Oracle11g.name(), selectedDatabaseConfig.getDataBaseType());
+                        primaryKey.setDisable(oracleFlag);
+                        insertReturnPrimaryKeyCheckBox.setDisable(oracleFlag);
+                        if (oracleFlag) {
+                            insertReturnPrimaryKeyCheckBox.setSelected(false);
+                        }
                     }
                 }
             });
@@ -373,6 +381,11 @@ public class MainApplicationController extends BaseFxmlPageController {
             if (insertReturnPrimaryKeyCheckBox.isSelected()
                 && StringUtils.isBlank(primaryKey.getText())) {
                 return "主键id为空";
+            }
+            // Oracle 11g不支持自增主键，兜底拦截，防止绕过UI禁用状态
+            if (insertReturnPrimaryKeyCheckBox.isSelected()
+                && StringUtils.equals(DataBaseTypeEnum.Oracle11g.name(), selectedDatabaseConfig.getDataBaseType())) {
+                return "Oracle 11g不支持自增主键，请取消勾选【insert方法返回主键id】";
             }
         }
         if (StringUtils.isBlank(projectFolder.getText())) {

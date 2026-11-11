@@ -17,8 +17,9 @@ public enum DataBaseTypeEnum {
 
     /**
      * Oracle数据库
+     * extraJar: orai18n.jar提供中文字符集（如ZHS16GBK）转换器，缺失会报 ORA-17056 不支持的字符集
      */
-    Oracle("oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@%s:%s:%s", "ojdbc14.jar"),
+    Oracle11g("oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@%s:%s:%s", "ojdbc8.jar", "orai18n.jar"),
 
     /**
      * PostgreSQL数据库
@@ -52,9 +53,19 @@ public enum DataBaseTypeEnum {
      */
     private final String driverJar;
 
+    /**
+     * 附加jar文件（如Oracle的orai18n字符集转换jar），可为空
+     */
+    private final String extraJar;
+
     DataBaseTypeEnum(String driverClass, String connectionUrlPattern, String driverJar) {
+        this(driverClass, connectionUrlPattern, driverJar, null);
+    }
+
+    DataBaseTypeEnum(String driverClass, String connectionUrlPattern, String driverJar, String extraJar) {
         this.driverClass = driverClass;
         this.connectionUrlPattern = connectionUrlPattern;
         this.driverJar = driverJar;
+        this.extraJar = extraJar;
     }
 }

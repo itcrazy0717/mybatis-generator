@@ -65,6 +65,21 @@ public class DataBaseUtil {
     }
 
     /**
+     * 获取数据库真实schema名称
+     * by itcrazy0717
+     *
+     * @param config
+     * @return Oracle返回用户名大写形式；其他数据库返回schemaName配置值
+     */
+    public static String getSchemaName(DatabaseConnectionConfig config) {
+        // Oracle的schema与用户名绑定，连接配置中的schemaName实际存放的是SID，因此取用户名大写
+        if (Objects.equals(DataBaseTypeEnum.Oracle11g, DataBaseTypeEnum.valueOf(config.getDataBaseType()))) {
+            return config.getUserName().toUpperCase();
+        }
+        return config.getSchemaName();
+    }
+
+    /**
      * 获取数据库连接
      * by itcrazy0717
      *
@@ -79,6 +94,10 @@ public class DataBaseUtil {
 
         props.setProperty("user", config.getUserName());
         props.setProperty("password", config.getPassword());
+        // Oracle驱动需开启remarksReporting，否则获取不到表与列的注释
+        if (Objects.equals(DataBaseTypeEnum.Oracle11g, DataBaseTypeEnum.valueOf(config.getDataBaseType()))) {
+            props.setProperty("remarksReporting", "true");
+        }
 
         DriverManager.setLoginTimeout(DATABASE_CONNECTION_TIMEOUT_SECOND);
         Connection connection = DATABASE_DRIVER_MAP.get(DataBaseTypeEnum.valueOf(config.getDataBaseType())).connect(url, props);
@@ -109,8 +128,9 @@ public class DataBaseUtil {
                 while (rs.next()) {
                     tableNameList.add(rs.getString("name"));
                 }
-            } else if (Objects.equals(DataBaseTypeEnum.Oracle, dataBaseType)) {
-                rs = metaData.getTables(null, databaseConfig.getUserName().toUpperCase(), null, new String[]{"TABLE", "VIEW"});
+            } else if (Objects.equals(DataBaseTypeEnum.Oracle11g, dataBaseType)) {
+                // Oracle的schema为用户名大写，从getSchemaName统一获取
+                rs = metaData.getTables(null, getSchemaName(databaseConfig), null, new String[]{"TABLE", "VIEW"});
             } else if (Objects.equals(DataBaseTypeEnum.PostgreSQL, dataBaseType)) {
                 // 针对 postgresql 的左侧数据表显示
                 rs = metaData.getTables(null, "%", "%", new String[]{"TABLE", "VIEW"});
@@ -141,7 +161,8 @@ public class DataBaseUtil {
         LOGGER.info("getTableColumns, connection url: {}", url);
         try (Connection conn = getConnection(dbConfig)) {
             DatabaseMetaData metaData = conn.getMetaData();
-            ResultSet rs = metaData.getColumns(null, null, tableName, null);
+            // 传null schema时Oracle会返回全库同名表的列，导致列重复，因此统一传真实schema
+            ResultSet rs = metaData.getColumns(null, getSchemaName(dbConfig), tableName, null);
             List<TableColumn> columns = new ArrayList<>();
             while (rs.next()) {
                 TableColumn tableColumn = new TableColumn();

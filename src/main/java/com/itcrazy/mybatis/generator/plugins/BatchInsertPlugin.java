@@ -20,6 +20,9 @@ import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
+import com.itcrazy.mybatis.generator.enums.DataBaseTypeEnum;
+
+import static com.itcrazy.mybatis.generator.constant.CommonConstants.PROPERTY_DATABASE_TYPE;
 import static javax.swing.UIManager.getString;
 import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 
@@ -29,6 +32,11 @@ import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
  * @description:批量插入插件
  */
 public class BatchInsertPlugin extends PluginAdapter {
+
+    /**
+     * 数据库类型
+     */
+    private String dataBaseType;
 
     /**
      * 主键id字段
@@ -42,6 +50,7 @@ public class BatchInsertPlugin extends PluginAdapter {
 
     @Override
     public boolean validate(List<String> warnings) {
+        dataBaseType = properties.getProperty(PROPERTY_DATABASE_TYPE);
         primaryKey = properties.getProperty("primaryKey");
         insertReturnPrimaryKey = BooleanUtils.toBoolean(properties.getProperty("insertReturnPrimaryKey"));
         return true;
@@ -50,6 +59,10 @@ public class BatchInsertPlugin extends PluginAdapter {
     @Override
     public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass,
                                    IntrospectedTable introspectedTable) {
+        // Oracle 11g 不支持 insert into ... values (...),(...) 多行插入，不生成batchInsert
+        if (DataBaseTypeEnum.Oracle11g.name().equals(dataBaseType)) {
+            return true;
+        }
         String configurationType = this.properties.getProperty("configurationType");
         if (StringUtils.isNotBlank(configurationType) && "ANNOTATEDMAPPER".equalsIgnoreCase(configurationType)) {
             return super.clientGenerated(interfaze, topLevelClass, introspectedTable);
@@ -97,6 +110,10 @@ public class BatchInsertPlugin extends PluginAdapter {
 
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
+        // Oracle 11g 不支持多行values插入与default关键字，不生成batchInsert的xml节点
+        if (DataBaseTypeEnum.Oracle11g.name().equals(dataBaseType)) {
+            return super.sqlMapDocumentGenerated(document, introspectedTable);
+        }
         List<IntrospectedColumn> columns = introspectedTable.getAllColumns();
 
         // ========== 1. 构建固定字段名（外层trim） ==========

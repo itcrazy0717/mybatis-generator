@@ -104,6 +104,13 @@ public class MybatisCodeGenerateUtil {
         String driverJarPath = SqliteUtil.getDataBaseDriverJarPath(dataBaseType);
         LOGGER.info("driver_jar_path: {}", driverJarPath);
         configuration.addClasspathEntry(driverJarPath);
+        // 附加jar（如Oracle的orai18n字符集转换jar）也需要加入生成阶段的classloader，否则连接报 ORA-17056
+        String extraJar = DataBaseTypeEnum.valueOf(dataBaseType).getExtraJar();
+        if (StringUtils.isNotBlank(extraJar)) {
+            String extraJarPath = SqliteUtil.getDataBaseDriverJarPathByName(extraJar);
+            LOGGER.info("extra_driver_jar_path: {}", extraJarPath);
+            configuration.addClasspathEntry(extraJarPath);
+        }
         // Table configuration
         TableConfiguration tableConfig = new TableConfiguration(context);
         tableConfig.setTableName(generateConfig.getTableName());
@@ -114,8 +121,15 @@ public class MybatisCodeGenerateUtil {
         if (StringUtils.equals(DataBaseTypeEnum.MySQL.name(), dataBaseType)) {
             tableConfig.setCatalog(selectedDatabaseConfig.getSchemaName());
         }
-        if (StringUtils.equals(DataBaseTypeEnum.DM8.name(), dataBaseType)) {
-            tableConfig.setSchema(selectedDatabaseConfig.getSchemaName());
+        if (StringUtils.equals(DataBaseTypeEnum.DM8.name(), dataBaseType)
+            || StringUtils.equals(DataBaseTypeEnum.Oracle11g.name(), dataBaseType)) {
+            tableConfig.setSchema(DataBaseUtil.getSchemaName(selectedDatabaseConfig));
+        }
+        // Oracle 11g的表无主键id，byPrimary系列方法无意义，关闭生成
+        if (StringUtils.equals(DataBaseTypeEnum.Oracle11g.name(), dataBaseType)) {
+            tableConfig.setSelectByPrimaryKeyStatementEnabled(false);
+            tableConfig.setUpdateByPrimaryKeyStatementEnabled(false);
+            tableConfig.setDeleteByPrimaryKeyStatementEnabled(false);
         }
 
         // 针对postgresql单独配置
@@ -125,8 +139,10 @@ public class MybatisCodeGenerateUtil {
 
         // 添加GeneratedKey主键生成，用于insert的时候返回主键
         // 以下在MySql与DM8下已进行测试，后续补充其他数据库类型的相关操作
+        // Oracle 11g无自增主键，useGeneratedKeys与selectKey均无法回填主键，因此跳过
         if (BooleanUtils.isTrue(generateConfig.getInsertReturnPrimaryKey())
-            && StringUtils.isNotBlank(generateConfig.getPrimaryKey())) {
+            && StringUtils.isNotBlank(generateConfig.getPrimaryKey())
+            && !StringUtils.equals(DataBaseTypeEnum.Oracle11g.name(), dataBaseType)) {
             String dbType = dataBaseType;
             if (APPLICABLE_DATABASE_TYPE_SETS.contains(dbType)) {
                 dbType = "JDBC";
@@ -156,6 +172,10 @@ public class MybatisCodeGenerateUtil {
         jdbcConfig.setConnectionURL(DataBaseUtil.buildConnectionUrlWithSchema(selectedDatabaseConfig));
         jdbcConfig.setUserId(selectedDatabaseConfig.getUserName());
         jdbcConfig.setPassword(selectedDatabaseConfig.getPassword());
+        // Oracle生成阶段的连接同样需要开启remarksReporting，否则实体/列注释为空
+        if (StringUtils.equals(DataBaseTypeEnum.Oracle11g.name(), dataBaseType)) {
+            jdbcConfig.addProperty("remarksReporting", "true");
+        }
 
         // 实体类路径配置
         JavaModelGeneratorConfiguration modelConfig = new JavaModelGeneratorConfiguration();
@@ -207,7 +227,8 @@ public class MybatisCodeGenerateUtil {
         MyBatisGenerator myBatisGenerator = new MyBatisGenerator(configuration, shellCallback, warnings);
         myBatisGenerator.generate(progressCallback, contexts, fullyqualifiedTables);
         // 修复xml文件内容表名双点问题
-        FixTableNameUtil.fixTableName(buildXmlFile(), selectedDatabaseConfig.getSchemaName(), generateConfig.getTableName());
+        // 注意：这里必须传真实schema，Oracle下schemaName存的是SID，而生成物前缀是用户名大写的schema
+        FixTableNameUtil.fixTableName(buildXmlFile(), DataBaseUtil.getSchemaName(selectedDatabaseConfig), generateConfig.getTableName());
     }
 
     /**
@@ -275,6 +296,8 @@ public class MybatisCodeGenerateUtil {
         // 批量插入插件
         PluginConfiguration batchInsertPlugin = new PluginConfiguration();
         batchInsertPlugin.addProperty(PROPERTY_NAME, BatchInsertPlugin.class.getName());
+        // 传入数据库类型，插件内按库类型跳过生成（Oracle 11g不支持多行values插入）
+        batchInsertPlugin.addProperty(PROPERTY_DATABASE_TYPE, selectedDatabaseConfig.getDataBaseType());
         batchInsertPlugin.addProperty("insertReturnPrimaryKey", String.valueOf(generateConfig.getInsertReturnPrimaryKey()));
         batchInsertPlugin.addProperty("primaryKey", String.valueOf(generateConfig.getPrimaryKey()));
         batchInsertPlugin.setConfigurationType(BatchInsertPlugin.class.getName());

@@ -368,6 +368,11 @@ public class SqliteUtil {
                 Set<String> driverClassNameSets = Arrays.stream(DataBaseTypeEnum.values())
                                                         .map(DataBaseTypeEnum::getDriverJar)
                                                         .collect(Collectors.toSet());
+                // 附加jar（如Oracle的orai18n字符集转换jar）也纳入加载名单，否则部分驱动功能不可用
+                Arrays.stream(DataBaseTypeEnum.values())
+                      .map(DataBaseTypeEnum::getExtraJar)
+                      .filter(StringUtils::isNotBlank)
+                      .forEach(driverClassNameSets::add);
                 Stream.of(jarFiles)
                       .filter(Objects::nonNull)
                       .filter(e -> e.isFile() && e.getAbsolutePath().endsWith(DATABASE_DRIVER_JAR_SUFFIX))
@@ -379,6 +384,30 @@ public class SqliteUtil {
             throw new RuntimeException("找不到驱动文件，请联系开发者");
         }
         return new ArrayList<>(jarFilePathSets);
+    }
+
+    /**
+     * 根据jar文件名获取lib目录下的驱动jar路径
+     * by itcrazy0717
+     *
+     * @param jarFileName
+     * @return
+     */
+    public static String getDataBaseDriverJarPathByName(String jarFileName) {
+        try {
+            File file = getDataBaseDriverClassJarFile(null);
+            File[] jarFiles = file.listFiles();
+            if (Objects.nonNull(jarFiles)) {
+                for (File jarFile : jarFiles) {
+                    if (jarFile.isFile() && StringUtils.equals(jarFileName, jarFile.getName())) {
+                        return jarFile.getCanonicalPath();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("get_driver_path_error", e);
+        }
+        throw new RuntimeException("找不到驱动文件，请联系开发者!");
     }
 
     /**
