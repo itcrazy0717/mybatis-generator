@@ -1,6 +1,7 @@
 package com.itcrazy.mybatis.generator.controller;
 
 import java.net.URL;
+import java.sql.Connection;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -127,14 +128,12 @@ public class DataBaseConnectionController extends BaseFxmlPageController {
         if (Objects.isNull(connectionConfig)) {
             return;
         }
-        try {
-            DataBaseUtil.getConnection(connectionConfig);
+        try (Connection connection = DataBaseUtil.getConnection(connectionConfig)) {
             ShowMessageUtil.showNormalInfo("连接成功");
         } catch (Exception e) {
             LOGGER.error("test_db_connection_error", e);
             ShowMessageUtil.showWarnInfo("数据连接失败");
         }
-
     }
 
     @FXML
