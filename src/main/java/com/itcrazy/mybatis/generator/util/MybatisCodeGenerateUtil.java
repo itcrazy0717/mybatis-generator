@@ -43,7 +43,7 @@ import com.itcrazy.mybatis.generator.plugins.GenerateInsertMethodPlugin;
 import com.itcrazy.mybatis.generator.plugins.PagePlugin;
 import com.itcrazy.mybatis.generator.plugins.ReplaceExampleContentPlugin;
 import com.itcrazy.mybatis.generator.plugins.SortPlugin;
-import com.itcrazy.mybatis.generator.typeresolver.TinyIntToIntegerResolver;
+import com.itcrazy.mybatis.generator.typeresolver.CustomTypeResolver;
 
 import static com.itcrazy.mybatis.generator.constant.CommonConstants.APPLICABLE_DATABASE_TYPE_SETS;
 import static com.itcrazy.mybatis.generator.constant.CommonConstants.PROPERTY_DATABASE_TYPE;
@@ -238,10 +238,10 @@ public class MybatisCodeGenerateUtil {
      * @param context
      */
     private static void addCustomPlugins(Context context) {
-        // tinyint默认转换成integer
-        JavaTypeResolverConfiguration tinyIntResolverConfiguration = new JavaTypeResolverConfiguration();
-        tinyIntResolverConfiguration.setConfigurationType(TinyIntToIntegerResolver.class.getName());
-        context.setJavaTypeResolverConfiguration(tinyIntResolverConfiguration);
+        // 自定义类型解析器：TINYINT/BIT->Integer；NUMERIC/DECIMAL->BigDecimal
+        JavaTypeResolverConfiguration customResolverConfiguration = new JavaTypeResolverConfiguration();
+        customResolverConfiguration.setConfigurationType(CustomTypeResolver.class.getName());
+        context.setJavaTypeResolverConfiguration(customResolverConfiguration);
 
         /**
          // 序列化插件
