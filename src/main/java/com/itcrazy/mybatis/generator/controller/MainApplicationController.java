@@ -368,6 +368,17 @@ public class MainApplicationController extends BaseFxmlPageController {
     }
 
     /**
+     * 清空表名搜索
+     * by itcrazy0717
+     * 清空搜索框并恢复显示全部已加载的表
+     */
+    @FXML
+    public void clearSearch() {
+        tableSearchField.clear();
+        searchTable();
+    }
+
+    /**
      * 构建表节点
      * by itcrazy0717
      *

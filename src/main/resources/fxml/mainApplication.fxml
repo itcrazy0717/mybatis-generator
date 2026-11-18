@@ -52,9 +52,20 @@
             <items>
                 <AnchorPane maxWidth="500.0" minWidth="100.0" prefHeight="618.0" prefWidth="200.0">
                     <children>
-                        <TextField fx:id="tableSearchField" prefHeight="27.0" promptText="输入表名，回车搜索"
-                                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                   AnchorPane.topAnchor="3.0" onAction="#searchTable"/>
+                        <HBox spacing="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                              AnchorPane.topAnchor="3.0">
+                            <children>
+                                <TextField fx:id="tableSearchField" prefHeight="27.0" HBox.hgrow="ALWAYS"
+                                           promptText="输入表名，回车搜索" onAction="#searchTable"/>
+                                <Button mnemonicParsing="false" onAction="#clearSearch" prefHeight="27.0"
+                                        prefWidth="27.0" text="×">
+                                    <styleClass>
+                                        <String fx:value="btn"/>
+                                        <String fx:value="btn-default"/>
+                                    </styleClass>
+                                </Button>
+                            </children>
+                        </HBox>
                         <TreeView fx:id="dataBaseViewTree" prefHeight="545.0" prefWidth="126.0"
                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="32.0"/>
