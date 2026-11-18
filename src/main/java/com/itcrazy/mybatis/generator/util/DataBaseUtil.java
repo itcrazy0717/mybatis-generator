@@ -8,11 +8,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.internal.util.ClassloaderUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,30 +103,53 @@ public class DataBaseUtil {
         try (Connection connection = getConnection(databaseConfig)) {
             // 获取数据库类型
             DataBaseTypeEnum dataBaseType = DataBaseTypeEnum.valueOf(databaseConfig.getDataBaseType());
-            List<String> tableNameList = new ArrayList<>();
             DatabaseMetaData metaData = connection.getMetaData();
             ResultSet rs;
+            // SQLServer结果集无TABLE_SCHEM列、Oracle需按用户名大写比对、PostgreSQL按原行为不过滤，
+            // 因此这三类各自在分支内直接收集；DM与MySQL走统一校验收集
             if (Objects.equals(DataBaseTypeEnum.SQLServer, dataBaseType)) {
                 String sql = "select name from sysobjects  where xtype='u' or xtype='v' ";
                 rs = connection.createStatement().executeQuery(sql);
+                List<String> tableNameList = new ArrayList<>();
                 while (rs.next()) {
                     tableNameList.add(rs.getString("name"));
                 }
+                return tableNameList;
             } else if (Objects.equals(DataBaseTypeEnum.Oracle, dataBaseType)) {
-                rs = metaData.getTables(null, databaseConfig.getUserName().toUpperCase(), null, new String[]{"TABLE", "VIEW"});
+                // Oracle的schema为用户名大写，TABLE_SCHEM校验过滤掉账号有权限访问的其他schema的同名表
+                String oracleSchema = databaseConfig.getUserName().toUpperCase();
+                rs = metaData.getTables(null, oracleSchema, null, new String[]{"TABLE", "VIEW"});
+                Set<String> tableNameSet = new LinkedHashSet<>();
+                while (rs.next()) {
+                    if (StringUtils.equalsIgnoreCase(oracleSchema, rs.getString(2))) {
+                        tableNameSet.add(rs.getString(3));
+                    }
+                }
+                return new ArrayList<>(tableNameSet);
             } else if (Objects.equals(DataBaseTypeEnum.PostgreSQL, dataBaseType)) {
-                // 针对 postgresql 的左侧数据表显示
+                // 针对 postgresql 的左侧数据表显示，保持原有行为：显示所有schema的表
                 rs = metaData.getTables(null, "%", "%", new String[]{"TABLE", "VIEW"});
+            } else if (Objects.equals(DataBaseTypeEnum.DM8, dataBaseType)) {
+                // DM基于账号可访问对象返回表，schemaPattern传具体模式名，
+                // 避免账号有权限的其他模式的表通过同义词/授权混入
+                rs = metaData.getTables(databaseConfig.getSchemaName(), databaseConfig.getSchemaName(), "%", new String[]{"TABLE"});
             } else {
                 // 默认mysql数据库
                 // rs = metaData.getTables(null, "%", "%", new String[]{"TABLE"});
                 // 获取schema下的表
                 rs = metaData.getTables(databaseConfig.getSchemaName(), "%", "%", new String[]{"TABLE"});
             }
+            // DM与MySQL统一按模式名过滤并去重（保持顺序）：
+            // 部分驱动的schemaPattern过滤不严，账号有权限的其他模式的同名表会混入结果集，
+            // TABLE_SCHEM（rs.getString(2)）校验作为最终防线
+            String schemaName = databaseConfig.getSchemaName();
+            Set<String> tableNameSet = new LinkedHashSet<>();
             while (rs.next()) {
-                tableNameList.add(rs.getString(3));
+                if (StringUtils.equalsIgnoreCase(schemaName, rs.getString(2))) {
+                    tableNameSet.add(rs.getString(3));
+                }
             }
-            return tableNameList;
+            return new ArrayList<>(tableNameSet);
         }
     }
 
@@ -141,7 +167,9 @@ public class DataBaseUtil {
         LOGGER.info("getTableColumns, connection url: {}", url);
         try (Connection conn = getConnection(dbConfig)) {
             DatabaseMetaData metaData = conn.getMetaData();
-            ResultSet rs = metaData.getColumns(null, null, tableName, null);
+            // schema传null会返回账号可访问的其他模式同名表的列，导致列重复，统一传schemaName过滤
+            // （MySQL的schema参数即库名；DM为模式名，行为一致）
+            ResultSet rs = metaData.getColumns(null, dbConfig.getSchemaName(), tableName, null);
             List<TableColumn> columns = new ArrayList<>();
             while (rs.next()) {
                 TableColumn tableColumn = new TableColumn();

@@ -4,7 +4,9 @@ import java.io.File;
 import java.net.URL;
 import java.sql.SQLRecoverableException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -93,6 +95,12 @@ public class MainApplicationController extends BaseFxmlPageController {
     private TreeView<String> dataBaseViewTree;
 
     /**
+     * 表名搜索框
+     */
+    @FXML
+    private TextField tableSearchField;
+
+    /**
      * 表名
      */
     @FXML
@@ -172,6 +180,13 @@ public class MainApplicationController extends BaseFxmlPageController {
 
     private List<ColumnOverride> columnOverrides;
 
+    /**
+     * 连接节点与已加载表名的快照
+     * key-连接节点 value-该连接下已加载的全部表名
+     * 用于表名搜索过滤与恢复；只存表名不存节点引用，过滤时重建节点，避免节点复用导致的显示重复
+     */
+    private final Map<TreeItem<String>, List<String>> connectionTableNameSnapshotMap = new HashMap<>();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ImageView dbImage = new ImageView(COMPUTER_ICON_URL);
@@ -209,9 +224,12 @@ public class MainApplicationController extends BaseFxmlPageController {
                 // 第一层，数据库上的操作
                 if (level == 1) {
                     final ContextMenu contextMenu = new ContextMenu();
-                    // 关闭连接
+                    // 关闭连接：清空表节点与快照
                     MenuItem closeMenuItem = new MenuItem("关闭连接");
-                    closeMenuItem.setOnAction(event1 -> treeItem.getChildren().clear());
+                    closeMenuItem.setOnAction(event1 -> {
+                        treeItem.getChildren().clear();
+                        connectionTableNameSnapshotMap.remove(treeItem);
+                    });
                     // 编辑连接
                     MenuItem modifyMenuItem = new MenuItem("编辑连接");
                     modifyMenuItem.setOnAction(actionEvent -> {
@@ -238,6 +256,8 @@ public class MainApplicationController extends BaseFxmlPageController {
                             DatabaseConnectionConfig selectedConfig = (DatabaseConnectionConfig) treeItem.getGraphic().getUserData();
                             try {
                                 SqliteUtil.deleteDatabaseConnectionConfig(selectedConfig);
+                                // 删除连接时同步清理表名快照
+                                connectionTableNameSnapshotMap.remove(treeItem);
                                 this.loadDataBaseViewList();
                             } catch (Exception e) {
                                 LOGGER.error("delete_database_connection_error", e);
@@ -260,14 +280,12 @@ public class MainApplicationController extends BaseFxmlPageController {
                                 ObservableList<TreeItem<String>> children = cell.getTreeItem().getChildren();
                                 children.clear();
                                 for (String tableName : tableNameList) {
-                                    TreeItem<String> newTreeItem = new TreeItem<>();
-                                    ImageView imageView = new ImageView(TABLE_ICON_URL);
-                                    imageView.setFitHeight(16);
-                                    imageView.setFitWidth(16);
-                                    newTreeItem.setGraphic(imageView);
-                                    newTreeItem.setValue(tableName);
-                                    children.add(newTreeItem);
+                                    children.add(buildTableTreeItem(tableName));
                                 }
+                                // 记录表名快照，供表名搜索过滤与恢复使用（只存表名，过滤时重建节点）
+                                connectionTableNameSnapshotMap.put(cell.getTreeItem(), new ArrayList<>(tableNameList));
+                                // 对已展开连接再次双击刷新表时，同样是clear可见行后add，refresh()预防同类显示重复
+                                dataBaseViewTree.refresh();
                             }
                         } catch (SQLRecoverableException e) {
                             LOGGER.error("get_db_table_error", e);
@@ -314,6 +332,56 @@ public class MainApplicationController extends BaseFxmlPageController {
             LOGGER.error("connect_db_failed", e);
             ShowMessageUtil.showErrorInfo(e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
         }
+    }
+
+    /**
+     * 表名搜索
+     * by itcrazy0717
+     * 回车触发：对已加载连接的表节点做忽略大小写的包含匹配过滤；关键字为空时恢复全部
+     */
+    @FXML
+    public void searchTable() {
+        String keyword = tableSearchField.getText();
+        TreeItem<String> rootTreeItem = dataBaseViewTree.getRoot();
+        if (Objects.isNull(rootTreeItem)) {
+            return;
+        }
+        for (TreeItem<String> connectionItem : rootTreeItem.getChildren()) {
+            List<String> snapshot = connectionTableNameSnapshotMap.get(connectionItem);
+            if (Objects.isNull(snapshot)) {
+                // 该连接未加载过表，无内容可过滤
+                continue;
+            }
+            ObservableList<TreeItem<String>> children = connectionItem.getChildren();
+            children.clear();
+            // 过滤与恢复均重建新节点，不复用旧TreeItem，避免TreeView渲染重复
+            String lowerKeyword = StringUtils.isBlank(keyword) ? null : keyword.toLowerCase();
+            for (String tableName : snapshot) {
+                if (Objects.isNull(lowerKeyword) || tableName.toLowerCase().contains(lowerKeyword)) {
+                    children.add(buildTableTreeItem(tableName));
+                }
+            }
+        }
+        // JavaFX 8已知问题：对展开节点的children做clear+add后，TreeView内部行缓存残留旧行，
+        // 界面表现为条目显示两份（模型数据只有一份）。refresh()强制重建单元格，消除显示重复
+        dataBaseViewTree.refresh();
+    }
+
+    /**
+     * 构建表节点
+     * by itcrazy0717
+     *
+     * @param tableName
+     * @return
+     */
+    private TreeItem<String> buildTableTreeItem(String tableName) {
+        TreeItem<String> tableItem = new TreeItem<>();
+        ImageView imageView = new ImageView(TABLE_ICON_URL);
+        imageView.setFitHeight(16);
+        imageView.setFitWidth(16);
+        tableItem.setGraphic(imageView);
+        tableItem.setValue(tableName);
+        return tableItem;
     }
 
     @FXML
